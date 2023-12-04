@@ -6,21 +6,23 @@
 
 class Panel
 {
-    int width;
-    int height;
+    int width, height;
+    sf::Vector2f pos;
     sf::Vector2f topLeft, botRight;
     std::vector<Folder> folders;
+    sf::RenderWindow& mainWindow;
     int firstToDisplay, lastToDisplay;
     std::filesystem::path currentPath;
     void update(std::filesystem::path path);
-    void drawFolders(sf::RenderWindow& mainWindow);
-    void drawBorders(sf::RenderWindow& mainWindow);
-    void drawColumnTitles(sf::RenderWindow& mainWindow);
+    void drawFolders();
+    void drawBorders();
+    void drawColumnTitles();
 
 public:
-    
-    void draw(sf::RenderWindow& mainWindow);
-    Panel() {};
+
+    void draw();
+    void init(sf::Vector2f pos, int width, int height, std::filesystem::path currentPath);
+    Panel(sf::RenderWindow& mainWindow) :mainWindow(mainWindow) {};
     void configure(int width, int height, std::filesystem::path currentPath, sf::Vector2f topLeft, sf::Vector2f botRight);
 
 };

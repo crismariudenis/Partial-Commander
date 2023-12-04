@@ -8,17 +8,32 @@ void Panel::configure(int width, int height, std::filesystem::path currentPath, 
     this->botRight = botRight;
     update(currentPath);
 }
+void Panel::init(sf::Vector2f pos,int width, int height, std::filesystem::path currentPath){
+    this->pos = pos;
+    this->width = width;
+    this->height = height;
+    this->currentPath = currentPath;
+    update(currentPath);
+}
 
-void Panel::drawFolders(sf::RenderWindow& mainWindow) {
+void Panel::drawFolders() {
     for (int index = firstToDisplay; index <= lastToDisplay; ++index) {
         mainWindow.draw(folders[index].getFolderText());
         mainWindow.draw(folders[index].getSizeText());
     }
 }
-
-void Panel::drawBorders(sf::RenderWindow& mainWindow) {
+void Panel::drawBorders() {
 
     ///Outside Borders
+
+    sf::RectangleShape rect;
+    rect.setOutlineThickness(PANEL_LINE_WIDTH);
+    rect.setPosition(pos);
+    rect.setSize(sf::Vector2f(width, height));
+    rect.setOutlineColor(sf::Color::White);
+    rect.setFillColor(sf::Color::Transparent);
+
+
     drawLine(topLeft.x, topLeft.y - PANEL_OFFSET, botRight.x, topLeft.y - PANEL_OFFSET, 3.5, mainWindow, 0);
     drawLine(botRight.x, topLeft.y - PANEL_OFFSET, botRight.x + (botRight.y - topLeft.y) + PANEL_OFFSET, topLeft.y - PANEL_OFFSET, 3.5, mainWindow, 90);
     drawLine(topLeft.x, botRight.y, botRight.x, botRight.y, 3.5, mainWindow, 0);
@@ -30,9 +45,10 @@ void Panel::drawBorders(sf::RenderWindow& mainWindow) {
 
     ///Bottom Area Borders
     drawLine(topLeft.x, botRight.y - PANEL_BOTTOM_HEIGHT, botRight.x, botRight.y - PANEL_BOTTOM_HEIGHT, 3.5, mainWindow, 0);
+    mainWindow.draw(rect);
 }
 
-void Panel::drawColumnTitles(sf::RenderWindow& mainWindow) {
+void Panel::drawColumnTitles() {
 
     sf::Text folderName;
     folderName.setString("Name");
@@ -51,10 +67,10 @@ void Panel::drawColumnTitles(sf::RenderWindow& mainWindow) {
 
 }
 
-void Panel::draw(sf::RenderWindow& mainWindow) {
-    drawFolders(mainWindow);
-    drawBorders(mainWindow);
-    drawColumnTitles(mainWindow);
+void Panel::draw() {
+    drawFolders();
+    drawBorders();
+    drawColumnTitles();
 }
 
 void Panel::update(std::filesystem::path path) {

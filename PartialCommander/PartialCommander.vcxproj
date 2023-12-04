@@ -94,6 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,15 +135,15 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="CustomFonts.cpp" />
     <ClCompile Include="Folder.cpp" />
-    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="App.cpp" />
     <ClCompile Include="Panel.cpp" />
-    <ClCompile Include="PartialCommander.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
     <ClInclude Include="CustomFonts.h" />
     <ClInclude Include="Folder.h" />
-    <ClInclude Include="Game.h" />
+    <ClInclude Include="App.h" />
     <ClInclude Include="Panel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

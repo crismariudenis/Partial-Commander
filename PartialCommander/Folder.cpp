@@ -2,8 +2,8 @@
 
 void Folder::initText() {
 
-    folderText.setFont(fonts[3]);
-    folderText.setStyle(1);
+    folderText.setFont(fonts[0]);
+    //folderText.setStyle(1);
     folderText.setPosition(position);
     folderText.setFillColor(textColor);
     folderText.setCharacterSize(CHARACTER_SIZE);

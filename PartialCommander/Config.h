@@ -16,16 +16,23 @@
 #define BORDER_OFFSET 30
 #define PANEL_BOTTOM_WIDTH WINDOW_WIDTH / 2
 #define PANEL_BOTTOM_HEIGHT 70
-#define PANEL_WIDTH WINDOW_WIDTH / 2
 #define PANEL_HEIGHT WINDOW_HEIGHT - BOTTOM_BUTTONS_HEIGHT - TOP_BUTTONS_HEIGHT
 #define PANEL_OFFSET 30
+
+
+#define PANEL_MARGIN_X 10
+#define PANEL_MARGIN_TOP 20
+#define PANEL_MARGIN_BOTOOM 40 
+#define PANEL_LINE_WIDTH 2
+#define PANEL_WIDTH (WINDOW_WIDTH - 3 * PANEL_MARGIN_X - 2*PANEL_LINE_WIDTH)/2
+
 
 extern std::filesystem::path leftPanelDirectoryPath;
 extern std::filesystem::path rightPanelDirectoryPath;
   
 
 /// TEXT Constants
-#define CHARACTER_SIZE 20
+#define CHARACTER_SIZE 15
 const sf::Color columnColor(199, 192, 149); /// Color for the Columns
 const sf::Color backgroundColor(0, 1, 169); /// Background Color 
 const sf::Color textColor(181, 183, 229); /// Text Color

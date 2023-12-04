@@ -11,11 +11,11 @@
 
 /// Panel Constrains
 #define FOLDER_SPACE 400
-#define SIZE_SPACE 100 
+#define SIZE_SPACE 80 
 #define TIME_SPACE 300
 #define BORDER_OFFSET 30
 #define PANEL_BOTTOM_WIDTH WINDOW_WIDTH / 2
-#define PANEL_BOTTOM_HEIGHT 70
+#define PANEL_BOTTOM_HEIGHT 50
 #define PANEL_HEIGHT WINDOW_HEIGHT - BOTTOM_BUTTONS_HEIGHT - TOP_BUTTONS_HEIGHT
 #define PANEL_OFFSET 30
 
@@ -43,13 +43,7 @@ const sf::Color textColor(181, 183, 229); /// Text Color
 extern CustomFonts fontsHandler;
 extern std::vector<sf::Font> fonts;
 
-inline void drawLine(int x1, int y1, int x2, int y2, float width, sf::RenderWindow& mainWindow, int degrees) {
-    sf::RectangleShape rect;
-    rect.setPosition(sf::Vector2f(x1, y1));
-    rect.setSize(sf::Vector2f(x2 - x1, width));
-    rect.rotate(degrees);
-    mainWindow.draw(rect);
-}
+
 
 
 /// Positions

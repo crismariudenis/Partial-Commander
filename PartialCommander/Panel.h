@@ -23,6 +23,5 @@ public:
     void draw();
     void init(sf::Vector2f pos, int width, int height, std::filesystem::path currentPath);
     Panel(sf::RenderWindow& mainWindow) :mainWindow(mainWindow) {};
-    void configure(int width, int height, std::filesystem::path currentPath, sf::Vector2f topLeft, sf::Vector2f botRight);
 
 };

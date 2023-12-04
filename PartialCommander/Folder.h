@@ -22,8 +22,8 @@ private:
 
 public:
     ~Folder() {};
-    Folder(std::filesystem::path folderPath, sf::Vector2f position, std::filesystem::path parentPath);
+    Folder(std::filesystem::path folderPath, sf::Vector2f position, std::filesystem::path parentPath, std::vector<sf::Font> &fonts);
     sf::Text getFolderText();
     sf::Text getSizeText();
-    void initText();
+    void initText(std::vector<sf::Font>& fonts);
 };

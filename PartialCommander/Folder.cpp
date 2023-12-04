@@ -1,8 +1,8 @@
 #include "Folder.h"
 
-void Folder::initText() {
+void Folder::initText(std::vector<sf::Font> &fonts) {
 
-    folderText.setFont(fonts[0]);
+    folderText.setFont(fonts[4]);
     //folderText.setStyle(1);
     folderText.setPosition(position);
     folderText.setFillColor(textColor);
@@ -58,12 +58,12 @@ std::string Folder::toString(std::uintmax_t size) {
     return number;
 }
 
-Folder::Folder(std::filesystem::path folderPath, sf::Vector2f position, std::filesystem::path parentPath) {
+Folder::Folder(std::filesystem::path folderPath, sf::Vector2f position, std::filesystem::path parentPath, std::vector<sf::Font> &fonts) {
     this->folderPath = folderPath;
     this->position = position;
     this->parentPath = parentPath;
     size = std::filesystem::file_size(this->folderPath);
-    initText();
+    initText(fonts);
 }
 
 sf::Text Folder::getFolderText() {

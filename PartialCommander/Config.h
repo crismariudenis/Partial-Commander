@@ -41,7 +41,6 @@ const sf::Color textColor(181, 183, 229); /// Text Color
 
 /// Fonts
 extern CustomFonts fontsHandler;
-extern std::vector<sf::Font> fonts;
 
 inline void drawLine(int x1, int y1, int x2, int y2, float width, sf::RenderWindow& mainWindow, int degrees) {
     sf::RectangleShape rect;

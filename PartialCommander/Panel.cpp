@@ -8,11 +8,12 @@ void Panel::configure(int width, int height, std::filesystem::path currentPath, 
     this->botRight = botRight;
     update(currentPath);
 }
-void Panel::init(sf::Vector2f pos,int width, int height, std::filesystem::path currentPath){
+void Panel::init(sf::Vector2f pos,int width, int height, std::filesystem::path currentPath, std::vector<sf::Font> &fonts){
     this->pos = pos;
     this->width = width;
     this->height = height;
     this->currentPath = currentPath;
+    this->fonts = fonts;
     update(currentPath);
 }
 
@@ -80,10 +81,10 @@ void Panel::update(std::filesystem::path path) {
     textPosition.x += 10;
 
     firstToDisplay = 0, lastToDisplay = 1;
-    folders.push_back(Folder("/..", textPosition, currentPath));
+    folders.push_back(Folder("/..", textPosition, currentPath, fonts));
     for (auto const& entry : std::filesystem::directory_iterator(currentPath)) {
         textPosition.y += height / 23;
-        folders.push_back(Folder(entry.path(), textPosition, currentPath));
+        folders.push_back(Folder(entry.path(), textPosition, currentPath, fonts));
         if (textPosition.y <= height - PANEL_OFFSET) {
             lastToDisplay++;
         }

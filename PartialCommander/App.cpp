@@ -29,6 +29,7 @@ App::App(std::string name) {
 }
 
 void App::run() {
+	
 	while (mainWindow.isOpen()) {
 
 		/// Event handling
@@ -60,6 +61,6 @@ void App::initPanels() {
 	sf::Vector2f left{ PANEL_MARGIN_X,PANEL_MARGIN_TOP };
 	sf::Vector2f right{ 2 * PANEL_MARGIN_X + PANEL_WIDTH - 3 * PANEL_LINE_WIDTH + left.x,left.y };
 	
-	leftPanel.init(left, PANEL_WIDTH, PANEL_HEIGHT, leftPanelDirectoryPath);
-	rightPanel.init(right, PANEL_WIDTH, PANEL_HEIGHT, rightPanelDirectoryPath);
+	leftPanel.init(left, PANEL_WIDTH, PANEL_HEIGHT, leftPanelDirectoryPath, fonts);
+	rightPanel.init(right, PANEL_WIDTH, PANEL_HEIGHT, rightPanelDirectoryPath, fonts);
 }

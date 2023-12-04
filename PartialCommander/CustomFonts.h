@@ -9,6 +9,8 @@ private:
     sf::Font Arial;
     sf::Font Helvetica;
     sf::Font CourierNew;
+    sf::Font Roboto;
+
 
 public:
     CustomFonts();
@@ -19,5 +21,6 @@ public:
     sf::Font getArial();
     sf::Font getHelvetica();
     sf::Font getCourierNew();
+    sf::Font getRoboto();
 
 };

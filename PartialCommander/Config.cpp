@@ -1,7 +1,6 @@
 #include "Config.h"
 
 CustomFonts fontsHandler;
-std::vector<sf::Font> fonts = fontsHandler.getFonts();
 std::filesystem::path leftPanelDirectoryPath("D:");
 std::filesystem::path rightPanelDirectoryPath("C:");
 

@@ -93,7 +93,7 @@ void Panel::update(std::filesystem::path path) {
 	folders.push_back(Folder("/..", textPosition, currentPath, fonts));
     for (auto const& entry : std::filesystem::directory_iterator(currentPath)) {
 		textPosition.y += height / LINE_SPACING;
-        folders.push_back(Folder(entry.path(), textPosition, currentPath));
+        folders.push_back(Folder(entry.path(), textPosition, currentPath,fonts));
         if (textPosition.y <= height - PANEL_OFFSET - 20) {
             lastToDisplay++;
         }

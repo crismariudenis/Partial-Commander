@@ -1,13 +1,6 @@
 #include "Panel.h"
 
-void Panel::configure(int width, int height, std::filesystem::path currentPath, sf::Vector2f topLeft, sf::Vector2f botRight) {
-    this->width = width;
-    this->height = height;
-    this->currentPath = currentPath;
-    this->topLeft = topLeft;
-    this->botRight = botRight;
-    update(currentPath);
-}
+
 void Panel::init(sf::Vector2f pos,int width, int height, std::filesystem::path currentPath, std::vector<sf::Font> &fonts){
     this->pos = pos;
     this->width = width;

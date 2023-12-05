@@ -16,11 +16,10 @@ void Folder::initText(std::vector<sf::Font> &fonts) {
     if (canonicPath != "/..")
         sizeText.setString(toString(size));
 
-
     sf::Vector2f sizePosition = position;
-    sizePosition.x += FOLDER_SPACE - PANEL_OFFSET;
-
+    sizePosition.x += FOLDER_SPACE + SIZE_SPACE / 2 + 120;
     sizeText.setPosition(sizePosition);
+    //sizeText.setOrigin(sf::Vector2f(0.5, 0.5));
 }
 
 std::string Folder::normalizePath(std::string path) {

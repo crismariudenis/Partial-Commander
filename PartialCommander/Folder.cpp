@@ -2,9 +2,8 @@
 
 void Folder::initText(std::vector<sf::Font>& fonts) {
 
-	folderText.setFont(fonts[3]);
+	folderText.setFont(fonts[CustomFonts::Font::ROBOTO]);
 	folderText.setPosition(position);
-	folderText.setStyle(sf::Text::Style::Bold);
 
 	folderText.setCharacterSize(CHARACTER_SIZE);
 

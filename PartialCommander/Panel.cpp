@@ -56,9 +56,8 @@ void Panel::drawColumnTitles() {
 	folderName.setString("Name");
 	folderName.setCharacterSize(CHARACTER_SIZE);
 	folderName.setFillColor(titleColor);
-	folderName.setFont(fonts[3]);
+	folderName.setFont(fonts[CustomFonts::Font::ROBOTO]);
 	folderName.setPosition(pos + sf::Vector2f(FOLDER_SPACE / 2 + 80, 10));
-	folderName.setStyle(sf::Text::Style::Bold);
 
 	mainWindow.draw(folderName);
 

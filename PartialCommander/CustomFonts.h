@@ -13,6 +13,13 @@ private:
 
 
 public:
+    static enum Font {
+        TIMES_NEW_ROMAN,
+        ARIAL,
+        HELVETICA,
+        COURIER_NEW,
+        ROBOTO
+    };
     CustomFonts();
 
     const std::vector<sf::Font> getFonts();

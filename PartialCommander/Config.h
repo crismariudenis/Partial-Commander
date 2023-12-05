@@ -31,14 +31,15 @@
 
 extern std::filesystem::path leftPanelDirectoryPath;
 extern std::filesystem::path rightPanelDirectoryPath;
-  
+
 
 /// TEXT Constraints
 #define CHARACTER_SIZE 15
 const sf::Color columnColor(199, 192, 149); /// Color for the Columns
-const sf::Color backgroundColor(0, 1, 169); /// Background Color 
-const sf::Color textColor(181, 183, 229); /// Text Color
-const sf::Color secondaryColor(1, 170, 170); /// Buttons and Selected Folder Color
+const sf::Color backgroundColor(19, 103, 208); /// Background Color 
+const sf::Color textColor = sf::Color::White; /// Text Color
+const sf::Color titleColor = sf::Color(215, 171, 32);
+const sf::Color secondaryColor(42, 161, 179); /// Buttons and Selected Folder Color
 const sf::Color selectedTextColor(0, 0, 0); /// Selected Folder Text Color
 
 /// Fonts
@@ -46,10 +47,4 @@ extern CustomFonts fontsHandler;
 
 
 
-
-/// Positions
-extern sf::Vector2f leftPanelTopLeft;
-extern sf::Vector2f leftPanelBotRight;
-extern sf::Vector2f rightPanelTopLeft;
-extern sf::Vector2f rightPanelBotRight;
 

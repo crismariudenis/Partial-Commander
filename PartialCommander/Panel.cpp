@@ -1,13 +1,13 @@
 #include "Panel.h"
 
 
-void Panel::init(sf::Vector2f pos,int width, int height, std::filesystem::path currentPath, std::vector<sf::Font> &fonts){
-    this->pos = pos;
-    this->width = width;
-    this->height = height;
-    this->currentPath = currentPath;
-    this->fonts = fonts;
-    update(currentPath);
+void Panel::init(sf::Vector2f pos, int width, int height, std::filesystem::path currentPath, std::vector<sf::Font>& fonts) {
+	this->pos = pos;
+	this->width = width;
+	this->height = height;
+	this->currentPath = currentPath;
+	this->fonts = fonts;
+	update(currentPath);
 }
 
 void Panel::drawFolders() {
@@ -55,7 +55,7 @@ void Panel::drawColumnTitles() {
 	sf::Text folderName;
 	folderName.setString("Name");
 	folderName.setCharacterSize(CHARACTER_SIZE);
-	folderName.setFillColor(columnColor);
+	folderName.setFillColor(titleColor);
 	folderName.setFont(fonts[3]);
 	folderName.setPosition(pos + sf::Vector2f(FOLDER_SPACE / 2 + 80, 10));
 	folderName.setStyle(sf::Text::Style::Bold);
@@ -78,23 +78,22 @@ void Panel::drawSelectedFolderBackground() {
 	rect.setSize(botRight);
 	rect.setFillColor(secondaryColor);
 	rect.setPosition(topLeft);
-	
+
 	mainWindow.draw(rect);
 }
 
 void Panel::draw() {
-	if(isSelected)
+	if (isSelected)
 		drawSelectedFolderBackground();
 	drawFolders();
 	drawBorders();
 	drawColumnTitles();
-	
+
 }
 
 void Panel::update(std::filesystem::path path) {
 
-	std::filesystem::path parentPath = currentPath;
-    this->currentPath = path;
+	this->currentPath = path;
 	sf::Vector2f textPosition = pos;
 	textPosition.x += 10;
 	textPosition.y += height / LINE_SPACING;
@@ -102,36 +101,38 @@ void Panel::update(std::filesystem::path path) {
 	folders.clear();
 
 	firstToDisplay = 0, lastToDisplay = 1, selectedFolderIndex = 0;
-	folders.push_back(Folder("/..", textPosition, parentPath, fonts));
+	folders.push_back(Folder("/..", textPosition, path.parent_path(), fonts));
 	folders[firstToDisplay].toggleIsSelected();
 
-    for (auto const& entry : std::filesystem::directory_iterator(currentPath)) {
+	for (auto const& entry : std::filesystem::directory_iterator(path)) {
 		textPosition.y += height / LINE_SPACING;
-        folders.push_back(Folder(entry.path(), textPosition, currentPath,fonts));
-        if (textPosition.y <= height - PANEL_OFFSET - 20) {
-            lastToDisplay++;
-        }
-    }
-    lastToDisplay--;
+		folders.push_back(Folder(entry.path(), textPosition, path.parent_path(), fonts));
+		if (textPosition.y <= height - PANEL_OFFSET - 20) {
+			lastToDisplay++;
+		}
+	}
+	lastToDisplay--;
 }
 
 void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
-	
+
 	if (isSelected) {
 		if (code == sf::Keyboard::Scancode::S || code == sf::Keyboard::Scancode::Down) {
 
-		if (selectedFolderIndex + 1 < folders.size()) {
+			if (selectedFolderIndex + 1 < folders.size()) {
 				folders[selectedFolderIndex].toggleIsSelected();
 				folders[selectedFolderIndex].updateText();
 				selectedFolderIndex++;
 				folders[selectedFolderIndex].toggleIsSelected();
 				folders[selectedFolderIndex].updateText();
 			}
-			if (lastToDisplay + 1 < folders.size()) {
-				firstToDisplay++, lastToDisplay++;
-				updateFoldersPosition(sf::Vector2f(0, -height / LINE_SPACING));
+			if (selectedFolderIndex == lastToDisplay) {
+				int step = std::min((size_t)10, folders.size() - lastToDisplay - 1);
+				firstToDisplay += step;
+				lastToDisplay += step;
+				updateFoldersPosition(sf::Vector2f(0, step * (-height) / LINE_SPACING));
 			}
-			
+
 		}
 		else if (code == sf::Keyboard::Scancode::W || code == sf::Keyboard::Scancode::Up) {
 			if (selectedFolderIndex != 0) {
@@ -141,18 +142,20 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 				folders[selectedFolderIndex].toggleIsSelected();
 				folders[selectedFolderIndex].updateText();
 			}
-			if (firstToDisplay != 0) {
-				firstToDisplay--, lastToDisplay--;
-				updateFoldersPosition(sf::Vector2f(0, height / LINE_SPACING));
+			if (selectedFolderIndex == firstToDisplay) {
+				int step = std::min(10, firstToDisplay);
+				firstToDisplay -= step;
+				lastToDisplay -= step;
+				updateFoldersPosition(sf::Vector2f(0, step * height / LINE_SPACING));
 			}
-			
+
 		}
-		
+
 	}
 }
 
 void Panel::updateFoldersPosition(sf::Vector2f move) {
-	for (int index = 0;index < folders.size(); ++ index) {
+	for (int index = 0; index < folders.size(); ++index) {
 		sf::Vector2f folderPosition = folders[index].getPosition();
 		folderPosition += move;
 		folders[index].setPosition(folderPosition);
@@ -169,9 +172,9 @@ void Panel::toggleIsSelected() {
 void Panel::changePath() {
 	if (isSelected) {
 		std::filesystem::path folderPath;
-		if(selectedFolderIndex)
+		if (selectedFolderIndex)
 			folderPath = folders[selectedFolderIndex].getFolderPath();
-		else 
+		else
 			folderPath = folders[selectedFolderIndex].getParentPath();
 		std::cout << folderPath.string() << '\n';
 		update(folderPath);

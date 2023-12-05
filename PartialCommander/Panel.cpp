@@ -37,7 +37,7 @@ void Panel::drawBorders() {
 
 	sf::RectangleShape line3;
 	line3.setOutlineThickness(PANEL_LINE_WIDTH / 2);
-	line3.setPosition(pos+sf::Vector2f(0,PANEL_HEIGHT - PANEL_BOTTOM_HEIGHT));
+	line3.setPosition(pos + sf::Vector2f(0, PANEL_HEIGHT - PANEL_BOTTOM_HEIGHT));
 	line3.setSize(sf::Vector2f(width, 0));
 	line3.setOutlineColor(sf::Color::White);
 
@@ -55,14 +55,14 @@ void Panel::drawColumnTitles() {
 	folderName.setCharacterSize(CHARACTER_SIZE);
 	folderName.setFillColor(columnColor);
 	folderName.setFont(fonts[3]);
-	folderName.setPosition(sf::Vector2f(FOLDER_SPACE / 2 + pos.x - 40, pos.y - 25));
-	folderName.setStyle(1);
+	folderName.setPosition(pos + sf::Vector2f(FOLDER_SPACE / 2 + 80, 10));
+	folderName.setStyle(sf::Text::Style::Bold);
 
 	mainWindow.draw(folderName);
 
 	sf::Text sizeName = folderName;
 	sizeName.setString("Size");
-	sizeName.setPosition(sf::Vector2f(FOLDER_SPACE + SIZE_SPACE / 2 + pos.x - 50, pos.y - 25));
+	sizeName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE / 2 + 140, 10));
 	mainWindow.draw(sizeName);
 
 }
@@ -76,15 +76,16 @@ void Panel::draw() {
 void Panel::update(std::filesystem::path path) {
 
 	this->currentPath = path;
-	sf::Vector2f textPosition = topLeft;
+	sf::Vector2f textPosition = pos;
 	textPosition.x += 10;
-
+	textPosition.y += height / LINE_SPACING;
+	
 	firstToDisplay = 0, lastToDisplay = 1;
 	folders.push_back(Folder("/..", textPosition, currentPath));
 	for (auto const& entry : std::filesystem::directory_iterator(currentPath)) {
-		textPosition.y += height / 23;
+		textPosition.y += height / LINE_SPACING;
 		folders.push_back(Folder(entry.path(), textPosition, currentPath));
-		if (textPosition.y <= height - PANEL_OFFSET) {
+		if (textPosition.y <= height - PANEL_OFFSET - 20) {
 			lastToDisplay++;
 		}
 	}

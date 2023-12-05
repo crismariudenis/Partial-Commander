@@ -8,7 +8,6 @@ class Panel
 {
     int width, height;
     sf::Vector2f pos;
-    sf::Vector2f topLeft, botRight;
     std::vector<Folder> folders;
     sf::RenderWindow& mainWindow;
     int firstToDisplay, lastToDisplay;

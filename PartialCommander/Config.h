@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include "CustomFonts.h"
 #include <filesystem>
+#include <iostream>
+
 #pragma once
 
 /// Window Constraints
@@ -31,13 +33,13 @@ extern std::filesystem::path leftPanelDirectoryPath;
 extern std::filesystem::path rightPanelDirectoryPath;
   
 
-/// TEXT Constants
+/// TEXT Constraints
 #define CHARACTER_SIZE 15
 const sf::Color columnColor(199, 192, 149); /// Color for the Columns
 const sf::Color backgroundColor(0, 1, 169); /// Background Color 
 const sf::Color textColor(181, 183, 229); /// Text Color
-
-
+const sf::Color secondaryColor(1, 170, 170); /// Buttons and Selected Folder Color
+const sf::Color selectedTextColor(0, 0, 0); /// Selected Folder Text Color
 
 /// Fonts
 extern CustomFonts fontsHandler;

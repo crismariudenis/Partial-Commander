@@ -35,8 +35,19 @@ void App::run() {
 		/// Event handling
 		sf::Event event;
 		while (mainWindow.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
+			switch (event.type)
+			{
+			case sf::Event::Closed:
 				mainWindow.close();
+				break;
+			case sf::Event::KeyPressed:
+				handleKeyboardEvents(event);
+				break;
+
+			case sf::Event::MouseWheelScrolled:
+				handleMouseEvents(event);
+				break;
+			}
 		}
 
 		mainWindow.setActive();
@@ -63,4 +74,37 @@ void App::initPanels() {
 	
 	leftPanel.init(left, PANEL_WIDTH, PANEL_HEIGHT, leftPanelDirectoryPath, fonts);
 	rightPanel.init(right, PANEL_WIDTH, PANEL_HEIGHT, rightPanelDirectoryPath, fonts);
+
+	leftPanel.toggleIsSelected();
+}
+
+void App::handleKeyboardEvents(sf::Event & event) {
+	switch (event.key.scancode)
+	{
+	case sf::Keyboard::Scan::S: case sf::Keyboard::Scan::W : case sf::Keyboard::Scan::Down : case sf::Keyboard::Scan::Up:
+		leftPanel.updateSelectedFolder(event.key.scancode);
+		rightPanel.updateSelectedFolder(event.key.scancode);
+		break;
+	case sf::Keyboard::Scan::Tab:
+		leftPanel.toggleIsSelected();
+		rightPanel.toggleIsSelected();
+		break;
+	case sf::Keyboard::Scan::Enter:
+		leftPanel.changePath();
+		rightPanel.changePath();
+		break;
+	}
+}
+
+void App::handleMouseEvents(sf::Event& event)
+{
+	int delta = event.mouseWheelScroll.delta;
+	if (delta < 0) {
+		leftPanel.updateSelectedFolder(sf::Keyboard::Scan::S);
+		rightPanel.updateSelectedFolder(sf::Keyboard::Scan::S);
+	}
+	else {
+		leftPanel.updateSelectedFolder(sf::Keyboard::Scan::W);
+		rightPanel.updateSelectedFolder(sf::Keyboard::Scan::W);
+	}
 }

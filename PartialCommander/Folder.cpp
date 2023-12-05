@@ -5,7 +5,7 @@ void Folder::initText(std::vector<sf::Font> &fonts) {
     folderText.setFont(fonts[4]);
     //folderText.setStyle(1);
     folderText.setPosition(position);
-    folderText.setFillColor(textColor);
+
     folderText.setCharacterSize(CHARACTER_SIZE);
 
     sizeText = folderText;
@@ -48,8 +48,9 @@ std::string Folder::normalizePath(std::string path) {
 
 std::string Folder::toString(std::uintmax_t size) {
     std::string number;
-    if (size == 0) number += "0";
-    while (size) {
+    if (size == 0)
+        number += "6904";
+    while (size && number.size() <= 5) {
         number += size % 10 + '0';
         size /= 10;
     }
@@ -71,4 +72,40 @@ sf::Text Folder::getFolderText() {
 
 sf::Text Folder::getSizeText() {
     return sizeText;
+}
+
+sf::Vector2f Folder::getPosition() {
+    return position;
+}
+
+void Folder::toggleIsSelected() {
+    isSelected = !isSelected;
+}
+
+void Folder::setPosition(sf::Vector2f position) {
+    this->position = position;
+}
+
+void Folder::updateText() {
+    folderText.setPosition(position);
+    if (isSelected == false) {
+        folderText.setFillColor(textColor);
+        sizeText.setFillColor(textColor);
+    }
+    else {
+        folderText.setFillColor(selectedTextColor);
+        sizeText.setFillColor(textColor);
+    }
+    
+    sf::Vector2f sizePosition = position;
+    sizePosition.x += FOLDER_SPACE + SIZE_SPACE / 2 + 120;
+    sizeText.setPosition(sizePosition);
+}
+
+std::filesystem::path Folder::getFolderPath() {
+    return folderPath;
+}
+
+std::filesystem::path Folder::getParentPath() {
+    return parentPath;
 }

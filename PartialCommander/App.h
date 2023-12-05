@@ -14,6 +14,8 @@ private:
 	void initWindow(std::string name);
 	void initBackgroundColor(sf::RectangleShape& shape);
 	void initPanels();
+	void handleKeyboardEvents(sf::Event& event);
+	void handleMouseEvents(sf::Event& event);
 
 public:
 	void init();

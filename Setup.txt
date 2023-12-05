@@ -1,0 +1,48 @@
+Change C++ version from 14 to 17, so that filesystem works.
+To setup SFML, you need to follow these steps. First, make sure you make these changes in the x86/Win32 variant of the project.
+1. Go to C/C++(General) and add the path to the include folder in sfml (C:\SFML-2.6.1\include).
+2. Go to C/C++(Preprocessor) and and SFML_STATIC;
+3. Go to Linker(General) and add the path to the lib folder in sfml (C:\SFML-2.6.1\lib).
+4. Go to Linker(Input) and add all these dependencies for the libraries:
+sfml-graphics-s-d.lib
+opengl32.lib
+freetype.lib
+sfml-window-s-d.lib
+winmm.lib
+gdi32.lib
+sfml-audio-s-d.lib
+openal32.lib
+flac.lib
+vorbisenc.lib
+vorbisfile.lib
+vorbis.lib
+ogg.lib
+sfml-network-s-d.lib
+sfml-system-s-d.lib
+ws2_32.lib
+
+If you have manager to follow all these steps, run the code below, and you should see a green circle.
+#include <SFML/Graphics.hpp>
+
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+    sf::CircleShape shape(100.f);
+    shape.setFillColor(sf::Color::Green);
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        window.clear();
+        window.draw(shape);
+        window.display();
+    }
+
+    return 0;
+}

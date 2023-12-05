@@ -41,7 +41,6 @@ const sf::Color textColor(181, 183, 229); /// Text Color
 
 /// Fonts
 extern CustomFonts fontsHandler;
-extern std::vector<sf::Font> fonts;
 
 
 

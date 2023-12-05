@@ -12,6 +12,7 @@ class Panel
     sf::RenderWindow& mainWindow;
     int firstToDisplay, lastToDisplay;
     std::filesystem::path currentPath;
+    std::vector<sf::Font> fonts;
     void update(std::filesystem::path path);
     void drawFolders();
     void drawBorders();
@@ -20,7 +21,7 @@ class Panel
 public:
 
     void draw();
-    void init(sf::Vector2f pos, int width, int height, std::filesystem::path currentPath);
+    void init(sf::Vector2f pos, int width, int height, std::filesystem::path currentPath, std::vector<sf::Font>& fonts);
     Panel(sf::RenderWindow& mainWindow) :mainWindow(mainWindow) {};
 
 };

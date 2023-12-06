@@ -29,7 +29,7 @@ App::App(std::string name) {
 }
 
 void App::run() {
-	
+
 	while (mainWindow.isOpen()) {
 
 		/// Event handling
@@ -71,17 +71,17 @@ void App::initPanels() {
 	*/
 	sf::Vector2f left{ PANEL_MARGIN_X,PANEL_MARGIN_TOP };
 	sf::Vector2f right{ 2 * PANEL_MARGIN_X + PANEL_WIDTH - 3 * PANEL_LINE_WIDTH + left.x,left.y };
-	
+
 	leftPanel.init(left, PANEL_WIDTH, PANEL_HEIGHT, leftPanelDirectoryPath, fonts);
 	rightPanel.init(right, PANEL_WIDTH, PANEL_HEIGHT, rightPanelDirectoryPath, fonts);
 
 	leftPanel.toggleIsSelected();
 }
 
-void App::handleKeyboardEvents(sf::Event & event) {
+void App::handleKeyboardEvents(sf::Event& event) {
 	switch (event.key.scancode)
 	{
-	case sf::Keyboard::Scan::S: case sf::Keyboard::Scan::W : case sf::Keyboard::Scan::Down : case sf::Keyboard::Scan::Up:
+	case sf::Keyboard::Scan::S: case sf::Keyboard::Scan::W: case sf::Keyboard::Scan::Down: case sf::Keyboard::Scan::Up:
 		leftPanel.updateSelectedFolder(event.key.scancode);
 		rightPanel.updateSelectedFolder(event.key.scancode);
 		break;

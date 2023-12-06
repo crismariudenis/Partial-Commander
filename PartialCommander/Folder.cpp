@@ -9,7 +9,7 @@ void Folder::initText(std::vector<sf::Font>& fonts) {
 
 	sizeText = folderText;
 
-	std::string canonicPath = this->normalizePath(folderPath.string());
+	std::string canonicPath = this->normalizePath(path.string());
 	folderText.setString(canonicPath);
 
 	if (canonicPath != "/..")
@@ -25,7 +25,7 @@ std::string Folder::normalizePath(std::string path) {
 	if (path == "/..")
 		return path;
 
-	std::string newPath, prefix = (folderPath.parent_path()).string();
+	std::string newPath, prefix = (this->path).parent_path().string();
 	int index2 = 0;
 
 	for (int index = 0; index < path.size(); ++index) {
@@ -56,10 +56,10 @@ std::string Folder::toString(std::uintmax_t size) {
 	return number;
 }
 
-Folder::Folder(std::filesystem::path folderPath, sf::Vector2f position, std::vector<sf::Font>& fonts) {
-	this->folderPath = folderPath;
+Folder::Folder(std::filesystem::path path, sf::Vector2f position, std::vector<sf::Font>& fonts) {
+	this->path = path;
 	this->position = position;
-	size = std::filesystem::file_size(this->folderPath);
+	size = std::filesystem::file_size(this->path);
 	initText(fonts);
 }
 
@@ -83,9 +83,5 @@ void Folder::updateText() {
 	sf::Vector2f sizePosition = position;
 	sizePosition.x += FOLDER_SPACE + SIZE_SPACE / 2 + 120;
 	sizeText.setPosition(sizePosition);
-}
-
-std::filesystem::path Folder::getFolderPath() {
-	return folderPath;
 }
 

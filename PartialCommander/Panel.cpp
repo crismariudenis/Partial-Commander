@@ -158,7 +158,7 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 		case sf::Keyboard::Scancode::F8:
 		{
 			int index = selectedFolderIndex;
-			auto path = folders[index].getFolderPath();
+			auto path = folders[index].path;
 
 			if (std::filesystem::is_directory(path))
 				std::cout << "Folder: " << path << " removed\n";
@@ -178,7 +178,7 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 
 			// Todo: Choose the folder in which the file is coppied
 			int index = selectedFolderIndex;
-			auto path = folders[index].getFolderPath();
+			auto path = folders[index].path;
 			auto destPath = path;
 
 			std::string extension = path.extension().string();
@@ -224,9 +224,9 @@ void Panel::changePath() {
 	if (isSelected) {
 		std::filesystem::path folderPath;
 		if (selectedFolderIndex)
-			folderPath = folders[selectedFolderIndex].getFolderPath();
+			folderPath = folders[selectedFolderIndex].path;
 		else
-			folderPath = folders[selectedFolderIndex].getFolderPath().parent_path();
+			folderPath = folders[selectedFolderIndex].path.parent_path();
 		std::cout << folderPath.string() << '\n';
 		update(folderPath);
 	}

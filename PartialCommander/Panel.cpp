@@ -100,12 +100,12 @@ void Panel::update(std::filesystem::path path) {
 	folders.clear();
 
 	firstToDisplay = 0, lastToDisplay = 1, selectedFolderIndex = 0;
-	folders.push_back(Folder("/..", textPosition, path.parent_path(), fonts));
+	folders.push_back(Folder("/..", textPosition, fonts));
 	folders[firstToDisplay].toggleIsSelected();
 
 	for (auto const& entry : std::filesystem::directory_iterator(path)) {
 		textPosition.y += height / LINE_SPACING;
-		folders.push_back(Folder(entry.path(), textPosition, path.parent_path(), fonts));
+		folders.push_back(Folder(entry.path(), textPosition, fonts));
 		if (textPosition.y <= height - PANEL_OFFSET - 20) {
 			lastToDisplay++;
 		}
@@ -226,7 +226,7 @@ void Panel::changePath() {
 		if (selectedFolderIndex)
 			folderPath = folders[selectedFolderIndex].getFolderPath();
 		else
-			folderPath = folders[selectedFolderIndex].getParentPath();
+			folderPath = folders[selectedFolderIndex].getFolderPath().parent_path();
 		std::cout << folderPath.string() << '\n';
 		update(folderPath);
 	}

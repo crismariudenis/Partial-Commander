@@ -25,7 +25,7 @@ std::string Folder::normalizePath(std::string path) {
 	if (path == "/..")
 		return path;
 
-	std::string newPath, prefix = parentPath.string();
+	std::string newPath, prefix = (folderPath.parent_path()).string();
 	int index2 = 0;
 
 	for (int index = 0; index < path.size(); ++index) {
@@ -56,10 +56,9 @@ std::string Folder::toString(std::uintmax_t size) {
 	return number;
 }
 
-Folder::Folder(std::filesystem::path folderPath, sf::Vector2f position, std::filesystem::path parentPath, std::vector<sf::Font>& fonts) {
+Folder::Folder(std::filesystem::path folderPath, sf::Vector2f position, std::vector<sf::Font>& fonts) {
 	this->folderPath = folderPath;
 	this->position = position;
-	this->parentPath = parentPath;
 	size = std::filesystem::file_size(this->folderPath);
 	initText(fonts);
 }
@@ -106,6 +105,3 @@ std::filesystem::path Folder::getFolderPath() {
 	return folderPath;
 }
 
-std::filesystem::path Folder::getParentPath() {
-	return parentPath;
-}

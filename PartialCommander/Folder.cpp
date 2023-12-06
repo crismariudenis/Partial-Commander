@@ -63,24 +63,8 @@ Folder::Folder(std::filesystem::path folderPath, sf::Vector2f position, std::vec
 	initText(fonts);
 }
 
-sf::Text Folder::getFolderText() {
-	return folderText;
-}
-
-sf::Text Folder::getSizeText() {
-	return sizeText;
-}
-
-sf::Vector2f Folder::getPosition() {
-	return position;
-}
-
 void Folder::toggleIsSelected() {
 	isSelected = !isSelected;
-}
-
-void Folder::setPosition(sf::Vector2f position) {
-	this->position = position;
 }
 
 void Folder::updateText() {

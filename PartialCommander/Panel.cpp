@@ -12,8 +12,8 @@ void Panel::init(sf::Vector2f pos, int width, int height, std::filesystem::path 
 
 void Panel::drawFolders() {
 	for (int index = firstToDisplay; index <= lastToDisplay; ++index) {
-		mainWindow.draw(folders[index].getFolderText());
-		mainWindow.draw(folders[index].getSizeText());
+		mainWindow.draw(folders[index].folderText);
+		mainWindow.draw(folders[index].sizeText);
 	}
 }
 void Panel::drawBorders() {
@@ -70,7 +70,7 @@ void Panel::drawColumnTitles() {
 
 void Panel::drawSelectedFolderBackground() {
 
-	sf::Vector2f topLeft = folders[selectedFolderIndex].getPosition();
+	sf::Vector2f topLeft = folders[selectedFolderIndex].position;
 	sf::Vector2f botRight(width - 20, LINE_SPACING);
 
 	sf::RectangleShape rect;
@@ -161,9 +161,9 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 			auto path = folders[index].getFolderPath();
 
 			if (std::filesystem::is_directory(path))
-				std::cout << "FOLDER: " << path << " REMOVED\n";
+				std::cout << "Folder: " << path << " removed\n";
 			else
-				std::cout << "FILE: " << path << " REMOVED\n";
+				std::cout << "File: " << path << " removed\n";
 
 			// remove from the filesystem
 			// if it's a folder remove recursively 
@@ -207,9 +207,9 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 
 void Panel::updateFoldersPosition(sf::Vector2f move) {
 	for (int index = 0; index < folders.size(); ++index) {
-		sf::Vector2f folderPosition = folders[index].getPosition();
+		sf::Vector2f folderPosition = folders[index].position;
 		folderPosition += move;
-		folders[index].setPosition(folderPosition);
+		folders[index].position=folderPosition;
 		folders[index].updateText();
 	}
 }

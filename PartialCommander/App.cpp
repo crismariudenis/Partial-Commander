@@ -93,6 +93,14 @@ void App::handleKeyboardEvents(sf::Event & event) {
 		leftPanel.changePath();
 		rightPanel.changePath();
 		break;
+	case sf::Keyboard::Scancode::F8:
+		leftPanel.updateSelectedFolder(event.key.scancode);
+		rightPanel.updateSelectedFolder(event.key.scancode);
+		break;
+	case sf::Keyboard::Scancode::F5:
+		leftPanel.updateSelectedFolder(event.key.scancode);
+		rightPanel.updateSelectedFolder(event.key.scancode);
+		break;
 	}
 }
 

@@ -19,7 +19,6 @@ class Panel
     void drawColumnTitles();
     void drawSelectedFolderBackground();
     void updateFoldersPosition(sf::Vector2f move);
-
     bool isSelected = false;
 
 public:

@@ -116,8 +116,11 @@ void Panel::update(std::filesystem::path path) {
 void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 
 	if (isSelected) {
-		if (code == sf::Keyboard::Scancode::S || code == sf::Keyboard::Scancode::Down) {
-
+		switch (code)
+		{
+		case sf::Keyboard::Scancode::S:
+		case sf::Keyboard::Scancode::Down:
+		{
 			if (selectedFolderIndex + 1 < folders.size()) {
 				folders[selectedFolderIndex].toggleIsSelected();
 				folders[selectedFolderIndex].updateText();
@@ -131,9 +134,11 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 				lastToDisplay += step;
 				updateFoldersPosition(sf::Vector2f(0, step * (-height) / LINE_SPACING));
 			}
-
+			break;
 		}
-		else if (code == sf::Keyboard::Scancode::W || code == sf::Keyboard::Scancode::Up) {
+		case sf::Keyboard::Scancode::W:
+		case sf::Keyboard::Scancode::Up:
+		{
 			if (selectedFolderIndex != 0) {
 				folders[selectedFolderIndex].toggleIsSelected();
 				folders[selectedFolderIndex].updateText();
@@ -147,9 +152,56 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 				lastToDisplay -= step;
 				updateFoldersPosition(sf::Vector2f(0, step * height / LINE_SPACING));
 			}
-
+			break;
 		}
 
+		case sf::Keyboard::Scancode::F8:
+		{
+			int index = selectedFolderIndex;
+			auto path = folders[index].getFolderPath();
+
+			if (std::filesystem::is_directory(path))
+				std::cout << "FOLDER: " << path << " REMOVED\n";
+			else
+				std::cout << "FILE: " << path << " REMOVED\n";
+
+			// remove from the filesystem
+			// if it's a folder remove recursively 
+			std::filesystem::remove_all(path);
+
+			update(currentPath);
+			//update the index to the old one
+			selectedFolderIndex = std::min(index, (int)folders.size() - 1);
+			break;
+		}
+		case sf::Keyboard::Scancode::F5: {
+
+			// Todo: Choose the folder in which the file is coppied
+			int index = selectedFolderIndex;
+			auto path = folders[index].getFolderPath();
+			auto destPath = path;
+
+			std::string extension = path.extension().string();
+			for (int i = 1; std::filesystem::exists(destPath); i++) {
+				destPath = path.parent_path() / (path.stem().string() + std::to_string(i) + extension);
+			}
+
+			try {
+				std::filesystem::copy(path, destPath);
+				std::cout << destPath.filename() << " coppied to " << destPath.parent_path() << '\n';
+			}
+			catch(const std::filesystem::filesystem_error& e){
+				std::cerr << "Error copying file: " << e.what() << std::endl;
+			}
+			update(path.parent_path());
+
+			// reset the index
+			selectedFolderIndex = index;
+			break;
+		}
+		default:
+			break;
+		}
 	}
 }
 

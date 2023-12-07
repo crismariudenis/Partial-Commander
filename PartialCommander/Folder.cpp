@@ -85,7 +85,7 @@ void Folder::updateText() {
 	}
 
 	sf::Vector2f sizePosition = position;
-	sizePosition.x += FOLDER_SPACE + SIZE_SPACE / 2 + 120;
+	sizePosition.x += FOLDER_SPACE + SIZE_SPACE + 145;
 	sizeText.setPosition(sizePosition);
 }
 

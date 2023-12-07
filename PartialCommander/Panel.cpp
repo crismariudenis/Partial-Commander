@@ -12,8 +12,8 @@ void Panel::init(sf::Vector2f pos, int width, int height, std::filesystem::path 
 
 void Panel::drawFolders() {
 	for (int index = firstToDisplay; index <= lastToDisplay; ++index) {
-		mainWindow.draw(folders[index].getFolderText());
-		mainWindow.draw(folders[index].getSizeText());
+		mainWindow.draw(folders[index].folderText);
+		mainWindow.draw(folders[index].sizeText);
 	}
 }
 void Panel::drawBorders() {
@@ -70,7 +70,7 @@ void Panel::drawColumnTitles() {
 
 void Panel::drawSelectedFolderBackground() {
 
-	sf::Vector2f topLeft = folders[selectedFolderIndex].getPosition();
+	sf::Vector2f topLeft = folders[selectedFolderIndex].position;
 	sf::Vector2f botRight(width - 20, LINE_SPACING);
 
 	sf::RectangleShape rect;
@@ -100,12 +100,12 @@ void Panel::update(std::filesystem::path path) {
 	folders.clear();
 
 	firstToDisplay = 0, lastToDisplay = 1, selectedFolderIndex = 0;
-	folders.push_back(Folder("/..", textPosition, path.parent_path(), fonts));
+	folders.push_back(Folder("/..", textPosition, fonts));
 	folders[firstToDisplay].toggleIsSelected();
 
 	for (auto const& entry : std::filesystem::directory_iterator(path)) {
 		textPosition.y += height / LINE_SPACING;
-		folders.push_back(Folder(entry.path(), textPosition, path.parent_path(), fonts));
+		folders.push_back(Folder(entry.path(), textPosition, fonts));
 		if (textPosition.y <= height - PANEL_OFFSET - 20) {
 			lastToDisplay++;
 		}
@@ -116,8 +116,11 @@ void Panel::update(std::filesystem::path path) {
 void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 
 	if (isSelected) {
-		if (code == sf::Keyboard::Scancode::S || code == sf::Keyboard::Scancode::Down) {
-
+		switch (code)
+		{
+		case sf::Keyboard::Scancode::S:
+		case sf::Keyboard::Scancode::Down:
+		{
 			if (selectedFolderIndex + 1 < folders.size()) {
 				folders[selectedFolderIndex].toggleIsSelected();
 				folders[selectedFolderIndex].updateText();
@@ -131,9 +134,11 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 				lastToDisplay += step;
 				updateFoldersPosition(sf::Vector2f(0, step * (-height) / LINE_SPACING));
 			}
-
+			break;
 		}
-		else if (code == sf::Keyboard::Scancode::W || code == sf::Keyboard::Scancode::Up) {
+		case sf::Keyboard::Scancode::W:
+		case sf::Keyboard::Scancode::Up:
+		{
 			if (selectedFolderIndex != 0) {
 				folders[selectedFolderIndex].toggleIsSelected();
 				folders[selectedFolderIndex].updateText();
@@ -147,17 +152,64 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 				lastToDisplay -= step;
 				updateFoldersPosition(sf::Vector2f(0, step * height / LINE_SPACING));
 			}
-
+			break;
 		}
 
+		case sf::Keyboard::Scancode::F8:
+		{
+			int index = selectedFolderIndex;
+			auto path = folders[index].path;
+
+			if (std::filesystem::is_directory(path))
+				std::cout << "Folder: " << path << " removed\n";
+			else
+				std::cout << "File: " << path << " removed\n";
+
+			// remove from the filesystem
+			// if it's a folder remove recursively 
+			std::filesystem::remove_all(path);
+
+			update(currentPath);
+			//update the index to the old one
+			selectedFolderIndex = std::min(index, (int)folders.size() - 1);
+			break;
+		}
+		case sf::Keyboard::Scancode::F5: {
+
+			// Todo: Choose the folder in which the file is coppied
+			int index = selectedFolderIndex;
+			auto path = folders[index].path;
+			auto destPath = path;
+
+			std::string extension = path.extension().string();
+			for (int i = 1; std::filesystem::exists(destPath); i++) {
+				destPath = path.parent_path() / (path.stem().string() + std::to_string(i) + extension);
+			}
+
+			try {
+				std::filesystem::copy(path, destPath);
+				std::cout << destPath.filename() << " coppied to " << destPath.parent_path() << '\n';
+			}
+			catch(const std::filesystem::filesystem_error& e){
+				std::cerr << "Error copying file: " << e.what() << std::endl;
+			}
+			update(path.parent_path());
+
+			// reset the index
+			selectedFolderIndex = index;
+			break;
+		}
+		default:
+			break;
+		}
 	}
 }
 
 void Panel::updateFoldersPosition(sf::Vector2f move) {
 	for (int index = 0; index < folders.size(); ++index) {
-		sf::Vector2f folderPosition = folders[index].getPosition();
+		sf::Vector2f folderPosition = folders[index].position;
 		folderPosition += move;
-		folders[index].setPosition(folderPosition);
+		folders[index].position=folderPosition;
 		folders[index].updateText();
 	}
 }
@@ -172,9 +224,9 @@ void Panel::changePath() {
 	if (isSelected) {
 		std::filesystem::path folderPath;
 		if (selectedFolderIndex)
-			folderPath = folders[selectedFolderIndex].getFolderPath();
+			folderPath = folders[selectedFolderIndex].path;
 		else
-			folderPath = folders[selectedFolderIndex].getParentPath();
+			folderPath = folders[selectedFolderIndex].path.parent_path();
 		std::cout << folderPath.string() << '\n';
 		update(folderPath);
 	}

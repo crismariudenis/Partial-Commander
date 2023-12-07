@@ -19,14 +19,13 @@ class Panel
     void drawColumnTitles();
     void drawSelectedFolderBackground();
     void updateFoldersPosition(sf::Vector2f move);
-
     bool isSelected = false;
 
 public:
 
-    void draw();
-    void init(sf::Vector2f pos, int width, int height, std::filesystem::path currentPath, std::vector<sf::Font>& fonts);
     Panel(sf::RenderWindow& mainWindow) :mainWindow(mainWindow) {};
+    void init(sf::Vector2f pos, int width, int height, std::filesystem::path currentPath, std::vector<sf::Font>& fonts);
+    void draw();
     void updateSelectedFolder(sf::Keyboard::Scancode);
     void toggleIsSelected();
     void changePath();

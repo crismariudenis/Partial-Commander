@@ -9,7 +9,7 @@ void Folder::initText(std::vector<sf::Font>& fonts) {
 
 	sizeText = folderText;
 
-	std::string canonicPath = this->normalizePath(folderPath.string());
+	std::string canonicPath = this->normalizePath(path.string());
 	folderText.setString(canonicPath);
 
 	if (canonicPath != "/..")
@@ -25,7 +25,7 @@ std::string Folder::normalizePath(std::string path) {
 	if (path == "/..")
 		return path;
 
-	std::string newPath, prefix = parentPath.string();
+	std::string newPath, prefix = (this->path).parent_path().string();
 	int index2 = 0;
 
 	for (int index = 0; index < path.size(); ++index) {
@@ -56,32 +56,15 @@ std::string Folder::toString(std::uintmax_t size) {
 	return number;
 }
 
-Folder::Folder(std::filesystem::path folderPath, sf::Vector2f position, std::filesystem::path parentPath, std::vector<sf::Font>& fonts) {
-	this->folderPath = folderPath;
+Folder::Folder(std::filesystem::path path, sf::Vector2f position, std::vector<sf::Font>& fonts) {
+	this->path = path;
 	this->position = position;
-	this->parentPath = parentPath;
-	size = std::filesystem::file_size(this->folderPath);
+	size = std::filesystem::file_size(this->path);
 	initText(fonts);
-}
-
-sf::Text Folder::getFolderText() {
-	return folderText;
-}
-
-sf::Text Folder::getSizeText() {
-	return sizeText;
-}
-
-sf::Vector2f Folder::getPosition() {
-	return position;
 }
 
 void Folder::toggleIsSelected() {
 	isSelected = !isSelected;
-}
-
-void Folder::setPosition(sf::Vector2f position) {
-	this->position = position;
 }
 
 void Folder::updateText() {
@@ -102,10 +85,3 @@ void Folder::updateText() {
 	sizeText.setPosition(sizePosition);
 }
 
-std::filesystem::path Folder::getFolderPath() {
-	return folderPath;
-}
-
-std::filesystem::path Folder::getParentPath() {
-	return parentPath;
-}

@@ -8,11 +8,8 @@ class Folder
 {
 private:
 
-	std::filesystem::path folderPath, parentPath;
 	std::uintmax_t size;
 	std::string modifyTime;
-	sf::Vector2f position;
-	sf::Text folderText, sizeText;
 	sf::Font font;
 	bool isSelected = false;
 
@@ -22,15 +19,11 @@ private:
 
 public:
 	~Folder() {};
-	Folder(std::filesystem::path folderPath, sf::Vector2f position, std::filesystem::path parentPath, std::vector<sf::Font>& fonts);
-	sf::Text getFolderText();
-	sf::Text getSizeText();
-
-	sf::Vector2f getPosition();
-	void setPosition(sf::Vector2f position);
+	Folder(std::filesystem::path path, sf::Vector2f position, std::vector<sf::Font>& fonts);
 	void initText(std::vector<sf::Font>& fonts);
 	void toggleIsSelected();
 	void updateText();
-	std::filesystem::path getFolderPath();
-	std::filesystem::path getParentPath();
+	std::filesystem::path path;
+	sf::Text folderText, sizeText;
+	sf::Vector2f position;
 };

@@ -8,7 +8,7 @@
 /// Window Constraints
 #define WINDOW_HEIGHT 800
 #define WINDOW_WIDTH 1500
-#define TOP_BUTTONS_HEIGHT 75
+#define TOP_BUTTONS_HEIGHT 50
 #define BOTTOM_BUTTONS_HEIGHT 100
 
 /// Panel Constrains
@@ -27,7 +27,7 @@
 #define PANEL_MARGIN_BOTOOM 40 
 #define PANEL_LINE_WIDTH 2
 #define PANEL_WIDTH (WINDOW_WIDTH - 3 * PANEL_MARGIN_X - 2*PANEL_LINE_WIDTH)/2
-
+#define BUTTON_HEIGHT 20
 
 extern std::filesystem::path leftPanelDirectoryPath;
 extern std::filesystem::path rightPanelDirectoryPath;
@@ -41,9 +41,17 @@ const sf::Color textColor = sf::Color::White; /// Text Color
 const sf::Color titleColor = sf::Color(215, 171, 32);
 const sf::Color secondaryColor(42, 161, 179); /// Buttons and Selected Folder Color
 const sf::Color selectedTextColor(0, 0, 0); /// Selected Folder Text Color
+const sf::Color bottomBackgroundColor(0, 0, 0);
+const std::vector<std::string> buttonNames = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
 
 /// Fonts
 extern CustomFonts fontsHandler;
+
+inline void initBackground(sf::RectangleShape& background, sf::Color color, sf::Vector2f position, sf::Vector2f size) {
+	background.setFillColor(color);
+	background.setPosition(position);
+	background.setSize(size);
+}
 
 
 

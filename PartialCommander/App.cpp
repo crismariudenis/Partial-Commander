@@ -11,21 +11,18 @@ void App::initWindow(std::string name) {
 	mainWindow.setPosition(topLeft);
 }
 
-void App::initBackgroundColor(sf::RectangleShape& background) {
 
-	background.setFillColor(backgroundColor);
-	background.setPosition(0, 0);
-	background.setSize(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT));
+void App::initBackgrounds() {
+	initBackground(background, backgroundColor, sf::Vector2f(0, 0), sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT));
+	initBackground(bottomBackground, bottomBackgroundColor, sf::Vector2f(0, WINDOW_HEIGHT - BOTTOM_BUTTONS_HEIGHT + 22),
+		sf::Vector2f(WINDOW_WIDTH, BOTTOM_BUTTONS_HEIGHT));
 }
 
 void App::init() {
 	initWindow(name);
-	initBackgroundColor(background);
+	initBackgrounds();
 	initPanels();
-}
-
-App::App(std::string name) {
-	this->name = name;
+	initButtons();
 }
 
 void App::run() {
@@ -43,7 +40,6 @@ void App::run() {
 			case sf::Event::KeyPressed:
 				handleKeyboardEvents(event);
 				break;
-
 			case sf::Event::MouseWheelScrolled:
 				handleMouseEvents(event);
 				break;
@@ -52,13 +48,20 @@ void App::run() {
 
 		mainWindow.setActive();
 
-		/// Drawing operations
+		/*  Drawing operations */
+
+		/// Background colors
 		mainWindow.draw(background);
+		mainWindow.draw(bottomBackground);
+
+		/// Panels
 		leftPanel.draw();
 		rightPanel.draw();
 
-		mainWindow.display();
+		/// Buttons
+		drawButtons();
 
+		mainWindow.display();
 	}
 }
 
@@ -69,7 +72,7 @@ void App::initPanels() {
 					margin_bottom
 					margin_bottom
 	*/
-	sf::Vector2f left{ PANEL_MARGIN_X,PANEL_MARGIN_TOP };
+	sf::Vector2f left{ PANEL_MARGIN_X,PANEL_MARGIN_TOP + TOP_BUTTONS_HEIGHT};
 	sf::Vector2f right{ 2 * PANEL_MARGIN_X + PANEL_WIDTH - 3 * PANEL_LINE_WIDTH + left.x,left.y };
 	
 	leftPanel.init(left, PANEL_WIDTH, PANEL_HEIGHT, leftPanelDirectoryPath, fonts);
@@ -107,4 +110,21 @@ void App::handleMouseEvents(sf::Event& event)
 		leftPanel.updateSelectedFolder(sf::Keyboard::Scan::W);
 		rightPanel.updateSelectedFolder(sf::Keyboard::Scan::W);
 	}
+}
+
+void App::initButtons() {
+
+	sf::Vector2f topLeft(PANEL_MARGIN_X * 2, WINDOW_HEIGHT - PANEL_BOTTOM_HEIGHT / 1.25);
+	int moveX = (WINDOW_WIDTH - PANEL_MARGIN_X * (buttonNames.size() + 2)) / buttonNames.size();
+
+	for (int index = 0;index < buttonNames.size(); ++index) {
+		Button button(buttonNames[index], BUTTON_HEIGHT, moveX, index + 1, topLeft, secondaryColor, mainWindow, fonts);
+		buttons.push_back(button);
+		topLeft += sf::Vector2f(moveX + PANEL_MARGIN_X, 0);
+	}
+}
+
+void App::drawButtons() {
+	for (int index = 0; index < buttons.size(); ++index)
+		buttons[index].draw();
 }

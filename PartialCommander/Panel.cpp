@@ -88,7 +88,7 @@ void Panel::draw() {
 	drawFolders();
 	drawBorders();
 	drawColumnTitles();
-
+	drawCurrentPath();
 }
 
 void Panel::update(std::filesystem::path path) {
@@ -113,6 +113,7 @@ void Panel::update(std::filesystem::path path) {
 			name += pathName[i];
 		}
 		std::reverse(name.begin(), name.end());
+		std::cout << name << '\n';
 		folders.push_back(Folder(entry.path(), textPosition, fonts, dates[name]));
 		if (textPosition.y <= height - PANEL_OFFSET - 20) 
 			lastToDisplay++;
@@ -266,8 +267,20 @@ void Panel::changePath() {
 		if (selectedFolderIndex)
 			folderPath = folders[selectedFolderIndex].path;
 		else
-			folderPath = folders[selectedFolderIndex].path.parent_path();
+			folderPath = currentPath.parent_path();
 		std::cout << folderPath.string() << '\n';
-		update(folderPath);
+		update(folderPath);	
 	}
+}
+
+void Panel::drawCurrentPath()
+{
+	sf::Text pathText;
+	pathText.setString(currentPath.string());
+	pathText.setFillColor(textColor);
+	pathText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
+	pathText.setCharacterSize(CHARACTER_SIZE + 5);
+	pathText.setFont(fonts[4]);
+
+	mainWindow.draw(pathText);
 }

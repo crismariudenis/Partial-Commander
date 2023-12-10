@@ -20,6 +20,7 @@ class Panel
     void drawBorders();
     void drawColumnTitles();
     void drawSelectedFolderBackground();
+    void drawCurrentPath();
     void updateFoldersPosition(sf::Vector2f move);
     void updateDates();
 

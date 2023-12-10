@@ -15,11 +15,6 @@ void Folder::initText(std::vector<sf::Font>& fonts) {
 	if (canonicPath != "/..")
 		sizeText.setString(toString(size));
 
-<<<<<<< Updated upstream
-	sf::Vector2f sizePosition = position;
-	sizePosition.x += FOLDER_SPACE + SIZE_SPACE / 2 + 120;
-	sizeText.setPosition(sizePosition);
-=======
 	sf::FloatRect rc = sizeText.getLocalBounds();
 	sf::Vector2f sizePosition = position, datePosition = position;
 	sizePosition.x += FOLDER_SPACE + SIZE_SPACE + 145;
@@ -30,8 +25,6 @@ void Folder::initText(std::vector<sf::Font>& fonts) {
 	datePosition.x += FOLDER_SPACE + SIZE_SPACE + 150;
 	dateText.setPosition(datePosition);
 	dateText.setString(date);
-
->>>>>>> Stashed changes
 }
 
 
@@ -98,14 +91,9 @@ void Folder::updateText() {
 		dateText.setFillColor(sf::Color::White);
 	}
 
-<<<<<<< Updated upstream
-	sf::Vector2f sizePosition = position;
-	sizePosition.x += FOLDER_SPACE + SIZE_SPACE / 2 + 120;
-=======
 	sf::Vector2f sizePosition = position, datePosition = position;
 	sizePosition.x += FOLDER_SPACE + SIZE_SPACE + 145;
 	datePosition.x += FOLDER_SPACE + SIZE_SPACE + 155;
->>>>>>> Stashed changes
 	sizeText.setPosition(sizePosition);
 	dateText.setPosition(datePosition);
 }

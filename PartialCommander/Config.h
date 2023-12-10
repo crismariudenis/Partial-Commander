@@ -41,7 +41,7 @@ extern std::filesystem::path rightPanelDirectoryPath;
 #define CHARACTER_SIZE 15
 const sf::Color columnColor(199, 192, 149); /// Color for the Columns
 const sf::Color backgroundColor(19, 103, 208); /// Background Color 
-const sf::Color textColor = sf::Color::White; /// Text Color
+const sf::Color textColor(255, 255, 255); /// Text Color
 const sf::Color titleColor = sf::Color(215, 171, 32);
 const sf::Color secondaryColor(42, 161, 179); /// Buttons and Selected Folder Color
 const sf::Color selectedTextColor(0, 0, 0); /// Selected Folder Text Color

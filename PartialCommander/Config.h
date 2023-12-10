@@ -2,6 +2,10 @@
 #include "CustomFonts.h"
 #include <filesystem>
 #include <iostream>
+#include <stdio.h>
+#include <windows.h>
+#include <map>
+
 
 #pragma once
 
@@ -12,7 +16,7 @@
 #define BOTTOM_BUTTONS_HEIGHT 100
 
 /// Panel Constrains
-#define FOLDER_SPACE 400
+#define FOLDER_SPACE 350
 #define SIZE_SPACE 80 
 #define TIME_SPACE 300
 #define BORDER_OFFSET 30

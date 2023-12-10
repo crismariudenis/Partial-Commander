@@ -15,10 +15,25 @@ void Folder::initText(std::vector<sf::Font>& fonts) {
 	if (canonicPath != "/..")
 		sizeText.setString(toString(size));
 
+<<<<<<< Updated upstream
 	sf::Vector2f sizePosition = position;
 	sizePosition.x += FOLDER_SPACE + SIZE_SPACE / 2 + 120;
 	sizeText.setPosition(sizePosition);
+=======
+	sf::FloatRect rc = sizeText.getLocalBounds();
+	sf::Vector2f sizePosition = position, datePosition = position;
+	sizePosition.x += FOLDER_SPACE + SIZE_SPACE + 145;
+	dateText = sizeText;
+	sizeText.setPosition(sizePosition);
+	sizeText.setOrigin(rc.width, 0);
+
+	datePosition.x += FOLDER_SPACE + SIZE_SPACE + 150;
+	dateText.setPosition(datePosition);
+	dateText.setString(date);
+
+>>>>>>> Stashed changes
 }
+
 
 std::string Folder::normalizePath(std::string path) {
 
@@ -56,9 +71,10 @@ std::string Folder::toString(std::uintmax_t size) {
 	return number;
 }
 
-Folder::Folder(std::filesystem::path path, sf::Vector2f position, std::vector<sf::Font>& fonts) {
+Folder::Folder(std::filesystem::path path, sf::Vector2f position, std::vector<sf::Font>& fonts, std::string date) {
 	this->path = path;
 	this->position = position;
+	this->date = date;
 	size = std::filesystem::file_size(this->path);
 	initText(fonts);
 }
@@ -73,15 +89,24 @@ void Folder::updateText() {
 	{
 		folderText.setFillColor(selectedTextColor);
 		sizeText.setFillColor(selectedTextColor);
+		dateText.setFillColor(selectedTextColor);
 	}
 	else
 	{
 		folderText.setFillColor(sf::Color::White);
 		sizeText.setFillColor(sf::Color::White);
+		dateText.setFillColor(sf::Color::White);
 	}
 
+<<<<<<< Updated upstream
 	sf::Vector2f sizePosition = position;
 	sizePosition.x += FOLDER_SPACE + SIZE_SPACE / 2 + 120;
+=======
+	sf::Vector2f sizePosition = position, datePosition = position;
+	sizePosition.x += FOLDER_SPACE + SIZE_SPACE + 145;
+	datePosition.x += FOLDER_SPACE + SIZE_SPACE + 155;
+>>>>>>> Stashed changes
 	sizeText.setPosition(sizePosition);
+	dateText.setPosition(datePosition);
 }
 

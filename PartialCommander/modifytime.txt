@@ -1,0 +1,10 @@
+ Volume in drive D is Date
+ Volume Serial Number is E8F1-EEED
+
+ Directory of D:\Atestat
+
+04/15/2023  02:12 PM    <DIR>          .
+04/15/2023  02:12 PM    <DIR>          ..
+05/15/2023  11:26 AM    <DIR>          Sudoku
+               0 File(s)              0 bytes
+               3 Dir(s)  212,409,380,864 bytes free

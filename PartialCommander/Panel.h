@@ -13,12 +13,16 @@ class Panel
     int firstToDisplay, lastToDisplay, selectedFolderIndex;
     std::filesystem::path currentPath;
     std::vector<sf::Font> fonts;
+    std::map<std::string, std::string> dates;
+
     void update(std::filesystem::path path);
     void drawFolders();
     void drawBorders();
     void drawColumnTitles();
     void drawSelectedFolderBackground();
     void updateFoldersPosition(sf::Vector2f move);
+    void updateDates();
+
     bool isSelected = false;
 
 public:

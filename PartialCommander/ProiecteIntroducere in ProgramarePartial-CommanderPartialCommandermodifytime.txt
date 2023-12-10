@@ -1,0 +1,6 @@
+ Volume in drive F is Facultate
+ Volume Serial Number is 4A95-A18B
+
+ Directory of F:\Proiecte\Introducere in Programare\Partial-Commander\PartialCommander
+
+dir Windows

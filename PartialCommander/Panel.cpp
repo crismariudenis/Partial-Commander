@@ -109,16 +109,20 @@ void Panel::update(std::filesystem::path path) {
 	folders.push_back(Folder("/..", textPosition, fonts, " "));
 	folders[firstToDisplay].toggleIsSelected();
 
+	freopen("CON", "w", stdout);
 	for (auto const& entry : std::filesystem::directory_iterator(path)) {
-		textPosition.y += 1.0 * height / LINE_SPACING;
 		std::string name, pathName = entry.path().string();
 		for (int i = pathName.size() - 1; pathName[i] != '\\'; --i) 
 			name += pathName[i];
 		std::reverse(name.begin(), name.end());
+		if (dates.find(name) == dates.end())
+			continue;
+		textPosition.y += 1.0 * height / LINE_SPACING;
 		folders.push_back(Folder(entry.path(), textPosition, fonts, dates[name]));
+		
 		if (textPosition.y <= height - PANEL_OFFSET - 20) 
 			lastToDisplay++;
-		if(folders.size() >= 300)
+		if(folders.size() >= MAX_FOLDERS_NUMBER / 2)
 			break;
 	}
 	lastToDisplay--;
@@ -135,14 +139,21 @@ void Panel::updateDates() {
 	FILE* f = fopen("modifytime.txt", "r");
 	for (int i = 1; i <= 5; ++i)
 		fgets(token, sizeof(token), f);
-	while (true) {
+	int folderIndex = 0;
+	freopen("CON", "w", stdout);
+	while (folderIndex < MAX_FOLDERS_NUMBER) {
 		fgets(token, sizeof(token), f);
 		if (token[0] == ' ')
 			break;
-		char nameToken[50];
+
+		char* nameToken, aux[1005];
+		strcpy(aux, token);
+		nameToken = strtok(aux, " ");
+		for(int i = 1;i <= 4; ++i)
+			nameToken = strtok(NULL, " ");
+		
 		std::string number;
 		number += token[0], number += token[1];
-		strcpy(nameToken, token + 39);
 		std::string date, name;
 		date += dateName[number] + " ";
 		for (int index = 3; index < 5; ++index) 
@@ -154,6 +165,7 @@ void Panel::updateDates() {
 			name += nameToken[index];
 		name.pop_back();
 		dates[name] = date;
+		folderIndex++;
 	}
 }
 

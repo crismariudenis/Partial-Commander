@@ -67,6 +67,11 @@ void Panel::drawColumnTitles() {
 	sizeName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE / 2 + 140, 10));
 	mainWindow.draw(sizeName);
 
+	sf::Text modifyName = sizeName;
+	modifyName.setString("Modify Time");
+	modifyName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE + 180, 10));
+	mainWindow.draw(modifyName);
+
 }
 
 void Panel::drawSelectedFolderBackground() {
@@ -98,22 +103,18 @@ void Panel::update(std::filesystem::path path) {
 	sf::Vector2f textPosition = pos;
 	textPosition.x += 10;
 	textPosition.y += 1.0 * height / LINE_SPACING;
+	firstToDisplay = 0, lastToDisplay = 1, selectedFolderIndex = 0;
 
 	folders.clear();
-
-	firstToDisplay = 0, lastToDisplay = 1, selectedFolderIndex = 0;
 	folders.push_back(Folder("/..", textPosition, fonts, " "));
 	folders[firstToDisplay].toggleIsSelected();
+
 	for (auto const& entry : std::filesystem::directory_iterator(path)) {
 		textPosition.y += 1.0 * height / LINE_SPACING;
 		std::string name, pathName = entry.path().string();
-		for (int i = pathName.size() - 1; i >= 0; --i) {
-			if (pathName[i] == '/')
-				break;
+		for (int i = pathName.size() - 1; pathName[i] != '\\'; --i) 
 			name += pathName[i];
-		}
 		std::reverse(name.begin(), name.end());
-		std::cout << name << '\n';
 		folders.push_back(Folder(entry.path(), textPosition, fonts, dates[name]));
 		if (textPosition.y <= height - PANEL_OFFSET - 20) 
 			lastToDisplay++;
@@ -125,16 +126,13 @@ void Panel::update(std::filesystem::path path) {
 
 void Panel::updateDates() {
 	dates.clear();
-	freopen("modifytime.txt", "w", stdout);
 	std::string command = "dir " + currentPath.string();
-	for (int i = 0; i < command.size(); ++i) {
-		if (command[i] == '/')
-			command[i] = '\\';
-	}
+	command += '"';
+	command.insert(command.begin() + 4, '"');
+	freopen("modifytime.txt", "w", stdout);
 	system(command.c_str());
 	char token[1005];
 	FILE* f = fopen("modifytime.txt", "r");
-	freopen("CON", "w", stdout);
 	for (int i = 1; i <= 5; ++i)
 		fgets(token, sizeof(token), f);
 	while (true) {
@@ -142,10 +140,15 @@ void Panel::updateDates() {
 		if (token[0] == ' ')
 			break;
 		char nameToken[50];
+		std::string number;
+		number += token[0], number += token[1];
 		strcpy(nameToken, token + 39);
-		token[10] = '\0';
 		std::string date, name;
-		for (int index = 0; index < strlen(token); ++index) 
+		date += dateName[number] + " ";
+		for (int index = 3; index < 5; ++index) 
+			date += token[index];
+		date += " ";
+		for (int index = 11; index < 20; ++index)
 			date += token[index];
 		for (int index = 0; index < strlen(nameToken); ++index) 
 			name += nameToken[index];

@@ -16,7 +16,7 @@
 #define BOTTOM_BUTTONS_HEIGHT 100
 
 /// Panel Constrains
-#define FOLDER_SPACE 350
+#define FOLDER_SPACE 365
 #define SIZE_SPACE 80 
 #define TIME_SPACE 300
 #define BORDER_OFFSET 30
@@ -57,6 +57,6 @@ inline void initBackground(sf::RectangleShape& background, sf::Color color, sf::
 	background.setSize(size);
 }
 
-
+extern std::map<std::string, std::string> dateName;
 
 

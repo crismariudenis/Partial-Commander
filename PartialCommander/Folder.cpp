@@ -22,7 +22,7 @@ void Folder::initText(std::vector<sf::Font>& fonts) {
 	sizeText.setPosition(sizePosition);
 	sizeText.setOrigin(rc.width, 0);
 
-	datePosition.x += FOLDER_SPACE + SIZE_SPACE + 150;
+	datePosition.x += FOLDER_SPACE + SIZE_SPACE + 154;
 	dateText.setPosition(datePosition);
 	dateText.setString(date);
 }

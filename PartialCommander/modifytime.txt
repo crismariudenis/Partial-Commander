@@ -3,9 +3,20 @@
 
  Directory of C:\
 
-
- Volume in drive F is Facultate
- Volume Serial Number is 4A95-A18B
-
- Directory of F:\Proiecte\Introducere in Programare\Partial-Commander\PartialCommander
-
+09/30/2023  06:47 AM           112,240 appverifUI.dll
+02/10/2021  09:21 AM    <DIR>          avast! sandbox
+07/11/2023  04:19 PM    <DIR>          Brother
+01/13/2023  10:16 PM    <DIR>          MinGW
+11/29/2023  09:25 AM    <DIR>          mingw64
+01/13/2023  10:29 PM    <DIR>          msys64
+08/24/2022  09:20 PM    <DIR>          PerfLogs
+11/26/2023  09:35 PM    <DIR>          Program Files
+11/26/2023  09:35 PM    <DIR>          Program Files (x86)
+09/03/2023  03:05 PM    <DIR>          Riot Games
+11/29/2023  08:30 PM    <DIR>          SFML-2.6.1
+09/05/2020  06:05 PM    <DIR>          temp
+01/15/2021  11:01 AM    <DIR>          Users
+09/30/2023  06:46 AM            66,216 vfcompat.dll
+11/26/2023  09:22 PM    <DIR>          Windows
+               2 File(s)        178,456 bytes
+              13 Dir(s)  94,445,125,632 bytes free

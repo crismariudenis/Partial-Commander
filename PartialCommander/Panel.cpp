@@ -69,7 +69,7 @@ void Panel::drawColumnTitles() {
 
 	sf::Text modifyName = sizeName;
 	modifyName.setString("Modify Time");
-	modifyName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE + 180, 10));
+	modifyName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE + 200, 10));
 	mainWindow.draw(modifyName);
 
 }
@@ -155,11 +155,7 @@ void Panel::updateDates() {
 		std::string number;
 		number += token[0], number += token[1];
 		std::string date, name;
-		date += dateName[number] + " ";
-		for (int index = 3; index < 5; ++index) 
-			date += token[index];
-		date += " ";
-		for (int index = 11; index < 20; ++index)
+		for (int index = 0; index < 20; ++index) 
 			date += token[index];
 		for (int index = 0; index < strlen(nameToken); ++index) 
 			name += nameToken[index];

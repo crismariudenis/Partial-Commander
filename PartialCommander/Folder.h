@@ -9,8 +9,8 @@ class Folder
 private:
 
 	std::uintmax_t size;
-	std::string modifyTime, date;
 	sf::Font font;
+	std::string modifyTime;
 	bool isSelected = false;
 
 	std::string normalizePath(std::string path);
@@ -26,4 +26,5 @@ public:
 	std::filesystem::path path;
 	sf::Text folderText, sizeText, dateText;
 	sf::Vector2f position;
+	std::string date;
 };

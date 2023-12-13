@@ -28,15 +28,16 @@ void Panel::drawBorders() {
 
 	sf::RectangleShape line1;
 	line1.setOutlineThickness(PANEL_LINE_WIDTH / 2);
-	line1.setPosition(pos + sf::Vector2f(FOLDER_SPACE + 160, 0));
+	line1.setPosition(pos + sf::Vector2f(FOLDER_SPACE, 0));
 	line1.setSize(sf::Vector2f(0, height - PANEL_BOTTOM_HEIGHT));
 	line1.setOutlineColor(sf::Color::White);
 
 	sf::RectangleShape line2;
 	line2.setOutlineThickness(PANEL_LINE_WIDTH / 2);
-	line2.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE + 160, 0));
+	line2.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE, 0));
 	line2.setSize(sf::Vector2f(0, height - PANEL_BOTTOM_HEIGHT));
-	line2.setOutlineColor(sf::Color::White);
+	line2.setOutlineColor(sf::Color::White
+	);
 
 	sf::RectangleShape line3;
 	line3.setOutlineThickness(PANEL_LINE_WIDTH / 2);
@@ -54,22 +55,33 @@ void Panel::drawBorders() {
 void Panel::drawColumnTitles() {
 
 	sf::Text folderName;
+
 	folderName.setString("Name");
+
+	sf::FloatRect rc = folderName.getLocalBounds();
 	folderName.setCharacterSize(CHARACTER_SIZE);
 	folderName.setFillColor(titleColor);
+	folderName.setOrigin(rc.width / 2, 0);
 	folderName.setFont(fonts[CustomFonts::Font::ROBOTO]);
-	folderName.setPosition(pos + sf::Vector2f(FOLDER_SPACE / 2 + 80, 10));
+	folderName.setPosition(pos + sf::Vector2f(FOLDER_SPACE / 2, 10));
 
 	mainWindow.draw(folderName);
 
 	sf::Text sizeName = folderName;
 	sizeName.setString("Size");
-	sizeName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE / 2 + 140, 10));
+
+
+	rc = sizeName.getLocalBounds();
+	sizeName.setOrigin(rc.width / 2, 0);
+	sizeName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE / 2, 10));
 	mainWindow.draw(sizeName);
 
 	sf::Text modifyName = sizeName;
 	modifyName.setString("Modify Time");
-	modifyName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE + 200, 10));
+
+	rc = modifyName.getLocalBounds();
+	modifyName.setOrigin(rc.width / 2, 0);
+	modifyName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE + TIME_SPACE / 2, 10));
 	mainWindow.draw(modifyName);
 
 }
@@ -77,7 +89,7 @@ void Panel::drawColumnTitles() {
 void Panel::drawSelectedFolderBackground() {
 
 	sf::Vector2f topLeft = folders[selectedFolderIndex].position;
-	sf::Vector2f botRight(width - 20, LINE_SPACING);
+	sf::Vector2f botRight(width - 13, LINE_SPACING);
 
 	sf::RectangleShape rect;
 	rect.setSize(botRight);
@@ -95,11 +107,9 @@ void Panel::draw() {
 	drawColumnTitles();
 	drawCurrentPath();
 }
-
 void Panel::update(std::filesystem::path path) {
 
 	this->currentPath = path;
-	updateDates();
 	sf::Vector2f textPosition = pos;
 	textPosition.x += 10;
 	textPosition.y += 1.0 * height / LINE_SPACING;
@@ -109,60 +119,37 @@ void Panel::update(std::filesystem::path path) {
 	folders.push_back(Folder("/..", textPosition, fonts, " "));
 	folders[firstToDisplay].toggleIsSelected();
 
-	freopen("CON", "w", stdout);
 	for (auto const& entry : std::filesystem::directory_iterator(path)) {
-		std::string name, pathName = entry.path().string();
-		for (int i = pathName.size() - 1; pathName[i] != '\\'; --i) 
-			name += pathName[i];
-		std::reverse(name.begin(), name.end());
-		if (dates.find(name) == dates.end())
-			continue;
-		textPosition.y += 1.0 * height / LINE_SPACING;
-		folders.push_back(Folder(entry.path(), textPosition, fonts, dates[name]));
-		
-		if (textPosition.y <= height - PANEL_OFFSET - 20) 
+		textPosition.y += height / LINE_SPACING;
+		folders.push_back(Folder(entry.path(), textPosition, fonts, getDate(entry.path())));
+		if (textPosition.y <= height - PANEL_OFFSET - 20) {
 			lastToDisplay++;
-		if(folders.size() >= MAX_FOLDERS_NUMBER / 2)
-			break;
+		}
 	}
 	lastToDisplay--;
+
 }
+std::string Panel::getDate(std::filesystem::path path) {
+	// Convert from fs::file_time_type to std::time_t
+	auto to_time_t = [](auto tp) {
+		namespace cs = std::chrono;
+		namespace fs = std::filesystem;
+		auto sctp = cs::time_point_cast<cs::system_clock::duration>(tp -
+			fs::file_time_type::clock::now() + cs::system_clock::now());
+		return cs::system_clock::to_time_t(sctp);
+		};
 
-void Panel::updateDates() {
-	dates.clear();
-	std::string command = "dir " + currentPath.string();
-	command += '"';
-	command.insert(command.begin() + 4, '"');
-	freopen("modifytime.txt", "w", stdout);
-	system(command.c_str());
-	char token[1005];
-	FILE* f = fopen("modifytime.txt", "r");
-	for (int i = 1; i <= 5; ++i)
-		fgets(token, sizeof(token), f);
-	int folderIndex = 0;
-	freopen("CON", "w", stdout);
-	while (folderIndex < MAX_FOLDERS_NUMBER) {
-		fgets(token, sizeof(token), f);
-		if (token[0] == ' ')
-			break;
 
-		char* nameToken, aux[1005];
-		strcpy(aux, token);
-		nameToken = strtok(aux, " ");
-		for(int i = 1;i <= 4; ++i)
-			nameToken = strtok(NULL, " ");
-		
-		std::string number;
-		number += token[0], number += token[1];
-		std::string date, name;
-		for (int index = 0; index < 20; ++index) 
-			date += token[index];
-		for (int index = 0; index < strlen(nameToken); ++index) 
-			name += nameToken[index];
-		name.pop_back();
-		dates[name] = date;
-		folderIndex++;
-	}
+	auto fileTime = std::filesystem::last_write_time(path);
+	std::time_t tt = to_time_t(fileTime);
+
+	// Convert the std::time_t value to a local time structure
+	std::tm* localTime = std::localtime(&tt);
+	std::stringstream buff;
+
+	buff << std::put_time(localTime, "%d  %b  %H:%M");
+	std::string formattedDate = buff.str();
+	return formattedDate;
 }
 
 void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
@@ -242,7 +229,7 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 				std::filesystem::copy(path, destPath);
 				std::cout << destPath.filename() << " coppied to " << destPath.parent_path() << '\n';
 			}
-			catch(const std::filesystem::filesystem_error& e){
+			catch (const std::filesystem::filesystem_error& e) {
 				std::cerr << "Error copying file: " << e.what() << std::endl;
 			}
 			update(path.parent_path());
@@ -261,7 +248,7 @@ void Panel::updateFoldersPosition(sf::Vector2f move) {
 	for (int index = 0; index < folders.size(); ++index) {
 		sf::Vector2f folderPosition = folders[index].position;
 		folderPosition += move;
-		folders[index].position=folderPosition;
+		folders[index].position = folderPosition;
 		folders[index].updateText();
 	}
 }
@@ -280,7 +267,7 @@ void Panel::changePath() {
 		else
 			folderPath = currentPath.parent_path();
 		std::cout << folderPath.string() << '\n';
-		update(folderPath);	
+		update(folderPath);
 	}
 }
 

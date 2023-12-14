@@ -23,6 +23,8 @@ public:
 	void initText(std::vector<sf::Font>& fonts);
 	void toggleIsSelected();
 	void updateText();
+	unsigned int getSize();
+
 	std::filesystem::path path;
 	sf::Text folderText, sizeText, dateText;
 	sf::Vector2f position;

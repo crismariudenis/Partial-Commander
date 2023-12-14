@@ -17,7 +17,10 @@ private:
 	void initPanels();
 	void initButtons();
 	void handleKeyboardEvents(sf::Event& event);
-	void handleMouseEvents(sf::Event& event);
+	void handleMouseScrollingEvents(sf::Event& event);
+	void handleMousePressingEvents(sf::Event & event);
+	void handleMouseMovedEvents();
+
 	void drawButtons();
 	void initBackgrounds();
 

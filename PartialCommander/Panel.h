@@ -6,7 +6,7 @@
 
 class Panel
 {
-    int width, height;
+    int width, height, sortType;
     sf::Vector2f pos;
     std::vector<Folder> folders;
     sf::RenderWindow& mainWindow;
@@ -21,9 +21,13 @@ class Panel
     void drawColumnTitles();
     void drawSelectedFolderBackground();
     void drawCurrentPath();
+   
+
     void updateFoldersPosition(sf::Vector2f move);
     void updateDates();
+    void resetTextPositions();
 
+    bool checkBoxLabel(int topLeftX, int topLeftY, int botRightX, int botRightY, int mouseX, int mouseY);
     bool isSelected = false;
 
 public:
@@ -34,5 +38,7 @@ public:
     void updateSelectedFolder(sf::Keyboard::Scancode);
     void toggleIsSelected();
     void changePath();
+    void checkTextLabels(int mouseX, int mouseY);
+     void activateLabel(int mouseX, int mouseY);
 
 };

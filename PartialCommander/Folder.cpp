@@ -69,7 +69,8 @@ Folder::Folder(std::filesystem::path path, sf::Vector2f position, std::vector<sf
 	this->position = position;
 	this->date = date;
 	size = std::filesystem::file_size(this->path);
-	initText(fonts);
+	initText(fonts);	
+	std::filesystem::file_time_type ftime1 = std::filesystem::last_write_time(this->path);
 }
 
 void Folder::toggleIsSelected() {
@@ -96,5 +97,10 @@ void Folder::updateText() {
 	datePosition.x += FOLDER_SPACE + SIZE_SPACE + 155;
 	sizeText.setPosition(sizePosition);
 	dateText.setPosition(datePosition);
+}
+
+
+unsigned int Folder::getSize() {
+	return size;
 }
 

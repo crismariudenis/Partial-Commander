@@ -1,30 +1,22 @@
- Volume in drive D is Date
- Volume Serial Number is E8F1-EEED
+ Volume in drive C is Windows
+ Volume Serial Number is 6AF1-6978
 
- Directory of D:\
+ Directory of C:\
 
-10/13/2021  11:42 PM    <DIR>          Apex
-04/15/2023  02:12 PM    <DIR>          Atestat
-10/24/2023  07:18 PM    <DIR>          Battle.net
-12/08/2023  03:29 PM    <DIR>          Desktop
-11/26/2023  09:22 PM    <DIR>          Documents
-12/12/2023  11:04 AM    <DIR>          Downloads
-03/01/2022  06:15 PM    <DIR>          elden mid
-09/05/2020  06:26 PM    <DIR>          Epic Games
-09/03/2023  03:10 PM    <DIR>          Games
-12/07/2023  11:55 PM    <DIR>          Microsoft VS Code
-09/20/2023  01:12 PM    <DIR>          Movies
-01/13/2023  10:02 PM    <DIR>          NewMingw
-03/10/2021  04:47 AM    <DIR>          obs-studio
-03/14/2023  10:30 PM    <DIR>          Origin
-11/03/2023  09:13 PM    <DIR>          Overcooked2
-07/23/2023  02:00 PM    <DIR>          Overwatch
-01/19/2023  11:01 PM    <DIR>          Rpcs3
-12/11/2023  11:33 PM    <DIR>          Steam
-11/28/2023  09:18 PM    <DIR>          Test
-09/03/2023  04:01 PM    <DIR>          Torrents
-08/13/2021  10:10 AM    <DIR>          unity
-09/03/2023  05:08 PM    <DIR>          WallPapers
-09/04/2023  09:32 PM    <DIR>          XAMPP
-               0 File(s)              0 bytes
-              23 Dir(s)  212,375,863,296 bytes free
+09/30/2023  06:47 AM           112,240 appverifUI.dll
+02/10/2021  09:21 AM    <DIR>          avast! sandbox
+07/11/2023  04:19 PM    <DIR>          Brother
+01/13/2023  10:16 PM    <DIR>          MinGW
+11/29/2023  09:25 AM    <DIR>          mingw64
+01/13/2023  10:29 PM    <DIR>          msys64
+08/24/2022  09:20 PM    <DIR>          PerfLogs
+11/26/2023  09:35 PM    <DIR>          Program Files
+11/26/2023  09:35 PM    <DIR>          Program Files (x86)
+09/03/2023  03:05 PM    <DIR>          Riot Games
+11/29/2023  08:30 PM    <DIR>          SFML-2.6.1
+09/05/2020  06:05 PM    <DIR>          temp
+01/15/2021  11:01 AM    <DIR>          Users
+09/30/2023  06:46 AM            66,216 vfcompat.dll
+11/26/2023  09:22 PM    <DIR>          Windows
+               2 File(s)        178,456 bytes
+              13 Dir(s)  95,065,075,712 bytes free

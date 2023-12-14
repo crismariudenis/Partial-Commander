@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "CustomFonts.h"
+#include <algorithm>
 #include <filesystem>
 #include <iostream>
 #include <stdio.h>
@@ -58,4 +59,3 @@ inline void initBackground(sf::RectangleShape& background, sf::Color color, sf::
 	background.setPosition(position);
 	background.setSize(size);
 }
-

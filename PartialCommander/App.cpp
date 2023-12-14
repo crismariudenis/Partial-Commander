@@ -41,8 +41,12 @@ void App::run() {
 				handleKeyboardEvents(event);
 				break;
 			case sf::Event::MouseWheelScrolled:
-				handleMouseEvents(event);
+				handleMouseScrollingEvents(event);
 				break;
+			case sf::Event::MouseButtonPressed:
+				handleMousePressingEvents(event);
+				break;
+
 			}
 		}
 
@@ -53,10 +57,11 @@ void App::run() {
 		/// Background colors
 		mainWindow.draw(background);
 		mainWindow.draw(bottomBackground);
-
+		handleMouseMovedEvents();
 		/// Panels
 		leftPanel.draw();
 		rightPanel.draw();
+		
 
 		/// Buttons
 		drawButtons();
@@ -107,7 +112,24 @@ void App::handleKeyboardEvents(sf::Event& event) {
 	}
 }
 
-void App::handleMouseEvents(sf::Event& event)
+void App::handleMousePressingEvents(sf::Event &event) 
+{
+	if (event.mouseButton.button == sf::Mouse::Left) {
+		int mouseX = event.mouseButton.x;
+		int mouseY = event.mouseButton.y;
+		leftPanel.checkTextLabels(mouseX, mouseY);
+		rightPanel.checkTextLabels(mouseX, mouseY);
+	}
+}
+
+void App::handleMouseMovedEvents() {
+	sf::Vector2i position = sf::Mouse::getPosition(mainWindow);
+	int mouseX = position.x, mouseY = position.y;
+	leftPanel.activateLabel(mouseX, mouseY);
+	rightPanel.activateLabel(mouseX, mouseY);
+}
+
+void App::handleMouseScrollingEvents(sf::Event& event)
 {
 	int delta = event.mouseWheelScroll.delta;
 	if (delta < 0) {

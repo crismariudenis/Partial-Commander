@@ -18,12 +18,15 @@ private:
 
 
 public:
+	std::filesystem::path path;
+	sf::Text folderText, sizeText, dateText;
+	sf::Vector2f position;
+
 	~Folder() {};
 	Folder(std::filesystem::path path, sf::Vector2f position, std::vector<sf::Font>& fonts, std::string date);
 	void initText(std::vector<sf::Font>& fonts);
 	void toggleIsSelected();
 	void updateText();
-	std::filesystem::path path;
-	sf::Text folderText, sizeText, dateText;
-	sf::Vector2f position;
+	unsigned int getSize();
+
 };

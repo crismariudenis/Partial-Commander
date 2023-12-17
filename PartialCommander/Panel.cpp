@@ -226,7 +226,7 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 			}
 
 			try {
-				std::filesystem::copy(path, destPath);
+				std::filesystem::copy(path, destPath, std::filesystem::copy_options::recursive);
 				std::cout << destPath.filename() << " coppied to " << destPath.parent_path() << '\n';
 			}
 			catch (const std::filesystem::filesystem_error& e) {

@@ -28,15 +28,16 @@ void Panel::drawBorders() {
 
 	sf::RectangleShape line1;
 	line1.setOutlineThickness(PANEL_LINE_WIDTH / 2);
-	line1.setPosition(pos + sf::Vector2f(FOLDER_SPACE + 160, 0));
+	line1.setPosition(pos + sf::Vector2f(FOLDER_SPACE, 0));
 	line1.setSize(sf::Vector2f(0, height - PANEL_BOTTOM_HEIGHT));
 	line1.setOutlineColor(sf::Color::White);
 
 	sf::RectangleShape line2;
 	line2.setOutlineThickness(PANEL_LINE_WIDTH / 2);
-	line2.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE + 160, 0));
+	line2.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE, 0));
 	line2.setSize(sf::Vector2f(0, height - PANEL_BOTTOM_HEIGHT));
-	line2.setOutlineColor(sf::Color::White);
+	line2.setOutlineColor(sf::Color::White
+	);
 
 	sf::RectangleShape line3;
 	line3.setOutlineThickness(PANEL_LINE_WIDTH / 2);
@@ -54,22 +55,33 @@ void Panel::drawBorders() {
 void Panel::drawColumnTitles() {
 
 	sf::Text folderName;
+
 	folderName.setString("Name");
+
+	sf::FloatRect rc = folderName.getLocalBounds();
 	folderName.setCharacterSize(CHARACTER_SIZE);
 	folderName.setFillColor(titleColor);
+	folderName.setOrigin(rc.width / 2, 0);
 	folderName.setFont(fonts[CustomFonts::Font::ROBOTO]);
-	folderName.setPosition(pos + sf::Vector2f(FOLDER_SPACE / 2 + 80, 10));
+	folderName.setPosition(pos + sf::Vector2f(FOLDER_SPACE / 2, 10));
 
 	mainWindow.draw(folderName);
 
 	sf::Text sizeName = folderName;
 	sizeName.setString("Size");
-	sizeName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE / 2 + 140, 10));
+
+
+	rc = sizeName.getLocalBounds();
+	sizeName.setOrigin(rc.width / 2, 0);
+	sizeName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE / 2, 10));
 	mainWindow.draw(sizeName);
 
 	sf::Text modifyName = sizeName;
 	modifyName.setString("Modify Time");
-	modifyName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE + 200, 10));
+
+	rc = modifyName.getLocalBounds();
+	modifyName.setOrigin(rc.width / 2, 0);
+	modifyName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE + TIME_SPACE / 2, 10));
 	mainWindow.draw(modifyName);
 
 }
@@ -216,10 +228,10 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 			}
 
 			try {
-				std::filesystem::copy(path, destPath);
+				std::filesystem::copy(path, destPath, std::filesystem::copy_options::recursive);
 				std::cout << destPath.filename() << " coppied to " << destPath.parent_path() << '\n';
 			}
-			catch(const std::filesystem::filesystem_error& e){
+			catch (const std::filesystem::filesystem_error& e) {
 				std::cerr << "Error copying file: " << e.what() << std::endl;
 			}
 			update(path.parent_path());
@@ -430,7 +442,7 @@ void Panel::pasteFromClipboard(std::vector<Folder> folders) {
 				destPath = currentPath.string() + '\\' + suffix + std::to_string(i);
 			}
 			std::cout << destPath << '\n';
-			std::filesystem::copy(folders[index].path, destPath);
+			std::filesystem::copy(path, destPath, std::filesystem::copy_options::recursive);
 		}
 		update(currentPath);
 	}

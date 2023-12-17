@@ -19,9 +19,6 @@
 #define BOTTOM_BUTTONS_HEIGHT 100
 
 /// Panel Constrains
-#define FOLDER_SPACE 330
-#define SIZE_SPACE 80 
-#define TIME_SPACE 300
 #define BORDER_OFFSET 30
 #define PANEL_BOTTOM_WIDTH WINDOW_WIDTH / 2
 #define PANEL_BOTTOM_HEIGHT 50
@@ -38,6 +35,10 @@
 #define PANEL_LINE_WIDTH 2
 #define PANEL_WIDTH (WINDOW_WIDTH - 3 * PANEL_MARGIN_X - 2*PANEL_LINE_WIDTH)/2
 #define BUTTON_HEIGHT 20
+
+#define FOLDER_SPACE 540
+#define SIZE_SPACE 80 
+#define TIME_SPACE (PANEL_WIDTH - SIZE_SPACE - FOLDER_SPACE)
 
 extern std::filesystem::path leftPanelDirectoryPath;
 extern std::filesystem::path rightPanelDirectoryPath;

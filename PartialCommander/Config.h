@@ -1,9 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include "CustomFonts.h"
-#include <algorithm>
 #include <filesystem>
 #include <iostream>
 #include <stdio.h>
+#include <chrono>  // Add this for chrono
+#include <iomanip> // Add this for put_time
+#include <sstream> // Add this for stringstream
 #include <windows.h>
 #include <map>
 

@@ -100,7 +100,7 @@ void Panel::draw() {
 void Panel::update(std::filesystem::path path) {
 
 	this->currentPath = path;
-	sf::Vector2f textPosition = sf::Vector2f(pos.x, pos.y + TOP_TEXT_BORDER);
+	sf::Vector2f textPosition = pos;
 	textPosition.x += 10;
 	textPosition.y += 1.0 * height / LINE_SPACING;
 	firstToDisplay = 0, lastToDisplay = 1, selectedFolderIndex = 0;
@@ -110,58 +110,36 @@ void Panel::update(std::filesystem::path path) {
 	folders[firstToDisplay].toggleIsSelected();
 
 	for (auto const& entry : std::filesystem::directory_iterator(path)) {
-		std::string name, pathName = entry.path().string();
-		for (int i = pathName.size() - 1; pathName[i] != '\\'; --i) 
-			name += pathName[i];
-		std::reverse(name.begin(), name.end());
-		if (dates.find(name) == dates.end())
-			continue;
-		textPosition.y += 1.0 * height / LINE_SPACING;
-		folders.push_back(Folder(entry.path(), textPosition, fonts, dates[name]));
-		
-		if (textPosition.y <= height - PANEL_OFFSET - 20) 
+		textPosition.y += height / LINE_SPACING;
+		folders.push_back(Folder(entry.path(), textPosition, fonts, getDate(entry.path())));
+		if (textPosition.y <= height - PANEL_OFFSET - 20) {
 			lastToDisplay++;
-		if(folders.size() >= MAX_FOLDERS_NUMBER / 2)
-			break;
+		}
 	}
 	lastToDisplay--;
+
 }
+std::string Panel::getDate(std::filesystem::path path) {
+	// Convert from fs::file_time_type to std::time_t
+	auto to_time_t = [](auto tp) {
+		namespace cs = std::chrono;
+		namespace fs = std::filesystem;
+		auto sctp = cs::time_point_cast<cs::system_clock::duration>(tp -
+			fs::file_time_type::clock::now() + cs::system_clock::now());
+		return cs::system_clock::to_time_t(sctp);
+		};
 
-void Panel::updateDates() {
-	dates.clear();
-	std::string command = "dir " + currentPath.string();
-	command += '"';
-	command.insert(command.begin() + 4, '"');
-	freopen("modifytime.txt", "w", stdout);
-	system(command.c_str());
-	char token[1005];
-	FILE* f = fopen("modifytime.txt", "r");
-	for (int i = 1; i <= 5; ++i)
-		fgets(token, sizeof(token), f);
-	int folderIndex = 0;
-	freopen("CON", "w", stdout);
-	while (folderIndex < MAX_FOLDERS_NUMBER) {
-		fgets(token, sizeof(token), f);
-		if (token[0] == ' ')
-			break;
 
-		char* nameToken, aux[1005];
-		strcpy(aux, token);
-		nameToken = strtok(aux, " ");
-		for(int i = 1;i <= 4; ++i)
-			nameToken = strtok(NULL, " ");
-		
-		std::string number;
-		number += token[0], number += token[1];
-		std::string date, name;
-		for (int index = 0; index < 20; ++index) 
-			date += token[index];
-		for (int index = 0; index < strlen(nameToken); ++index) 
-			name += nameToken[index];
-		name.pop_back();
-		dates[name] = date;
-		folderIndex++;
-	}
+	auto fileTime = std::filesystem::last_write_time(path);
+	std::time_t tt = to_time_t(fileTime);
+
+	// Convert the std::time_t value to a local time structure
+	std::tm* localTime = std::localtime(&tt);
+	std::stringstream buff;
+
+	buff << std::put_time(localTime, "%d  %b  %H:%M");
+	std::string formattedDate = buff.str();
+	return formattedDate;
 }
 
 void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {

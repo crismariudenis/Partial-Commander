@@ -91,12 +91,19 @@ void Folder::updateText() {
 		sizeText.setFillColor(sf::Color::White);
 		dateText.setFillColor(sf::Color::White);
 	}
-
 	sf::Vector2f sizePosition = position, datePosition = position;
-	sizePosition.x += FOLDER_SPACE + SIZE_SPACE + 145;
-	datePosition.x += FOLDER_SPACE + SIZE_SPACE + 155;
+
+	sf::FloatRect rc = sizeText.getLocalBounds();
+	sizePosition.x += FOLDER_SPACE + SIZE_SPACE - 15;
+	dateText = sizeText;
 	sizeText.setPosition(sizePosition);
+	sizeText.setOrigin(rc.width, 0);
+
+	dateText.setString(date);
+	sf::FloatRect rc2 = dateText.getLocalBounds();
+	datePosition.x += FOLDER_SPACE + SIZE_SPACE + TIME_SPACE - 15;
 	dateText.setPosition(datePosition);
+	dateText.setOrigin(rc2.width, 0);
 }
 
 

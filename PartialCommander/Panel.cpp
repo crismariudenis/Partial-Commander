@@ -107,6 +107,7 @@ void Panel::draw() {
 	drawBorders();
 	drawColumnTitles();
 	drawCurrentPath();
+	drawFreeSpace();
 }
 
 void Panel::update(std::filesystem::path path) {
@@ -114,7 +115,7 @@ void Panel::update(std::filesystem::path path) {
 	this->currentPath = path;
 	sf::Vector2f textPosition = pos;
 	textPosition.x += 10;
-	textPosition.y += 1.0 * height / LINE_SPACING;
+	textPosition.y += 1.0 * height / LINE_SPACING + TOP_TEXT_BORDER;
 	firstToDisplay = 0, lastToDisplay = 1, selectedFolderIndex = 0;
 
 	folders.clear();
@@ -319,6 +320,7 @@ void Panel::checkTextLabels(int mouseX, int mouseY) {
 
 	if (checkBoxLabel(pos.x, pos.y, pos.x + FOLDER_SPACE, pos.y + 20, mouseX, mouseY)) {
 		initialPositions = initPositions(folders);
+		folders[selectedFolderIndex].toggleIsSelected();
 		if (abs(sortType) == 1) {
 			reverse(folders.begin() + 1, folders.end());
 			sortType = -sortType;
@@ -328,6 +330,7 @@ void Panel::checkTextLabels(int mouseX, int mouseY) {
 	}
 	else if (checkBoxLabel(pos.x + FOLDER_SPACE + 1, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 20, mouseX, mouseY)) {
 		initialPositions = initPositions(folders);
+		folders[selectedFolderIndex].toggleIsSelected();
 		if (abs(sortType) == 2) {
 			reverse(folders.begin() + 1, folders.end());
 			sortType = -sortType;
@@ -337,6 +340,7 @@ void Panel::checkTextLabels(int mouseX, int mouseY) {
 	}
 	else if (checkBoxLabel(pos.x + FOLDER_SPACE + SIZE_SPACE + 1, pos.y, pos.x + width, pos.y + 20, mouseX, mouseY)) {
 		initialPositions = initPositions(folders);
+		folders[selectedFolderIndex].toggleIsSelected();
 		if (abs(sortType) == 3) {
 			reverse(folders.begin() + 1, folders.end());
 			sortType = -sortType;
@@ -349,6 +353,8 @@ void Panel::checkTextLabels(int mouseX, int mouseY) {
 void Panel::resetTextPositions(std::vector<sf::Vector2f> initialPositions) {
 	for (int index = 0; index < folders.size(); ++index) {
 		folders[index].position = initialPositions[index];
+		if (index == selectedFolderIndex)
+			folders[index].toggleIsSelected();
 		folders[index].updateText();
 	}
 }
@@ -446,4 +452,36 @@ void Panel::pasteFromClipboard(std::vector<Folder> folders) {
 		}
 		update(currentPath);
 	}
+}
+
+void Panel::drawFreeSpace()
+{
+	const std::filesystem::space_info si = std::filesystem::space(currentPath);
+	unsigned long long space = si.capacity;
+	unsigned long long spaceUsed = space - si.free;
+	int order = 0;
+	std::cout << space << ' ' << spaceUsed << '\n';
+	while (space > 999) space >>= 10, order++;
+	while (spaceUsed > 999) spaceUsed >>= 10;
+	sf::Text spaceText;
+
+	std::string spaceString = std::to_string(spaceUsed) + "/" + std::to_string(space);
+	if (order == 1)
+		spaceString += " KB ";
+	else if (order == 2)
+		spaceString += " MB ";
+	else if (order == 3)
+		spaceString += " GB ";
+	else
+		spaceString += " B ";
+
+	int raport = (spaceUsed * 100) / space;
+	spaceString += '(' + std::to_string(raport) + "%)";
+
+	spaceText.setString(spaceString);
+	spaceText.setFillColor(textColor);
+	spaceText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X + PANEL_WIDTH - 200, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
+	spaceText.setCharacterSize(CHARACTER_SIZE + 5);
+	spaceText.setFont(fonts[CustomFonts::Font::ROBOTO]);
+	mainWindow.draw(spaceText);
 }

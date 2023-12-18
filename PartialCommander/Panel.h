@@ -19,7 +19,7 @@ class Panel
     void drawColumnTitles();
     void drawSelectedFolderBackground();
     void drawCurrentPath();
-   
+    void drawFreeSpace();
 
     void updateFoldersPosition(sf::Vector2f move);
     std::string getDate(std::filesystem::path p);

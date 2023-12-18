@@ -8,7 +8,7 @@ class Folder
 {
 private:
 
-	std::uintmax_t size;
+	unsigned long long size;
 	std::string modifyTime, date;
 	sf::Font font;
 	bool isSelected = false;

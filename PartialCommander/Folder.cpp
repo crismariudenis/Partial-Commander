@@ -4,8 +4,10 @@ void Folder::initText(std::vector<sf::Font>& fonts) {
 
 	folderText.setFont(fonts[CustomFonts::Font::ROBOTO]);
 	folderText.setPosition(position);
-
 	folderText.setCharacterSize(CHARACTER_SIZE);
+
+	if (isSelected)
+		folderText.setFillColor(selectedTextColor);
 
 	sizeText = folderText;
 

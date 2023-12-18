@@ -250,7 +250,7 @@ void Panel::updateFoldersPosition(sf::Vector2f move) {
 	for (int index = 0; index < folders.size(); ++index) {
 		sf::Vector2f folderPosition = folders[index].position;
 		folderPosition += move;
-		folders[index].position=folderPosition;
+		folders[index].position = folderPosition;
 		folders[index].updateText();
 	}
 }
@@ -269,7 +269,7 @@ void Panel::changePath() {
 		else
 			folderPath = currentPath.parent_path();
 		std::cout << folderPath.string() << '\n';
-		update(folderPath);	
+		update(folderPath);
 	}
 }
 
@@ -308,40 +308,40 @@ bool timeCompare(Folder a, Folder b) {
 
 void Panel::checkTextLabels(int mouseX, int mouseY) {
 
-	auto initPositions = [](std::vector<Folder> &folders) {
-			std::vector<sf::Vector2f> initialPositions;
-			for (int index = 0; index < folders.size(); ++index) 
-				initialPositions.push_back(folders[index].position);
-			return initialPositions;
+	auto initPositions = [](std::vector<Folder>& folders) {
+		std::vector<sf::Vector2f> initialPositions;
+		for (int index = 0; index < folders.size(); ++index)
+			initialPositions.push_back(folders[index].position);
+		return initialPositions;
 		};
 
 	std::vector<sf::Vector2f> initialPositions;
-	
+
 	if (checkBoxLabel(pos.x, pos.y, pos.x + FOLDER_SPACE, pos.y + 20, mouseX, mouseY)) {
 		initialPositions = initPositions(folders);
 		if (abs(sortType) == 1) {
-			reverse(folders.begin(), folders.end());
+			reverse(folders.begin() + 1, folders.end());
 			sortType = -sortType;
 		}
-		else std::sort(folders.begin(), folders.end(), nameCompare), sortType = 1;
+		else std::sort(folders.begin() + 1, folders.end(), nameCompare), sortType = 1;
 		resetTextPositions(initialPositions);
 	}
-	else if (checkBoxLabel(pos.x + FOLDER_SPACE + 1 , pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 20, mouseX, mouseY)) {
+	else if (checkBoxLabel(pos.x + FOLDER_SPACE + 1, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 20, mouseX, mouseY)) {
 		initialPositions = initPositions(folders);
 		if (abs(sortType) == 2) {
-			reverse(folders.begin(), folders.end());
+			reverse(folders.begin() + 1, folders.end());
 			sortType = -sortType;
 		}
-		else std::sort(folders.begin(), folders.end(), sizeCompare), sortType = 2;
+		else std::sort(folders.begin() + 1, folders.end(), sizeCompare), sortType = 2;
 		resetTextPositions(initialPositions);
 	}
 	else if (checkBoxLabel(pos.x + FOLDER_SPACE + SIZE_SPACE + 1, pos.y, pos.x + width, pos.y + 20, mouseX, mouseY)) {
 		initialPositions = initPositions(folders);
 		if (abs(sortType) == 3) {
-			reverse(folders.begin(), folders.end());
+			reverse(folders.begin() + 1, folders.end());
 			sortType = -sortType;
 		}
-		else std::sort(folders.begin(), folders.end(), timeCompare), sortType = 3;
+		else std::sort(folders.begin() + 1, folders.end(), timeCompare), sortType = 3;
 		resetTextPositions(initialPositions);
 	}
 }
@@ -359,14 +359,14 @@ void Panel::activateLabel(int mouseX, int mouseY) {
 		initBackground(background, sf::Color(68, 85, 90), sf::Vector2f(pos.x, pos.y), sf::Vector2f(pos.x + FOLDER_SPACE + 150, 30));
 		mainWindow.draw(background);
 	}
-	else if (checkBoxLabel(pos.x + FOLDER_SPACE , pos.y, pos.x + FOLDER_SPACE  + SIZE_SPACE, pos.y + 20, mouseX, mouseY)) {
+	else if (checkBoxLabel(pos.x + FOLDER_SPACE, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 20, mouseX, mouseY)) {
 		sf::RectangleShape background;
 		initBackground(background, sf::Color(68, 85, 90), sf::Vector2f(pos.x + FOLDER_SPACE + 160, pos.y), sf::Vector2f(SIZE_SPACE, 30));
 		mainWindow.draw(background);
 	}
 	else if (checkBoxLabel(pos.x + FOLDER_SPACE + SIZE_SPACE + 10, pos.y, pos.x + width, pos.y + 20, mouseX, mouseY)) {
 		sf::RectangleShape background;
-		initBackground(background, sf::Color(68, 85, 90), sf::Vector2f(pos.x + FOLDER_SPACE + SIZE_SPACE + 160, pos.y), sf::Vector2f(width - pos.x - FOLDER_SPACE  - 160 - SIZE_SPACE, 30));
+		initBackground(background, sf::Color(68, 85, 90), sf::Vector2f(pos.x + FOLDER_SPACE + SIZE_SPACE + 160, pos.y), sf::Vector2f(width - pos.x - FOLDER_SPACE - 160 - SIZE_SPACE, 30));
 		mainWindow.draw(background);
 	}
 }
@@ -395,7 +395,7 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 		return;
 	shortcutSelectedFolder[selectedFolderIndex] = true;
 	if (type == 1) { /// Ctrl A
-		for (int i = 0; i < folders.size(); ++i) 
+		for (int i = 0; i < folders.size(); ++i)
 			shortcutSelectedFolder[i] = true;
 	}
 	else if (type == 2) { /// Ctrl Shift Up/Down
@@ -403,7 +403,7 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 			if (move > 0) shortcutSelectedFolder[++shiftSelectedFolder] = true;
 			else shortcutSelectedFolder[shiftSelectedFolder--] = false;
 		}
-		else if(shiftSelectedFolder - selectedFolderIndex < 0){
+		else if (shiftSelectedFolder - selectedFolderIndex < 0) {
 			if (move > 0) shortcutSelectedFolder[shiftSelectedFolder++] = false;
 			else shortcutSelectedFolder[--shiftSelectedFolder] = true;
 		}
@@ -431,7 +431,7 @@ void Panel::pasteFromClipboard(std::vector<Folder> folders) {
 		destPath = path.parent_path() / (path.stem().string() + std::to_string(i) + extension);
 	}*/
 	if (isSelected) {
-		
+
 		for (int index = 0; index < folders.size(); ++index) {
 			std::string path = folders[index].path.string(), suffix;
 			while (path.back() != '\\')

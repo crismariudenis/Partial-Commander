@@ -280,7 +280,7 @@ void Panel::drawCurrentPath()
 	pathText.setFillColor(textColor);
 	pathText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
 	pathText.setCharacterSize(CHARACTER_SIZE + 5);
-	pathText.setFont(fonts[4]);
+	pathText.setFont(fonts[CustomFonts::Font::ROBOTO]);
 
 	mainWindow.draw(pathText);
 }
@@ -290,17 +290,17 @@ bool Panel::checkBoxLabel(int topLeftX, int topLeftY, int botRightX, int botRigh
 	return mouseX >= topLeftX && mouseX <= botRightX && mouseY >= topLeftY && mouseY <= botRightY;
 }
 
-bool nameCompare(Folder a, Folder b) {
+bool nameCompare(const Folder& a, const Folder& b) {
 	std::string name1 = a.folderText.getString().toAnsiString();
 	std::string name2 = b.folderText.getString().toAnsiString();
 	return name1 < name2;
 }
 
-bool sizeCompare(Folder a, Folder b) {
+bool sizeCompare(const Folder& a, const Folder& b) {
 	return a.getSize() < b.getSize();
 }
 
-bool timeCompare(Folder a, Folder b) {
+bool timeCompare(const Folder& a, const Folder& b) {
 	std::filesystem::file_time_type ftime1 = std::filesystem::last_write_time(a.path);
 	std::filesystem::file_time_type ftime2 = std::filesystem::last_write_time(b.path);
 	return ftime1 < ftime2;
@@ -356,17 +356,17 @@ void Panel::resetTextPositions(std::vector<sf::Vector2f> initialPositions) {
 void Panel::activateLabel(int mouseX, int mouseY) {
 	if (checkBoxLabel(pos.x, pos.y, pos.x + FOLDER_SPACE, pos.y + 20, mouseX, mouseY)) {
 		sf::RectangleShape background;
-		initBackground(background, sf::Color(68, 85, 90), sf::Vector2f(pos.x, pos.y), sf::Vector2f(pos.x + FOLDER_SPACE + 150, 30));
+		initBackground(background, sf::Color(68, 85, 90), pos, sf::Vector2f(FOLDER_SPACE, 30));
 		mainWindow.draw(background);
 	}
-	else if (checkBoxLabel(pos.x + FOLDER_SPACE, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 20, mouseX, mouseY)) {
+	else if (checkBoxLabel(pos.x, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 20, mouseX, mouseY)) {
 		sf::RectangleShape background;
-		initBackground(background, sf::Color(68, 85, 90), sf::Vector2f(pos.x + FOLDER_SPACE + 160, pos.y), sf::Vector2f(SIZE_SPACE, 30));
+		initBackground(background, sf::Color(68, 85, 90), sf::Vector2f(pos.x + FOLDER_SPACE, pos.y), sf::Vector2f(SIZE_SPACE, 30));
 		mainWindow.draw(background);
 	}
-	else if (checkBoxLabel(pos.x + FOLDER_SPACE + SIZE_SPACE + 10, pos.y, pos.x + width, pos.y + 20, mouseX, mouseY)) {
+	else if (checkBoxLabel(pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y, pos.x + width, pos.y + 20, mouseX, mouseY)) {
 		sf::RectangleShape background;
-		initBackground(background, sf::Color(68, 85, 90), sf::Vector2f(pos.x + FOLDER_SPACE + SIZE_SPACE + 160, pos.y), sf::Vector2f(width - pos.x - FOLDER_SPACE - 160 - SIZE_SPACE, 30));
+		initBackground(background, sf::Color(68, 85, 90), sf::Vector2f(pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y), sf::Vector2f(TIME_SPACE, 30));
 		mainWindow.draw(background);
 	}
 }

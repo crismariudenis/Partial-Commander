@@ -110,7 +110,7 @@ void Folder::updateText() {
 }
 
 
-unsigned int Folder::getSize() {
+unsigned int Folder::getSize() const{
 	return size;
 }
 

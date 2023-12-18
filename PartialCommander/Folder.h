@@ -27,6 +27,6 @@ public:
 	void initText(std::vector<sf::Font>& fonts);
 	void toggleIsSelected();
 	void updateText();
-	unsigned int getSize();
+	unsigned int getSize()const;
 
 };

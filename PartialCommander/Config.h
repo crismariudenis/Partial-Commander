@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include "CustomFonts.h"
-#include <algorithm>
 #include <filesystem>
 #include <iostream>
 #include <stdio.h>
@@ -27,6 +26,7 @@
 #define PANEL_OFFSET 30
 #define LINE_SPACING 23
 
+
 #define MAX_FOLDERS_NUMBER 300
 
 #define PANEL_MARGIN_X 10
@@ -46,6 +46,8 @@ extern std::filesystem::path rightPanelDirectoryPath;
 
 /// TEXT Constraints
 #define CHARACTER_SIZE 15
+#define TOP_TEXT_BORDER 10
+
 const sf::Color columnColor(199, 192, 149); /// Color for the Columns
 const sf::Color backgroundColor(19, 103, 208); /// Background Color 
 const sf::Color textColor(255, 255, 255); /// Text Color
@@ -63,3 +65,5 @@ inline void initBackground(sf::RectangleShape& background, sf::Color color, sf::
 	background.setPosition(position);
 	background.setSize(size);
 }
+
+extern std::map<sf::Keyboard::Scancode, bool> pressed, released;

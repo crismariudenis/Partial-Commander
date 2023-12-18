@@ -29,6 +29,7 @@ void App::run() {
 
 	while (mainWindow.isOpen()) {
 
+		shortcutOn = false;
 		/// Event handling
 		sf::Event event;
 		while (mainWindow.pollEvent(event)) {
@@ -37,7 +38,9 @@ void App::run() {
 			case sf::Event::Closed:
 				mainWindow.close();
 				break;
-			case sf::Event::KeyPressed:
+
+			case sf::Event::KeyPressed: case sf::Event::KeyReleased:
+				handleKeyboardShortcuts(event);
 				handleKeyboardEvents(event);
 				break;
 			case sf::Event::MouseWheelScrolled:
@@ -87,11 +90,15 @@ void App::initPanels() {
 }
 
 void App::handleKeyboardEvents(sf::Event& event) {
+	if (event.type == sf::Event::KeyReleased)
+		return;
 	switch (event.key.scancode)
 	{
 	case sf::Keyboard::Scan::S: case sf::Keyboard::Scan::W: case sf::Keyboard::Scan::Down: case sf::Keyboard::Scan::Up:
-		leftPanel.updateSelectedFolder(event.key.scancode);
-		rightPanel.updateSelectedFolder(event.key.scancode);
+		if (!shortcutOn) {
+			leftPanel.updateSelectedFolder(event.key.scancode);
+			rightPanel.updateSelectedFolder(event.key.scancode);
+		}
 		break;
 	case sf::Keyboard::Scan::Tab:
 		leftPanel.toggleIsSelected();
@@ -109,6 +116,47 @@ void App::handleKeyboardEvents(sf::Event& event) {
 		leftPanel.updateSelectedFolder(event.key.scancode);
 		rightPanel.updateSelectedFolder(event.key.scancode);
 		break;
+	}
+}
+
+void App::handleKeyboardShortcuts(sf::Event event)
+{
+	bool isReleased = false;
+	if (event.type == sf::Event::KeyReleased) {
+		isReleased = true;
+		released[event.key.scancode] = true;
+		pressed[event.key.scancode] = false;
+	}
+	else if (event.type == sf::Event::KeyPressed) {
+		released[event.key.scancode] = false;
+		pressed[event.key.scancode] = true;
+	}
+	if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::A]) {
+		shortcutOn = true;
+		leftPanel.updateShortcutSelectedFolder(1, 0);
+		rightPanel.updateShortcutSelectedFolder(1, 0);
+	}
+	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::LShift] && (pressed[sf::Keyboard::Scan::Up] || pressed[sf::Keyboard::Scan::Down])) {
+		shortcutOn = true;
+		int move = 1;
+		if (pressed[sf::Keyboard::Scan::Up]) move = -move;
+		leftPanel.updateShortcutSelectedFolder(2, move);
+		rightPanel.updateShortcutSelectedFolder(2, move);
+	}
+	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::C]) {
+		shortcutOn = true;
+		leftPanel.updateClipboard();
+		rightPanel.updateClipboard();
+	}
+	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::V]) {
+		shortcutOn = false;
+		Clipboard* clipboard = Clipboard::getInstance();
+		leftPanel.pasteFromClipboard(clipboard->getFolders());
+		rightPanel.pasteFromClipboard(clipboard->getFolders());
+	}
+	else if(isReleased == false) {
+		leftPanel.updateShortcutSelectedFolder(3, -1);
+		rightPanel.updateShortcutSelectedFolder(3, -1);
 	}
 }
 

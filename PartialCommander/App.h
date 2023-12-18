@@ -20,11 +20,15 @@ private:
 	void handleMouseScrollingEvents(sf::Event& event);
 	void handleMousePressingEvents(sf::Event & event);
 	void handleMouseMovedEvents();
+	void handleKeyboardShortcuts(sf::Event event);
 
 	void drawButtons();
 	void initBackgrounds();
 
 public:
+
+	bool shortcutOn = false;
+
 	void init();
 	void run();
 	App(std::string name) :name(name) {};

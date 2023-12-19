@@ -8,7 +8,7 @@ class Panel
     sf::Vector2f pos;
     std::vector<Folder> folders;
     sf::RenderWindow& mainWindow;
-    int firstToDisplay, lastToDisplay, selectedFolderIndex, shiftSelectedFolder;
+    int firstToDisplay, lastToDisplay, selectedFolderIndex, shiftSelectedFolder = -1;
     std::filesystem::path currentPath;
     std::vector<sf::Font> fonts;
     std::map<int, bool> shortcutSelectedFolder;

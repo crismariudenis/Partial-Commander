@@ -290,7 +290,6 @@ void Panel::drawCurrentPath()
 	pathText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
 	pathText.setCharacterSize(CHARACTER_SIZE + 5);
 	pathText.setFont(fonts[CustomFonts::Font::ROBOTO]);
-
 	mainWindow.draw(pathText);
 }
 

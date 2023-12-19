@@ -46,3 +46,5 @@ int main()
 
     return 0;
 }
+
+Add in Preprocessor _CRT_SECURE_NO_WARNINGS

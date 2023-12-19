@@ -154,6 +154,27 @@ void App::handleKeyboardShortcuts(sf::Event event)
 		leftPanel.pasteFromClipboard(clipboard->getFolders());
 		rightPanel.pasteFromClipboard(clipboard->getFolders());
 	}
+	else if (pressed[sf::Keyboard::Scan::Semicolon]) {
+		int keysPressed = 0;
+		sf::Keyboard::Scancode code;
+		for (auto el : pressed) {
+			if (el.second == true)
+				keysPressed++;
+			if (el.first != sf::Keyboard::Scan::Semicolon && el.second == true) {
+				code = el.first;
+			}
+		}
+		if (keysPressed == 2 && code >= 0 && code <= 25) {
+			std::string path;
+			path += (code + 'A');
+			path += ":\\";
+
+			std::filesystem::path directoryPath(path);
+			leftPanel.changeDirectory(directoryPath);
+			rightPanel.changeDirectory(directoryPath);
+
+		}
+	}
 	else if(isReleased == false) {
 		leftPanel.updateShortcutSelectedFolder(3, -1);
 		rightPanel.updateShortcutSelectedFolder(3, -1);

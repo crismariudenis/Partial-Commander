@@ -111,6 +111,9 @@ void Panel::draw() {
 }
 void Panel::update(std::filesystem::path path) {
 
+	if (!std::filesystem::exists(path))
+		return;
+
 	this->currentPath = path;
 	sf::Vector2f textPosition = pos;
 	textPosition.x += 10;
@@ -271,6 +274,12 @@ void Panel::changePath() {
 		std::cout << folderPath.string() << '\n';
 		update(folderPath);
 	}
+}
+
+void Panel::changeDirectory(std::filesystem::path directoryPath) {
+	std::cout << directoryPath.string() << '\n';
+	if(isSelected)
+		update(directoryPath);
 }
 
 void Panel::drawCurrentPath()
@@ -459,7 +468,6 @@ void Panel::drawFreeSpace()
 	unsigned long long space = si.capacity;
 	unsigned long long spaceUsed = space - si.free;
 	int order = 0;
-	std::cout << space << ' ' << spaceUsed << '\n';
 	while (space > 999) space >>= 10, order++;
 	while (spaceUsed > 999) spaceUsed >>= 10;
 	sf::Text spaceText;

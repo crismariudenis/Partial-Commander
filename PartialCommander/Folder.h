@@ -9,7 +9,7 @@ class Folder
 private:
 
 	unsigned long long size;
-	std::string modifyTime, date;
+	std::string modifyTime;
 	sf::Font font;
 	bool isSelected = false;
 

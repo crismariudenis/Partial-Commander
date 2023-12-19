@@ -37,6 +37,7 @@ public:
     void updateSelectedFolder(sf::Keyboard::Scancode);
     void toggleIsSelected();
     void changePath();
+    void changeDirectory(std::filesystem::path directoryPath);
     void checkTextLabels(int mouseX, int mouseY);
     void activateLabel(int mouseX, int mouseY);
     void resetFoldersPositions();

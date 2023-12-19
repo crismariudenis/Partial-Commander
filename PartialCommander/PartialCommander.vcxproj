@@ -133,6 +133,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="CustomFonts.cpp" />
     <ClCompile Include="Folder.cpp" />
@@ -142,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Clipboard.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="CustomFonts.h" />
     <ClInclude Include="Folder.h" />

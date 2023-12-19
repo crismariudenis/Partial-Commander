@@ -8,9 +8,9 @@ class Folder
 {
 private:
 
-	std::uintmax_t size;
-	sf::Font font;
+	unsigned long long size;
 	std::string modifyTime;
+	sf::Font font;
 	bool isSelected = false;
 
 	std::string normalizePath(std::string path);
@@ -23,6 +23,8 @@ public:
 	void initText(std::vector<sf::Font>& fonts);
 	void toggleIsSelected();
 	void updateText();
+	unsigned int getSize()const;
+
 	std::filesystem::path path;
 	sf::Text folderText, sizeText, dateText;
 	sf::Vector2f position;

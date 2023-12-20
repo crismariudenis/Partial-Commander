@@ -1,7 +1,7 @@
 #include "Button.h"
 
 
-Button::Button(std::string text, int height, int width, int index, sf::Vector2f topLeft, sf::Color buttonColor, sf::RenderWindow& mainWindow, std::vector<sf::Font>& fonts) : mainWindow(mainWindow), fonts(fonts)
+Button::Button(std::string text, int height, int width, int index, sf::Vector2f topLeft, sf::Color buttonColor, sf::RenderWindow& window, std::vector<sf::Font>& fonts) : window(window), fonts(fonts)
 {
 	this->index = index;
 	this->text = text;
@@ -24,7 +24,7 @@ void Button::drawRect() {
 	rect.setFillColor(buttonColor);
 	rect.setSize(sf::Vector2f(width - indexString.size() * PANEL_MARGIN_X, height));
 	rect.setPosition(sf::Vector2f(topLeft.x + indexString.size() * PANEL_MARGIN_X, topLeft.y));
-	mainWindow.draw(rect);
+	window.draw(rect);
 }
 
 void Button::drawTitle() {
@@ -35,7 +35,7 @@ void Button::drawTitle() {
 	title.setFont(fonts[3]);
 	title.setPosition(sf::Vector2f(topLeft.x + indexString.size() * PANEL_MARGIN_X, topLeft.y));
 	title.setFillColor(sf::Color(0, 0, 0));
-	mainWindow.draw(title);
+	window.draw(title);
 }
 
 void Button::drawIndex()
@@ -48,7 +48,7 @@ void Button::drawIndex()
 	number.setPosition(topLeft);
 	number.setFillColor(sf::Color(255, 255, 255));
 
-	mainWindow.draw(number);
+	window.draw(number);
 }
 
 std::string Button::toString(int number) {

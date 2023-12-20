@@ -7,9 +7,9 @@ class App
 {
 private:
 	sf::RectangleShape background, bottomBackground;
-	sf::RenderWindow mainWindow;
+	sf::RenderWindow window;
 	std::string name;
-	Panel leftPanel{ mainWindow }, rightPanel{ mainWindow };
+	Panel leftPanel{ window }, rightPanel{ window };
 	std::vector<sf::Font> fonts = fontsHandler.getFonts();
 	std::vector<Button> buttons;
 

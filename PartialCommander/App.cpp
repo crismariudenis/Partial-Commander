@@ -2,13 +2,13 @@
 
 void App::initWindow(std::string name) {
 
-	mainWindow.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), name);
+	window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), name);
 
 	/// Calculating topLeft corner so that window is in the middle of the screen
 	sf::VideoMode mode = sf::VideoMode::getDesktopMode();
 	sf::Vector2i topLeft(mode.width / 10, mode.height / 10);
 
-	mainWindow.setPosition(topLeft);
+	window.setPosition(topLeft);
 }
 
 
@@ -27,15 +27,15 @@ void App::init() {
 
 void App::run() {
 
-	while (mainWindow.isOpen()) {
+	while (window.isOpen()) {
 
 		/// Event handling
 		sf::Event event;
-		while (mainWindow.pollEvent(event)) {
+		while (window.pollEvent(event)) {
 			switch (event.type)
 			{
 			case sf::Event::Closed:
-				mainWindow.close();
+				window.close();
 				break;
 
 			case sf::Event::KeyPressed: case sf::Event::KeyReleased:
@@ -52,23 +52,23 @@ void App::run() {
 			}
 		}
 
-		mainWindow.setActive();
+		window.setActive();
 
 		/*  Drawing operations */
 
 		/// Background colors
-		mainWindow.draw(background);
-		mainWindow.draw(bottomBackground);
+		window.draw(background);
+		window.draw(bottomBackground);
 		handleMouseMovedEvents();
 		/// Panels
 		leftPanel.draw();
 		rightPanel.draw();
-		
+
 
 		/// Buttons
 		drawButtons();
 
-		mainWindow.display();
+		window.display();
 	}
 }
 
@@ -79,7 +79,7 @@ void App::initPanels() {
 					margin_bottom
 					margin_bottom
 	*/
-	sf::Vector2f left{ PANEL_MARGIN_X,PANEL_MARGIN_TOP + TOP_BUTTONS_HEIGHT};
+	sf::Vector2f left{ PANEL_MARGIN_X,PANEL_MARGIN_TOP + TOP_BUTTONS_HEIGHT };
 	sf::Vector2f right{ 2 * PANEL_MARGIN_X + PANEL_WIDTH - 3 * PANEL_LINE_WIDTH + left.x,left.y };
 
 	leftPanel.init(left, PANEL_WIDTH, PANEL_HEIGHT, leftPanelDirectoryPath, fonts);
@@ -114,6 +114,9 @@ void App::handleKeyboardEvents(sf::Event& event) {
 	case sf::Keyboard::Scancode::F5:
 		leftPanel.updateSelectedFolder(event.key.scancode);
 		rightPanel.updateSelectedFolder(event.key.scancode);
+		break;
+	case sf::Keyboard::Scancode::F10:
+		window.close();
 		break;
 	}
 }
@@ -183,18 +186,17 @@ void App::handleKeyboardShortcuts(sf::Event event)
 	
 }
 
-void App::handleMousePressingEvents(sf::Event &event) 
+void App::handleMousePressingEvents(sf::Event& event)
 {
 	if (event.mouseButton.button == sf::Mouse::Left) {
-		int mouseX = event.mouseButton.x;
-		int mouseY = event.mouseButton.y;
-		leftPanel.checkTextLabels(mouseX, mouseY);
-		rightPanel.checkTextLabels(mouseX, mouseY);
+		sf::Vector2f mouse{ (float)event.mouseButton.x , (float)event.mouseButton.y };
+		leftPanel.checkTextLabels(mouse);
+		rightPanel.checkTextLabels(mouse);
 	}
 }
 
 void App::handleMouseMovedEvents() {
-	sf::Vector2i position = sf::Mouse::getPosition(mainWindow);
+	sf::Vector2i position = sf::Mouse::getPosition(window);
 	int mouseX = position.x, mouseY = position.y;
 	leftPanel.activateLabel(mouseX, mouseY);
 	rightPanel.activateLabel(mouseX, mouseY);
@@ -218,8 +220,8 @@ void App::initButtons() {
 	sf::Vector2f topLeft(PANEL_MARGIN_X * 2, WINDOW_HEIGHT - PANEL_BOTTOM_HEIGHT / 1.25);
 	int moveX = (WINDOW_WIDTH - PANEL_MARGIN_X * (buttonNames.size() + 2)) / buttonNames.size();
 
-	for (int index = 0;index < buttonNames.size(); ++index) {
-		Button button(buttonNames[index], BUTTON_HEIGHT, moveX, index + 1, topLeft, secondaryColor, mainWindow, fonts);
+	for (int index = 0; index < buttonNames.size(); ++index) {
+		Button button(buttonNames[index], BUTTON_HEIGHT, moveX, index + 1, topLeft, secondaryColor, window, fonts);
 		buttons.push_back(button);
 		topLeft += sf::Vector2f(moveX + PANEL_MARGIN_X, 0);
 	}

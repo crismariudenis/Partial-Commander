@@ -228,7 +228,7 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 
 			std::string extension = path.extension().string();
 			for (int i = 1; std::filesystem::exists(destPath); i++) {
-				destPath = path.parent_path() / (path.stem().string() + std::to_string(i) + extension);
+				destPath = path.parent_path() / (path.stem().string() + " (" + std::to_string(i) + ")" + extension);
 			}
 
 			try {
@@ -281,7 +281,7 @@ void Panel::changePath() {
 
 void Panel::changeDirectory(std::filesystem::path directoryPath) {
 	std::cout << directoryPath.string() << '\n';
-	if(isSelected)
+	if (isSelected)
 		update(directoryPath);
 }
 

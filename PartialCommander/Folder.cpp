@@ -60,7 +60,7 @@ std::string Folder::normalizePath(std::string path) {
 std::string Folder::toString(std::uintmax_t size) {
 	std::string number;
 	if (size == 0)
-		number += "6904";
+		return "<DIR>";
 	while (size && number.size() <= 5) {
 		number += size % 10 + '0';
 		size /= 10;
@@ -74,7 +74,7 @@ Folder::Folder(std::filesystem::path path, sf::Vector2f position, std::vector<sf
 	this->position = position;
 	this->date = date;
 	size = std::filesystem::file_size(this->path);
-	initText(fonts);	
+	initText(fonts);
 	std::filesystem::file_time_type ftime1 = std::filesystem::last_write_time(this->path);
 }
 
@@ -112,7 +112,7 @@ void Folder::updateText() {
 }
 
 
-unsigned int Folder::getSize() const{
+unsigned int Folder::getSize() const {
 	return size;
 }
 

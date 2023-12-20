@@ -15,7 +15,10 @@ void Folder::initText(std::vector<sf::Font>& fonts) {
 	folderText.setString(canonicPath);
 
 	if (canonicPath != "/..")
+	{
+		std::cout <<canonicPath<<" "<< size << '\n';
 		sizeText.setString(toString(size));
+	}
 
 	sf::Vector2f sizePosition = position, datePosition = position;
 
@@ -59,7 +62,7 @@ std::string Folder::normalizePath(std::string path) {
 
 std::string Folder::toString(std::uintmax_t size) {
 	std::string number;
-	if (size == 0)
+	if (size == 0 or size == 4096)
 		return "<DIR>";
 	while (size && number.size() <= 5) {
 		number += size % 10 + '0';

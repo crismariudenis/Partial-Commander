@@ -15,10 +15,7 @@ void Folder::initText(std::vector<sf::Font>& fonts) {
 	folderText.setString(canonicPath);
 
 	if (canonicPath != "/..")
-	{
-		std::cout <<canonicPath<<" "<< size << '\n';
 		sizeText.setString(toString(size));
-	}
 
 	sf::Vector2f sizePosition = position, datePosition = position;
 
@@ -78,7 +75,6 @@ Folder::Folder(std::filesystem::path path, sf::Vector2f position, std::vector<sf
 	this->date = date;
 	size = std::filesystem::file_size(this->path);
 	initText(fonts);
-	std::filesystem::file_time_type ftime1 = std::filesystem::last_write_time(this->path);
 }
 
 void Folder::toggleIsSelected() {

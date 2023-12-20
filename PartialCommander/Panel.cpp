@@ -172,6 +172,7 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 				folders[selectedFolderIndex].toggleIsSelected();
 				folders[selectedFolderIndex].updateText();
 			}
+			std::cout << selectedFolderIndex << '\n';
 			if (selectedFolderIndex == lastToDisplay) {
 				int step = std::min((size_t)10, folders.size() - lastToDisplay - 1);
 				firstToDisplay += step;
@@ -189,7 +190,7 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 				selectedFolderIndex--;
 				folders[selectedFolderIndex].toggleIsSelected();
 				folders[selectedFolderIndex].updateText();
-			}
+;			}
 			if (selectedFolderIndex == firstToDisplay) {
 				int step = std::min(10, firstToDisplay);
 				firstToDisplay -= step;
@@ -241,6 +242,8 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 
 			// reset the index
 			selectedFolderIndex = index;
+			folders[selectedFolderIndex].toggleIsSelected();
+			folders[selectedFolderIndex].updateText();
 			break;
 		}
 		default:
@@ -412,23 +415,49 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 			shortcutSelectedFolder[i] = true;
 	}
 	else if (type == 2) { /// Ctrl Shift Up/Down
+		if (shiftSelectedFolder == -1)
+			shiftSelectedFolder = selectedFolderIndex;
 		if (shiftSelectedFolder - selectedFolderIndex > 0) {
-			if (move > 0) shortcutSelectedFolder[++shiftSelectedFolder] = true;
-			else shortcutSelectedFolder[shiftSelectedFolder--] = false;
+			if (move > 0 && shiftSelectedFolder + 1 < folders.size()) shortcutSelectedFolder[++shiftSelectedFolder] = true;
+			else if(move < 0) shortcutSelectedFolder[shiftSelectedFolder--] = false;
 		}
-		else if (shiftSelectedFolder - selectedFolderIndex < 0) {
+		else if (shiftSelectedFolder - selectedFolderIndex < 0 ) {
 			if (move > 0) shortcutSelectedFolder[shiftSelectedFolder++] = false;
-			else shortcutSelectedFolder[--shiftSelectedFolder] = true;
+			else if(shiftSelectedFolder > 0) shortcutSelectedFolder[--shiftSelectedFolder] = true;
 		}
-		else {
+		else if(shiftSelectedFolder == selectedFolderIndex) {
 			if (move > 0) shortcutSelectedFolder[++shiftSelectedFolder] = true;
 			else shortcutSelectedFolder[--shiftSelectedFolder] = true;
 		}
 	}
 	else if (type == 3) {
 		shortcutSelectedFolder.clear();
-		shiftSelectedFolder = selectedFolderIndex;
+		folders[selectedFolderIndex].toggleIsSelected();
+		folders[selectedFolderIndex].updateText();
+
+		if(shiftSelectedFolder != -1)
+			selectedFolderIndex = shiftSelectedFolder;
+
+		folders[selectedFolderIndex].toggleIsSelected();
+		folders[selectedFolderIndex].updateText();
+		shiftSelectedFolder = -1;
 	}
+
+	if (shiftSelectedFolder == firstToDisplay) {
+		int step = std::min(10, firstToDisplay);
+		firstToDisplay -= step;
+		lastToDisplay -= step;
+		updateFoldersPosition(sf::Vector2f(0, 1.0 * step * height / LINE_SPACING));
+	}
+
+	if (shiftSelectedFolder == lastToDisplay) {
+		int step = std::min((size_t)10, folders.size() - lastToDisplay - 1);
+		firstToDisplay += step;
+		lastToDisplay += step;
+		updateFoldersPosition(sf::Vector2f(0, 1.0 * step * (-height) / LINE_SPACING));
+	}
+
+
 }
 
 void Panel::updateClipboard() {
@@ -444,20 +473,24 @@ void Panel::pasteFromClipboard(std::vector<Folder> folders) {
 		destPath = path.parent_path() / (path.stem().string() + std::to_string(i) + extension);
 	}*/
 	if (isSelected) {
-
+int copyIndex = selectedFolderIndex;
 		for (size_t index = 0; index < folders.size(); ++index) {
 			std::string path = folders[index].path.string(), suffix;
 			while (path.back() != '\\')
 				suffix += path.back(), path.pop_back();
 			std::reverse(suffix.begin(), suffix.end());
+			path += suffix;
 			std::string destPath = currentPath.string() + '\\' + suffix;
 			for (int i = 1; std::filesystem::exists(destPath); i++) {
 				destPath = currentPath.string() + '\\' + suffix + std::to_string(i);
 			}
-			std::cout << destPath << '\n';
-			std::filesystem::copy(path, destPath, std::filesystem::copy_options::recursive);
+			std::filesystem::path actPath(path), actDestPath(destPath);
+			std::filesystem::copy(actPath, actDestPath, std::filesystem::copy_options::recursive);
 		}
 		update(currentPath);
+		selectedFolderIndex = copyIndex;
+		this->folders[selectedFolderIndex].toggleIsSelected();
+		this->folders[selectedFolderIndex].updateText();
 	}
 }
 

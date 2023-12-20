@@ -29,7 +29,6 @@ void App::run() {
 
 	while (window.isOpen()) {
 
-		shortcutOn = false;
 		/// Event handling
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -124,13 +123,13 @@ void App::handleKeyboardEvents(sf::Event& event) {
 
 void App::handleKeyboardShortcuts(sf::Event event)
 {
-	bool isReleased = false;
+	bool keyPressed = false;
 	if (event.type == sf::Event::KeyReleased) {
-		isReleased = true;
 		released[event.key.scancode] = true;
 		pressed[event.key.scancode] = false;
 	}
 	else if (event.type == sf::Event::KeyPressed) {
+		keyPressed = true;
 		released[event.key.scancode] = false;
 		pressed[event.key.scancode] = true;
 	}
@@ -139,12 +138,14 @@ void App::handleKeyboardShortcuts(sf::Event event)
 		leftPanel.updateShortcutSelectedFolder(1, 0);
 		rightPanel.updateShortcutSelectedFolder(1, 0);
 	}
-	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::LShift] && (pressed[sf::Keyboard::Scan::Up] || pressed[sf::Keyboard::Scan::Down])) {
+	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::LShift]) {
 		shortcutOn = true;
-		int move = 1;
-		if (pressed[sf::Keyboard::Scan::Up]) move = -move;
-		leftPanel.updateShortcutSelectedFolder(2, move);
-		rightPanel.updateShortcutSelectedFolder(2, move);
+		if (pressed[sf::Keyboard::Scan::Up] || pressed[sf::Keyboard::Scan::Down]) {
+			int move = 1;
+			if (pressed[sf::Keyboard::Scan::Up]) move = -move;
+			leftPanel.updateShortcutSelectedFolder(2, move);
+			rightPanel.updateShortcutSelectedFolder(2, move);
+		}
 	}
 	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::C]) {
 		shortcutOn = true;
@@ -152,7 +153,7 @@ void App::handleKeyboardShortcuts(sf::Event event)
 		rightPanel.updateClipboard();
 	}
 	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::V]) {
-		shortcutOn = false;
+		shortcutOn = true;
 		Clipboard* clipboard = Clipboard::getInstance();
 		leftPanel.pasteFromClipboard(clipboard->getFolders());
 		rightPanel.pasteFromClipboard(clipboard->getFolders());
@@ -171,17 +172,18 @@ void App::handleKeyboardShortcuts(sf::Event event)
 			std::string path;
 			path += (code + 'A');
 			path += ":\\";
-
 			std::filesystem::path directoryPath(path);
 			leftPanel.changeDirectory(directoryPath);
 			rightPanel.changeDirectory(directoryPath);
 
 		}
 	}
-	else if (isReleased == false) {
+	else if(shortcutOn == true && !pressed[sf::Keyboard::Scan::LControl] && keyPressed == true && !pressed[sf::Keyboard::Scan::LShift]) {
 		leftPanel.updateShortcutSelectedFolder(3, -1);
 		rightPanel.updateShortcutSelectedFolder(3, -1);
+		shortcutOn = false;
 	}
+	
 }
 
 void App::handleMousePressingEvents(sf::Event& event)

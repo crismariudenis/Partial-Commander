@@ -117,7 +117,7 @@ void Panel::update(std::filesystem::path path) {
 	this->currentPath = path;
 	sf::Vector2f textPosition = pos;
 	textPosition.x += 10;
-	textPosition.y += 1.0 * height / LINE_SPACING + TOP_TEXT_BORDER;
+	textPosition.y += 1.f * height / LINE_SPACING + TOP_TEXT_BORDER;
 	firstToDisplay = 0, lastToDisplay = 1, selectedFolderIndex = 0;
 
 	folders.clear();
@@ -125,11 +125,23 @@ void Panel::update(std::filesystem::path path) {
 	folders[firstToDisplay].toggleIsSelected();
 
 	for (auto const& entry : std::filesystem::directory_iterator(path)) {
-		textPosition.y += height / LINE_SPACING;
+		if(!std::filesystem::exists(entry))
+			continue;
+		if (!std::filesystem::is_directory(entry) && !std::filesystem::is_regular_file(entry))
+			continue;
+		try {
+			entry.path().string();
+		}
+		catch (const std::exception& e) {
+			std::cerr << "Exception caught: " << e.what() << std::endl;
+			continue;
+		}
+		textPosition.y += 1.f * height / LINE_SPACING;
 		folders.push_back(Folder(entry.path(), textPosition, fonts, getDate(entry.path())));
 		if (textPosition.y <= height - PANEL_OFFSET - 20) {
 			lastToDisplay++;
 		}
+
 	}
 	lastToDisplay--;
 
@@ -172,7 +184,6 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 				folders[selectedFolderIndex].toggleIsSelected();
 				folders[selectedFolderIndex].updateText();
 			}
-			std::cout << selectedFolderIndex << '\n';
 			if (selectedFolderIndex == lastToDisplay) {
 				int step = std::min((size_t)10, folders.size() - lastToDisplay - 1);
 				firstToDisplay += step;

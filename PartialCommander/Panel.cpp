@@ -102,12 +102,16 @@ void Panel::drawSelectedFolderBackground() {
 
 void Panel::draw() {
 	if (isSelected)
-		drawSelectedFolderBackground();
+		drawSelectedFolderBackground(), drawScrollbar();
 	drawFolders();
 	drawBorders();
 	drawColumnTitles();
 	drawCurrentPath();
 	drawFreeSpace();
+}
+
+void Panel::drawScrollbar() {
+	window.draw(scrollbar);
 }
 void Panel::update(std::filesystem::path path) {
 
@@ -145,6 +149,9 @@ void Panel::update(std::filesystem::path path) {
 	}
 	lastToDisplay--;
 
+	float scrollHeight = (1.f * height / folders.size()) * (1.f * lastToDisplay - firstToDisplay + 1);
+	scrollbar.init(SCROLLBAR_WIDTH, scrollHeight, 1.f * height / folders.size());
+
 }
 std::string Panel::getDate(std::filesystem::path path) {
 	// Convert from fs::file_time_type to std::time_t
@@ -178,16 +185,13 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 		case sf::Keyboard::Scancode::Down:
 		{
 			if (selectedFolderIndex + 1 < folders.size()) {
-				folders[selectedFolderIndex].toggleIsSelected();
-				folders[selectedFolderIndex].updateText();
-				selectedFolderIndex++;
-				folders[selectedFolderIndex].toggleIsSelected();
-				folders[selectedFolderIndex].updateText();
+				updateFolderSelectedFolder(selectedFolderIndex + 1);
 			}
 			if (selectedFolderIndex == lastToDisplay) {
 				int step = std::min((size_t)10, folders.size() - lastToDisplay - 1);
 				firstToDisplay += step;
 				lastToDisplay += step;
+				scrollbar.move(0, step);
 				updateFoldersPosition(sf::Vector2f(0, 1.f * step * (-height) / LINE_SPACING));
 			}
 			break;
@@ -195,17 +199,13 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 		case sf::Keyboard::Scancode::W:
 		case sf::Keyboard::Scancode::Up:
 		{
-			if (selectedFolderIndex != 0) {
-				folders[selectedFolderIndex].toggleIsSelected();
-				folders[selectedFolderIndex].updateText();
-				selectedFolderIndex--;
-				folders[selectedFolderIndex].toggleIsSelected();
-				folders[selectedFolderIndex].updateText();
-;			}
+			if (selectedFolderIndex != 0) 
+				updateFolderSelectedFolder(selectedFolderIndex - 1);
 			if (selectedFolderIndex == firstToDisplay) {
 				int step = std::min(10, firstToDisplay);
 				firstToDisplay -= step;
 				lastToDisplay -= step;
+				scrollbar.move(0, -step);
 				updateFoldersPosition(sf::Vector2f(0, 1.f * step * height / LINE_SPACING));
 			}
 			break;
@@ -227,7 +227,7 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 
 			update(currentPath);
 			//update the index to the old one
-			selectedFolderIndex = std::min(index, (int)folders.size() - 1);
+			updateFolderSelectedFolder(std::min(index, (int)folders.size() - 1));
 			break;
 		}
 		case sf::Keyboard::Scancode::F5: {
@@ -252,9 +252,7 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 			update(path.parent_path());
 
 			// reset the index
-			selectedFolderIndex = index;
-			folders[selectedFolderIndex].toggleIsSelected();
-			folders[selectedFolderIndex].updateText();
+			updateFolderSelectedFolder(index);
 			break;
 		}
 		default:
@@ -291,7 +289,6 @@ void Panel::changePath() {
 }
 
 void Panel::changeDirectory(std::filesystem::path directoryPath) {
-	std::cout << directoryPath.string() << '\n';
 	if (isSelected)
 		update(directoryPath);
 }
@@ -368,6 +365,18 @@ void Panel::checkTextLabels(sf::Vector2f mouse) {
 		}
 		else std::sort(folders.begin() + 1, folders.end(), timeCompare), sortType = 3;
 		resetTextPositions(initialPositions);
+	}
+}
+
+void Panel::checkFolderLabels(sf::Vector2f mouse) {
+	if (!isSelected)
+		return;
+	for (int index = 0; index < folders.size(); ++index) {
+		bool ok = checkMouseOnFolder(index, mouse.x, mouse.y);
+		if (ok) {
+			updateFolderSelectedFolder(index);
+			return;
+		}
 	}
 }
 
@@ -484,7 +493,7 @@ void Panel::pasteFromClipboard(std::vector<Folder> folders) {
 		destPath = path.parent_path() / (path.stem().string() + std::to_string(i) + extension);
 	}*/
 	if (isSelected) {
-int copyIndex = selectedFolderIndex;
+		int copyIndex = selectedFolderIndex;
 		for (size_t index = 0; index < folders.size(); ++index) {
 			std::string path = folders[index].path.string(), suffix;
 			while (path.back() != '\\')
@@ -534,4 +543,50 @@ void Panel::drawFreeSpace()
 	spaceText.setCharacterSize(CHARACTER_SIZE + 5);
 	spaceText.setFont(fonts[CustomFonts::Font::ROBOTO]);
 	window.draw(spaceText);
+}
+
+void Panel::updateFolderSelectedFolder(int newSelectedFolder) {
+	folders[selectedFolderIndex].toggleIsSelected();
+	folders[selectedFolderIndex].updateText();
+	selectedFolderIndex = newSelectedFolder;
+	folders[selectedFolderIndex].toggleIsSelected();
+	folders[selectedFolderIndex].updateText();
+}
+
+bool Panel::checkMouseOnFolder(int index, float mouseX, float mouseY) {
+	if (!isSelected)
+		return false;
+	Folder folder = folders[index];
+	double extraHeight = 1.f * height / LINE_SPACING;
+	return checkBoxLabel(folder.folderText.getPosition().x, folder.folderText.getPosition().y,
+		folder.folderText.getPosition().x + PANEL_WIDTH - PANEL_MARGIN_X, folder.folderText.getPosition().y + extraHeight, mouseX, mouseY);
+}
+
+bool Panel::checkScrollbarLabel(sf::Vector2f mouse) {
+	if (!isSelected)
+		return false;
+	return checkBoxLabel(scrollbar.getPosition().x, scrollbar.getPosition().y,
+		scrollbar.getPosition().x + scrollbar.getSize().x, scrollbar.getPosition().y + scrollbar.getSize().y, mouse.x, mouse.y);
+}
+
+void Panel::updateByScrollbar(sf::Vector2f mouse)
+{
+	if (!isSelected)
+		return;
+	float x = scrollbar.getPosition().x, y = scrollbar.getPosition().y;
+	if (mouse.y - y > 0) {
+		int steps = std::min(folders.size() - 1.f * lastToDisplay - 1, (mouse.y - y) / scrollbar.getUnitPerFolder());
+		std::cout << steps << '\n';
+		lastToDisplay += steps;
+		firstToDisplay += steps;
+		updateFoldersPosition(sf::Vector2f(0, 1.f * steps * (-height) / LINE_SPACING));
+		scrollbar.move(0, steps);
+	}
+	else {
+		int steps = std::min(1.f * firstToDisplay, (y - mouse.y) / folders.size());
+		lastToDisplay -= steps;
+		firstToDisplay -= steps;
+		updateFoldersPosition(sf::Vector2f(0, 1.f * steps * (height) / LINE_SPACING));
+		scrollbar.move(0, -steps);
+	}
 }

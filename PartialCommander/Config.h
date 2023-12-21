@@ -40,6 +40,10 @@
 #define SIZE_SPACE 80 
 #define TIME_SPACE (PANEL_WIDTH - SIZE_SPACE - FOLDER_SPACE)
 
+#define SCROLLBAR_WIDTH 10
+#define SCROLLBAR_X PANEL_WIDTH + 12
+#define SCROLLBAR_Y TOP_BUTTONS_HEIGHT + 18
+
 extern std::filesystem::path leftPanelDirectoryPath;
 extern std::filesystem::path rightPanelDirectoryPath;
 

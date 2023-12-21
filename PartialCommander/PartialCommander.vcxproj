@@ -140,6 +140,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scrollbar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Scrollbar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

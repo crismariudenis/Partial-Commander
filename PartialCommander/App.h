@@ -25,8 +25,11 @@ private:
 	void drawButtons();
 	void initBackgrounds();
 
+	void getCursor(sf::Cursor & cursor);
+
 public:
 
+	bool isMouseOnScrollbar = false;
 	bool shortcutOn = false;
 
 	void init();

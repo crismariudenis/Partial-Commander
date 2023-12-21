@@ -279,31 +279,10 @@ void Panel::toggleIsSelected() {
 }
 
 void Panel::changePath() {
-
-	auto& p = folders[selectedFolderIndex].path;
-
-
-	if (!std::filesystem::is_directory(p))
-	{
-		std::string realPath = p.string();
-
-		// Add "" around the spaces in a path
-		// Ex:  D:\test (1).jpg  ->  D:\test" "(1).jpg
-		for (size_t i = 0; i < realPath.size(); i++)
-			if (realPath[i] == ' ') {
-				realPath = realPath.substr(0, i) + "\" \"" + realPath.substr(i + 1, realPath.size());
-				i += 2;
-			}
-
-		std::string cmd = "start " + realPath;
-			std::cout << cmd.c_str() << '\n';
-		system(cmd.c_str());
-		return;
-	}
 	if (isSelected) {
 		std::filesystem::path folderPath;
 		if (selectedFolderIndex)
-			folderPath = p;
+			folderPath = folders[selectedFolderIndex].path;
 		else
 			folderPath = currentPath.parent_path();
 		std::cout << folderPath.string() << '\n';
@@ -311,10 +290,10 @@ void Panel::changePath() {
 	}
 }
 
-void Panel::changeDirectory(std::filesystem::path p) {
-	std::cout << p.string() << '\n';
+void Panel::changeDirectory(std::filesystem::path directoryPath) {
+	std::cout << directoryPath.string() << '\n';
 	if (isSelected)
-		update(p);
+		update(directoryPath);
 }
 
 void Panel::drawCurrentPath()

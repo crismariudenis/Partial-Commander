@@ -43,6 +43,8 @@
 #define SCROLLBAR_WIDTH 10
 #define SCROLLBAR_X PANEL_WIDTH + 12
 #define SCROLLBAR_Y TOP_BUTTONS_HEIGHT + 18
+#define SCROLLBAR_BUTTON_WIDTH SCROLLBAR_WIDTH
+#define SCROLLBAR_BUTTON_HEIGHT 20
 
 extern std::filesystem::path leftPanelDirectoryPath;
 extern std::filesystem::path rightPanelDirectoryPath;
@@ -59,6 +61,10 @@ const sf::Color titleColor = sf::Color(215, 171, 32);
 const sf::Color secondaryColor(42, 161, 179); /// Buttons and Selected Folder Color
 const sf::Color selectedTextColor(0, 0, 0); /// Selected Folder Text Color
 const sf::Color bottomBackgroundColor(0, 0, 0);
+const sf::Color scrollbarButtonColor(198, 215, 251, 255);
+const sf::Color scrollbarTextButtonColor(81, 96, 138, 255);
+const sf::Color scrollbarColor(198, 215, 251, 255);
+
 const std::vector<std::string> buttonNames = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
 
 /// Fonts

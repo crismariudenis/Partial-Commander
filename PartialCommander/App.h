@@ -7,6 +7,7 @@ class App
 {
 private:
 	sf::RectangleShape background, bottomBackground;
+	sf::RectangleShape upButton, downButton;
 	sf::RenderWindow window;
 	std::string name;
 	Panel leftPanel{ window }, rightPanel{ window };
@@ -23,6 +24,7 @@ private:
 	void handleKeyboardShortcuts(sf::Event event);
 
 	void drawButtons();
+	void drawScrollbarButtons();
 	void initBackgrounds();
 
 	void getCursor(sf::Cursor & cursor);

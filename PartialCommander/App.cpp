@@ -1,4 +1,4 @@
-#include "App.h"
+﻿#include "App.h"
 
 void App::initWindow(std::string name) {
 
@@ -201,12 +201,26 @@ void App::handleMousePressingEvents(sf::Event& event)
 		rightPanel.checkTextLabels(mouse);
 		leftPanel.checkFolderLabels(mouse);
 		rightPanel.checkFolderLabels(mouse);
+
 		bool ok = leftPanel.checkScrollbarLabel(mouse);
 		if (ok)
 			isMouseOnScrollbar = true;
 		ok = rightPanel.checkScrollbarLabel(mouse);
 		if (ok)
 			isMouseOnScrollbar = true;
+
+		auto checkScrollbarButton = [&](sf::RectangleShape & button)
+			{
+				sf::Vector2f buttonPosition = button.getPosition();
+				sf::Vector2f buttonSize = button.getSize();
+				return mouse.x >= buttonPosition.x && mouse.x <= buttonPosition.x + buttonSize.x && mouse.y >= buttonPosition.y && mouse.y <= buttonPosition.y + buttonSize.y;
+			};
+
+		if (checkScrollbarButton(upButton))
+			leftPanel.updateByScrollbar(-1), rightPanel.updateByScrollbar(-1);
+		else if (checkScrollbarButton(downButton))
+			leftPanel.updateByScrollbar(1), rightPanel.updateByScrollbar(1);
+
 	}
 }
 
@@ -246,9 +260,38 @@ void App::initButtons() {
 	}
 }
 
+void App::drawScrollbarButtons()
+{
+	sf::Text buttonText, buttonText2;
+	auto initScrollBarButton = [](sf::RectangleShape& button, sf::Vector2f position)
+		{
+			button.setFillColor(scrollbarButtonColor);
+			button.setSize(sf::Vector2f(SCROLLBAR_BUTTON_WIDTH, SCROLLBAR_BUTTON_HEIGHT));
+			button.setPosition(position);
+			button.setOutlineThickness(2);
+		};
+	auto initScrollBarButtonText = [&](sf::Text& buttonText, float characterSize, std::string text, sf::Vector2f position)
+		{
+			buttonText.setFillColor(scrollbarTextButtonColor);
+			buttonText.setFont(fonts[CustomFonts::Font::ROBOTO]);
+			buttonText.setString(text);
+			buttonText.setPosition(position);
+			buttonText.setCharacterSize(characterSize);
+		};
+
+	initScrollBarButton(upButton, sf::Vector2f(SCROLLBAR_X, SCROLLBAR_Y + 2));
+	initScrollBarButton(downButton, sf::Vector2f(PANEL_WIDTH + PANEL_MARGIN_X + 2, PANEL_HEIGHT + TOP_BUTTONS_HEIGHT));
+	initScrollBarButtonText(buttonText, 24, "^", sf::Vector2f(SCROLLBAR_X, SCROLLBAR_Y));
+	initScrollBarButtonText(buttonText2, 18, "v", sf::Vector2f(downButton.getPosition().x, downButton.getPosition().y));
+
+	window.draw(upButton), window.draw(downButton);
+	window.draw(buttonText), window.draw(buttonText2);
+}
+
 void App::drawButtons() {
 	for (int index = 0; index < buttons.size(); ++index)
 		buttons[index].draw();
+	drawScrollbarButtons();
 }
 
 void App::getCursor(sf::Cursor &cursor) {

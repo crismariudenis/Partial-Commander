@@ -2,9 +2,10 @@
 
 
 void Scrollbar::init(float width, float height, float unitPerFolder) {
-	this->setPosition(sf::Vector2f(SCROLLBAR_X, SCROLLBAR_Y));
+	this->setPosition(sf::Vector2f(SCROLLBAR_X, SCROLLBAR_Y + SCROLLBAR_BUTTON_HEIGHT));
 	this->setSize(sf::Vector2f(width, height));
 	this->unitPerFolder = unitPerFolder;
+	this->setFillColor(scrollbarColor);
 }
 
 void Scrollbar::move(int moveX, int moveY)

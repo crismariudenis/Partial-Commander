@@ -53,5 +53,6 @@ public:
     bool checkMouseOnFolder(int index, float mouseX, float mouseY);
     bool checkScrollbarLabel(sf::Vector2f mouse);
     void updateByScrollbar(sf::Vector2f mouse);
+    void updateByScrollbar(int steps);
 
    };

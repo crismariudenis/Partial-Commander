@@ -148,9 +148,8 @@ void Panel::update(std::filesystem::path path) {
 
 	}
 	lastToDisplay--;
-
-	float scrollHeight = (1.f * height / folders.size()) * (1.f * lastToDisplay - firstToDisplay + 1);
-	scrollbar.init(SCROLLBAR_WIDTH, scrollHeight, 1.f * height / folders.size());
+	float scrollPerUnit = 1.f * (height - 2.0 * SCROLLBAR_BUTTON_HEIGHT) / folders.size();
+	scrollbar.init(SCROLLBAR_WIDTH, scrollPerUnit * (lastToDisplay - firstToDisplay + 1) + 4.5, scrollPerUnit);
 
 }
 std::string Panel::getDate(std::filesystem::path path) {
@@ -598,17 +597,33 @@ void Panel::updateByScrollbar(sf::Vector2f mouse)
 	float x = scrollbar.getPosition().x, y = scrollbar.getPosition().y;
 	if (mouse.y - y > 0) {
 		int steps = std::min(folders.size() - 1.f * lastToDisplay - 1, (mouse.y - y) / scrollbar.getUnitPerFolder());
-		std::cout << steps << '\n';
 		lastToDisplay += steps;
 		firstToDisplay += steps;
 		updateFoldersPosition(sf::Vector2f(0, 1.f * steps * (-height) / LINE_SPACING));
 		scrollbar.move(0, steps);
 	}
 	else {
-		int steps = std::min(1.f * firstToDisplay, (y - mouse.y) / folders.size());
+		int steps = std::min(1.f * firstToDisplay, (y - mouse.y) / scrollbar.getUnitPerFolder());
 		lastToDisplay -= steps;
 		firstToDisplay -= steps;
 		updateFoldersPosition(sf::Vector2f(0, 1.f * steps * (height) / LINE_SPACING));
 		scrollbar.move(0, -steps);
 	}
+}
+
+void Panel::updateByScrollbar(int steps)
+{
+	if (!isSelected && lastToDisplay)
+		return;
+	if (!firstToDisplay && steps < 0)
+		return;
+	if (lastToDisplay + 1 == folders.size() && steps > 0)
+		return;
+	lastToDisplay += steps;
+	firstToDisplay += steps;
+	if (steps > 0)
+		updateFoldersPosition(sf::Vector2f(0, 1.f * steps * (-height) / LINE_SPACING));
+	else
+		updateFoldersPosition(sf::Vector2f(0, 1.f * std::abs(steps) * (height) / LINE_SPACING));
+	scrollbar.move(0, steps);
 }

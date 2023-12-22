@@ -483,6 +483,15 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 		folders[selectedFolderIndex].updateText();
 		shiftSelectedFolder = -1;
 	}
+	else if (type == 4) { // Control LMouse
+		move += firstToDisplay;
+		if (move < folders.size()) {
+			if (shortcutSelectedFolder[move] == true)
+				shortcutSelectedFolder[move] = false;
+			else
+				shortcutSelectedFolder[move] = true;
+		}
+	}
 
 	if (shiftSelectedFolder == firstToDisplay) {
 		int step = std::min(10, firstToDisplay);
@@ -517,15 +526,21 @@ void Panel::pasteFromClipboard(std::vector<Folder> folders) {
 		int copyIndex = selectedFolderIndex;
 		for (size_t index = 0; index < folders.size(); ++index) {
 			std::string path = folders[index].path.string(), suffix;
+			std::string extension = folders[index].path.extension().string();
 			while (path.back() != '\\')
 				suffix += path.back(), path.pop_back();
 			std::reverse(suffix.begin(), suffix.end());
-			path += suffix;
-			std::string destPath = currentPath.string() + '\\' + suffix;
-			for (int i = 1; std::filesystem::exists(destPath); i++) {
-				destPath = currentPath.string() + '\\' + suffix + std::to_string(i);
+			if (extension.size() > 0) {
+				while (suffix.back() != '.')
+					suffix.pop_back();
+				suffix.pop_back();
 			}
-			std::filesystem::path actPath(path), actDestPath(destPath);
+			std::string destPath = currentPath.string() + '\\' + suffix + extension;
+			for (int i = 1; std::filesystem::exists(destPath); i++) {
+				destPath = path + '\\' + suffix + " (" + std::to_string(i) + ") " + extension;
+			}
+			std::cout << destPath << '\n';
+			std::filesystem::path actPath(folders[index].path.string()), actDestPath(destPath);
 			std::filesystem::copy(actPath, actDestPath, std::filesystem::copy_options::recursive);
 		}
 		update(currentPath);

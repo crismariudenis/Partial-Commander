@@ -186,6 +186,7 @@ void App::handleKeyboardShortcuts(sf::Event event)
 		}
 	}
 	else if(shortcutOn == true && !pressed[sf::Keyboard::Scan::LControl] && keyPressed == true && !pressed[sf::Keyboard::Scan::LShift]) {
+		std::cout << "LALALALA\n";
 		leftPanel.updateShortcutSelectedFolder(3, -1);
 		rightPanel.updateShortcutSelectedFolder(3, -1);
 		shortcutOn = false;
@@ -196,12 +197,20 @@ void App::handleKeyboardShortcuts(sf::Event event)
 void App::handleMousePressingEvents(sf::Event& event)
 {
 	if (event.mouseButton.button == sf::Mouse::Left) {
-		sf::Vector2f mouse{ (float)event.mouseButton.x , (float)event.mouseButton.y };
-		leftPanel.checkTextLabels(mouse);
-		rightPanel.checkTextLabels(mouse);
-		leftPanel.checkFolderLabels(mouse);
-		rightPanel.checkFolderLabels(mouse);
 
+		sf::Vector2f mouse{ (float)event.mouseButton.x , (float)event.mouseButton.y };
+		if (pressed[sf::Keyboard::Scan::LControl]) {
+				float height = PANEL_HEIGHT;
+				leftPanel.updateShortcutSelectedFolder(4, (mouse.y - 108.261) / (height / LINE_SPACING));
+				rightPanel.updateShortcutSelectedFolder(4, (mouse.y - 108.261) / (height / LINE_SPACING));
+				shortcutOn = true;
+				}
+		if (!shortcutOn) {
+			leftPanel.checkTextLabels(mouse);
+			rightPanel.checkTextLabels(mouse);
+			leftPanel.checkFolderLabels(mouse);
+			rightPanel.checkFolderLabels(mouse);
+		}
 		bool ok = leftPanel.checkScrollbarLabel(mouse);
 		if (ok)
 			isMouseOnScrollbar = true;
@@ -220,7 +229,6 @@ void App::handleMousePressingEvents(sf::Event& event)
 			leftPanel.updateByScrollbar(-1), rightPanel.updateByScrollbar(-1);
 		else if (checkScrollbarButton(downButton))
 			leftPanel.updateByScrollbar(1), rightPanel.updateByScrollbar(1);
-
 	}
 }
 
@@ -246,6 +254,9 @@ void App::handleMouseScrollingEvents(sf::Event& event)
 		leftPanel.updateSelectedFolder(sf::Keyboard::Scan::W);
 		rightPanel.updateSelectedFolder(sf::Keyboard::Scan::W);
 	}
+	leftPanel.updateShortcutSelectedFolder(3, -1);
+	rightPanel.updateShortcutSelectedFolder(3, -1);
+	shortcutOn = false;
 }
 
 void App::initButtons() {

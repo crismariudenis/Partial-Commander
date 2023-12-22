@@ -48,11 +48,18 @@ void App::run() {
 			case sf::Event::MouseButtonPressed:
 				handleMousePressingEvents(event);
 				break;
+			case sf::Event::MouseButtonReleased:
+				isMouseOnScrollbar = false;
+				break;
 
 			}
 		}
 
 		window.setActive();
+
+		sf::Cursor cursor;
+		getCursor(cursor);
+		window.setMouseCursor(cursor);
 
 		/*  Drawing operations */
 
@@ -192,6 +199,14 @@ void App::handleMousePressingEvents(sf::Event& event)
 		sf::Vector2f mouse{ (float)event.mouseButton.x , (float)event.mouseButton.y };
 		leftPanel.checkTextLabels(mouse);
 		rightPanel.checkTextLabels(mouse);
+		leftPanel.checkFolderLabels(mouse);
+		rightPanel.checkFolderLabels(mouse);
+		bool ok = leftPanel.checkScrollbarLabel(mouse);
+		if (ok)
+			isMouseOnScrollbar = true;
+		ok = rightPanel.checkScrollbarLabel(mouse);
+		if (ok)
+			isMouseOnScrollbar = true;
 	}
 }
 
@@ -200,6 +215,10 @@ void App::handleMouseMovedEvents() {
 	int mouseX = position.x, mouseY = position.y;
 	leftPanel.activateLabel(mouseX, mouseY);
 	rightPanel.activateLabel(mouseX, mouseY);
+	if (isMouseOnScrollbar) {
+		leftPanel.updateByScrollbar(sf::Vector2f(mouseX, mouseY));
+		rightPanel.updateByScrollbar(sf::Vector2f(mouseX, mouseY));
+	}
 }
 
 void App::handleMouseScrollingEvents(sf::Event& event)
@@ -230,4 +249,15 @@ void App::initButtons() {
 void App::drawButtons() {
 	for (int index = 0; index < buttons.size(); ++index)
 		buttons[index].draw();
+}
+
+void App::getCursor(sf::Cursor &cursor) {
+	cursor.loadFromSystem(sf::Cursor::Hand);
+	sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+	if (mousePosition.y >= 0 && mousePosition.y <= TOP_BUTTONS_HEIGHT + 15)
+		cursor.loadFromSystem(sf::Cursor::Arrow);
+	if (mousePosition.y >= TOP_BUTTONS_HEIGHT + PANEL_HEIGHT - BOTTOM_BUTTONS_HEIGHT + 15 && mousePosition.y <= window.getSize().y)
+		cursor.loadFromSystem(sf::Cursor::Arrow);
+	if (leftPanel.checkMouseOnFolder(leftPanel.getSelectedFolderIndex(), mousePosition.x, mousePosition.y) || rightPanel.checkMouseOnFolder(rightPanel.getSelectedFolderIndex(), mousePosition.x, mousePosition.y))
+		cursor.loadFromSystem(sf::Cursor::Arrow);
 }

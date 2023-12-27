@@ -8,56 +8,62 @@ void Panel::init(sf::Vector2f pos, int width, int height, std::filesystem::path 
 	this->currentPath = currentPath;
 	this->fonts = fonts;
 	update(currentPath);
+	initColumnTitles();
+	initBorders();
+	initCurrentPath();
 }
 
 void Panel::drawFolders() {
 	for (int index = firstToDisplay; index <= lastToDisplay; ++index) {
+		folders[index].position.y = 1.f * (index - firstToDisplay + 1) * (1.f * height / LINE_SPACING) + pos.y + TOP_TEXT_BORDER;
+		folders[index].updateText();
 		window.draw(folders[index].folderText);
 		window.draw(folders[index].sizeText);
 		window.draw(folders[index].dateText);
 	}
 }
+
 void Panel::drawBorders() {
+	window.draw(panelRect);
+	window.draw(line1);
+	window.draw(line2);
+	window.draw(line3);
+}
 
-	sf::RectangleShape rect;
-	rect.setOutlineThickness(PANEL_LINE_WIDTH);
-	rect.setPosition(pos);
-	rect.setSize(sf::Vector2f(width, height));
-	rect.setOutlineColor(sf::Color::White);
-	rect.setFillColor(sf::Color::Transparent);
+void Panel::initBorders() {
 
-	sf::RectangleShape line1;
+	panelRect.setOutlineThickness(PANEL_LINE_WIDTH);
+	panelRect.setPosition(pos);
+	panelRect.setSize(sf::Vector2f(width, height));
+	panelRect.setOutlineColor(sf::Color::White);
+	panelRect.setFillColor(sf::Color::Transparent);
+
 	line1.setOutlineThickness(PANEL_LINE_WIDTH / 2);
 	line1.setPosition(pos + sf::Vector2f(FOLDER_SPACE, 0));
 	line1.setSize(sf::Vector2f(0, height - PANEL_BOTTOM_HEIGHT));
 	line1.setOutlineColor(sf::Color::White);
 
-	sf::RectangleShape line2;
 	line2.setOutlineThickness(PANEL_LINE_WIDTH / 2);
 	line2.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE, 0));
 	line2.setSize(sf::Vector2f(0, height - PANEL_BOTTOM_HEIGHT));
 	line2.setOutlineColor(sf::Color::White
 	);
 
-	sf::RectangleShape line3;
 	line3.setOutlineThickness(PANEL_LINE_WIDTH / 2);
 	line3.setPosition(pos + sf::Vector2f(0, PANEL_HEIGHT - PANEL_BOTTOM_HEIGHT));
 	line3.setSize(sf::Vector2f(width, 0));
 	line3.setOutlineColor(sf::Color::White);
-
-
-	window.draw(rect);
-	window.draw(line1);
-	window.draw(line2);
-	window.draw(line3);
 }
 
 void Panel::drawColumnTitles() {
+	window.draw(folderName);
+	window.draw(sizeName);
+	window.draw(dateName);
+}
 
-	sf::Text folderName;
+void Panel::initColumnTitles() {
 
 	folderName.setString("Name");
-
 	sf::FloatRect rc = folderName.getLocalBounds();
 	folderName.setCharacterSize(CHARACTER_SIZE);
 	folderName.setFillColor(titleColor);
@@ -65,25 +71,17 @@ void Panel::drawColumnTitles() {
 	folderName.setFont(fonts[CustomFonts::Font::ROBOTO]);
 	folderName.setPosition(pos + sf::Vector2f(FOLDER_SPACE / 2, 10));
 
-	window.draw(folderName);
-
-	sf::Text sizeName = folderName;
+	sizeName = folderName;
 	sizeName.setString("Size");
-
-
 	rc = sizeName.getLocalBounds();
 	sizeName.setOrigin(rc.width / 2, 0);
 	sizeName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE / 2, 10));
-	window.draw(sizeName);
 
-	sf::Text modifyName = sizeName;
-	modifyName.setString("Modify Time");
-
-	rc = modifyName.getLocalBounds();
-	modifyName.setOrigin(rc.width / 2, 0);
-	modifyName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE + TIME_SPACE / 2, 10));
-	window.draw(modifyName);
-
+	dateName = sizeName;
+	dateName.setString("Modify Time");
+	rc = dateName.getLocalBounds();
+	dateName.setOrigin(rc.width / 2, 0);
+	dateName.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE + TIME_SPACE / 2, 10));
 }
 
 void Panel::drawSelectedFolderBackground() {
@@ -101,13 +99,18 @@ void Panel::drawSelectedFolderBackground() {
 }
 
 void Panel::draw() {
-	if (isSelected)
-		drawSelectedFolderBackground(), drawScrollbar();
+	if (isSelected) {
+		drawScrollbar();
+		drawSelectedFolderBackground();
+	}
 	drawFolders();
 	drawBorders();
 	drawColumnTitles();
-	drawCurrentPath();
-	drawFreeSpace();
+	if (!isSearchActive) {
+		drawCurrentPath();
+		drawFreeSpace();
+	}
+	else drawSearchText();
 }
 
 void Panel::drawScrollbar() {
@@ -150,7 +153,7 @@ void Panel::update(std::filesystem::path path) {
 	lastToDisplay--;
 	float scrollPerUnit = 1.f * (height - 2.0 * SCROLLBAR_BUTTON_HEIGHT) / folders.size();
 	scrollbar.init(SCROLLBAR_WIDTH, scrollPerUnit * (lastToDisplay - firstToDisplay + 1) + 4.5, scrollPerUnit);
-
+	foldersCopy = folders;
 }
 std::string Panel::getDate(std::filesystem::path path) {
 	// Convert from fs::file_time_type to std::time_t
@@ -177,7 +180,7 @@ std::string Panel::getDate(std::filesystem::path path) {
 
 void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 
-	if (isSelected) {
+	if (isSelected && isDirectoryLabelActive) {
 		switch (code)
 		{
 		case sf::Keyboard::Scancode::S:
@@ -191,7 +194,6 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 				firstToDisplay += step;
 				lastToDisplay += step;
 				scrollbar.move(0, step);
-				updateFoldersPosition(sf::Vector2f(0, 1.f * step * (-height) / LINE_SPACING));
 			}
 			break;
 		}
@@ -205,7 +207,6 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 				firstToDisplay -= step;
 				lastToDisplay -= step;
 				scrollbar.move(0, -step);
-				updateFoldersPosition(sf::Vector2f(0, 1.f * step * height / LINE_SPACING));
 			}
 			break;
 		}
@@ -260,14 +261,6 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 	}
 }
 
-void Panel::updateFoldersPosition(sf::Vector2f move) {
-	for (int index = 0; index < folders.size(); ++index) {
-		sf::Vector2f folderPosition = folders[index].position;
-		folderPosition += move;
-		folders[index].position = folderPosition;
-		folders[index].updateText();
-	}
-}
 
 void Panel::toggleIsSelected() {
 	isSelected = !isSelected;
@@ -314,15 +307,16 @@ void Panel::changeDirectory(std::filesystem::path p) {
 		update(p);
 }
 
-void Panel::drawCurrentPath()
-{
-	sf::Text pathText;
-	pathText.setString(currentPath.string());
-	pathText.setFillColor(textColor);
-	pathText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
-	pathText.setCharacterSize(CHARACTER_SIZE + 5);
-	pathText.setFont(fonts[CustomFonts::Font::ROBOTO]);
-	window.draw(pathText);
+void Panel::initCurrentPath() {
+	currentPathText.setString(currentPath.string());
+	currentPathText.setFillColor(textColor);
+	currentPathText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
+	currentPathText.setCharacterSize(CHARACTER_SIZE + 5);
+	currentPathText.setFont(fonts[CustomFonts::Font::ROBOTO]);
+}
+
+void Panel::drawCurrentPath() {
+	window.draw(currentPathText);
 }
 
 bool Panel::checkBoxLabel(float topLeftX, float topLeftY, float botRightX, float botRightY, float mouseX, float mouseY)
@@ -392,7 +386,7 @@ void Panel::checkTextLabels(sf::Vector2f mouse) {
 void Panel::checkFolderLabels(sf::Vector2f mouse) {
 	if (!isSelected)
 		return;
-	for (int index = 0; index < folders.size(); ++index) {
+	for (int index = firstToDisplay; index <= lastToDisplay; ++index) {
 		bool ok = checkMouseOnFolder(index, mouse.x, mouse.y);
 		if (ok) {
 			updateFolderSelectedFolder(index);
@@ -413,17 +407,17 @@ void Panel::resetTextPositions(std::vector<sf::Vector2f> initialPositions) {
 void Panel::activateLabel(int mouseX, int mouseY) {
 	if (checkBoxLabel(pos.x, pos.y, pos.x + FOLDER_SPACE, pos.y + 20, mouseX, mouseY)) {
 		sf::RectangleShape background;
-		initBackground(background, sf::Color(68, 85, 90), pos, sf::Vector2f(FOLDER_SPACE, 30));
+		initBackground(background, sortLabelColor, pos, sf::Vector2f(FOLDER_SPACE, 36));
 		window.draw(background);
 	}
 	else if (checkBoxLabel(pos.x, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 20, mouseX, mouseY)) {
 		sf::RectangleShape background;
-		initBackground(background, sf::Color(68, 85, 90), sf::Vector2f(pos.x + FOLDER_SPACE, pos.y), sf::Vector2f(SIZE_SPACE, 30));
+		initBackground(background, sortLabelColor, sf::Vector2f(pos.x + FOLDER_SPACE, pos.y), sf::Vector2f(SIZE_SPACE, 36));
 		window.draw(background);
 	}
 	else if (checkBoxLabel(pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y, pos.x + width, pos.y + 20, mouseX, mouseY)) {
 		sf::RectangleShape background;
-		initBackground(background, sf::Color(68, 85, 90), sf::Vector2f(pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y), sf::Vector2f(TIME_SPACE, 30));
+		initBackground(background, sortLabelColor, sf::Vector2f(pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y), sf::Vector2f(TIME_SPACE, 36));
 		window.draw(background);
 	}
 }
@@ -448,7 +442,7 @@ void Panel::addFolder(Folder folder, int position) {
 
 void Panel::updateShortcutSelectedFolder(int type, int move)
 {
-	if (!isSelected)
+	if (!isSelected || !isDirectoryLabelActive)
 		return;
 	shortcutSelectedFolder[selectedFolderIndex] = true;
 	if (type == 1) { /// Ctrl A
@@ -472,12 +466,19 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 		}
 	}
 	else if (type == 3) {
+
+		int size = 0;
+		for (auto pos : shortcutSelectedFolder)
+			if (pos.second) size++;
+
 		shortcutSelectedFolder.clear();
 		folders[selectedFolderIndex].toggleIsSelected();
 		folders[selectedFolderIndex].updateText();
-
-		if(shiftSelectedFolder != -1)
+		
+		if (shiftSelectedFolder != -1)
 			selectedFolderIndex = shiftSelectedFolder;
+		else if(size > 1)
+			selectedFolderIndex = lastToDisplay;
 
 		folders[selectedFolderIndex].toggleIsSelected();
 		folders[selectedFolderIndex].updateText();
@@ -497,14 +498,12 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 		int step = std::min(10, firstToDisplay);
 		firstToDisplay -= step;
 		lastToDisplay -= step;
-		updateFoldersPosition(sf::Vector2f(0, 1.0 * step * height / LINE_SPACING));
 	}
 
 	if (shiftSelectedFolder == lastToDisplay) {
 		int step = std::min((size_t)10, folders.size() - lastToDisplay - 1);
 		firstToDisplay += step;
 		lastToDisplay += step;
-		updateFoldersPosition(sf::Vector2f(0, 1.0 * step * (-height) / LINE_SPACING));
 	}
 
 
@@ -614,14 +613,12 @@ void Panel::updateByScrollbar(sf::Vector2f mouse)
 		int steps = std::min(folders.size() - 1.f * lastToDisplay - 1, (mouse.y - y) / scrollbar.getUnitPerFolder());
 		lastToDisplay += steps;
 		firstToDisplay += steps;
-		updateFoldersPosition(sf::Vector2f(0, 1.f * steps * (-height) / LINE_SPACING));
 		scrollbar.move(0, steps);
 	}
 	else {
 		int steps = std::min(1.f * firstToDisplay, (y - mouse.y) / scrollbar.getUnitPerFolder());
 		lastToDisplay -= steps;
 		firstToDisplay -= steps;
-		updateFoldersPosition(sf::Vector2f(0, 1.f * steps * (height) / LINE_SPACING));
 		scrollbar.move(0, -steps);
 	}
 }
@@ -636,9 +633,105 @@ void Panel::updateByScrollbar(int steps)
 		return;
 	lastToDisplay += steps;
 	firstToDisplay += steps;
-	if (steps > 0)
-		updateFoldersPosition(sf::Vector2f(0, 1.f * steps * (-height) / LINE_SPACING));
-	else
-		updateFoldersPosition(sf::Vector2f(0, 1.f * std::abs(steps) * (height) / LINE_SPACING));
 	scrollbar.move(0, steps);
+}
+
+
+void Panel::registerCharacter(int scancode, bool isUpperCase) {
+	if (!isSelected || !isSearchActive || isDirectoryLabelActive)
+		return;
+	if (scancode >= 0 && scancode <= 25) { /// Alphabet
+		scancode += 'a';
+		if (isUpperCase) scancode -= 'a' - 'A';
+		searchText.setString(searchText.getString() + (char)(scancode));
+		updateFoldersByFilter();
+	}
+	else if (scancode == 38) {  /// Delete 
+		std::string searchString = searchText.getString().toAnsiString();
+		if (searchString.size() > 0)
+			searchString.pop_back();
+		searchText.setString(searchString);
+		updateFoldersByFilter();
+	}
+	else {
+		for (std::pair<int, char> ch : specialCharacters) {
+			if (ch.first == scancode) {
+				searchText.setString(searchText.getString() + ch.second);
+				updateFoldersByFilter();
+			}
+		}
+	}
+	
+}
+
+void Panel::drawSearchText() {
+	std::string searchString = searchText.getString();
+	searchString += '|';
+	searchText.setString(searchString);
+	searchText.setFillColor(textColor);
+	searchText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
+	searchText.setCharacterSize(CHARACTER_SIZE + 5);
+	searchText.setFont(fonts[CustomFonts::Font::ROBOTO]);
+	window.draw(searchText);
+	searchString.pop_back();
+	searchText.setString(searchString);
+}
+
+bool Panel::isValidByFilter(std::string folderText) {
+	std::string search = searchText.getString().toAnsiString();
+	if (search.size() > folderText.size())
+		return false;
+	if (search.size() == 0)
+		return true;
+
+	for (unsigned int index = 0; index < folderText.size(); ++index) {
+		if (folderText[index] >= 'a' && folderText[index] <= 'z')
+			folderText[index] = folderText[index] - 'a' + 'A';
+		if (index < search.size() && search[index] >= 'a' && search[index] <= 'z')
+			search[index] = search[index] - 'a' + 'A';
+		if (index + 1 >= search.size()) {
+			std::string elector = folderText.substr(index - search.size() + 1, search.size());
+			if (elector == search)
+				return true;
+		}
+	}
+	return false;
+}
+
+void Panel::updateFoldersByFilter() {
+	folders.clear();
+	int lastToDisplay2 = -1;
+	for (unsigned int index = 0; index < foldersCopy.size(); ++index) {
+		
+		if (foldersCopy[index].folderText.getString() == "/..") {
+			folders.push_back(foldersCopy[index]);
+			lastToDisplay2++;
+			continue;
+		}
+		if (isValidByFilter(foldersCopy[index].folderText.getString())) {
+			folders.push_back(foldersCopy[index]);
+			lastToDisplay2++;
+		}
+	}
+	shortcutSelectedFolder.clear();
+	int dif = selectedFolderIndex - firstToDisplay;
+	lastToDisplay = std::min(17, lastToDisplay2);
+	firstToDisplay = std::max(lastToDisplay - 17, 0);
+	selectedFolderIndex = std::min(firstToDisplay + dif, lastToDisplay);
+	folders[selectedFolderIndex].toggleIsSelected();
+
+	float scrollPerUnit = 1.f * (height - 2.0 * SCROLLBAR_BUTTON_HEIGHT) / folders.size();
+	scrollbar.init(SCROLLBAR_WIDTH, scrollPerUnit * (lastToDisplay - firstToDisplay + 1) + 4.5, scrollPerUnit);
+
+}
+
+void Panel::activateSearch() {
+	isSearchActive = true;
+	isDirectoryLabelActive = false;
+	updateFoldersByFilter();
+}
+
+void Panel::deactivateSearch() {
+	isSearchActive = false;
+	isDirectoryLabelActive = true;
 }

@@ -8,7 +8,7 @@
 #include <sstream> // Add this for stringstream
 #include <windows.h>
 #include <map>
-
+#include <unordered_map>
 
 #pragma once
 
@@ -64,6 +64,7 @@ const sf::Color bottomBackgroundColor(0, 0, 0);
 const sf::Color scrollbarButtonColor(198, 215, 251, 255);
 const sf::Color scrollbarTextButtonColor(81, 96, 138, 255);
 const sf::Color scrollbarColor(198, 215, 251, 255);
+const sf::Color sortLabelColor(3, 75, 166);
 
 const std::vector<std::string> buttonNames = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
 
@@ -76,4 +77,5 @@ inline void initBackground(sf::RectangleShape& background, sf::Color color, sf::
 	background.setSize(size);
 }
 
-extern std::map<sf::Keyboard::Scancode, bool> pressed, released;
+extern std::unordered_map<sf::Keyboard::Scancode, bool> pressed, released;
+extern std::vector<std::pair<int, char>> specialCharacters;

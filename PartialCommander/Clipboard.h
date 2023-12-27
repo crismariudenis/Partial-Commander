@@ -10,7 +10,7 @@ private:
 	Clipboard();
 
 public:
-	void copy(std::map<int, bool> &mark, std::vector<Folder>& folders);
+	void copy(std::unordered_map<int, bool> &mark, std::vector<Folder>& folders);
 	static Clipboard* getInstance();
 	std::vector<Folder> getFolders();
 };

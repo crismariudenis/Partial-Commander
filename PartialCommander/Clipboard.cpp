@@ -1,7 +1,7 @@
 #include "Clipboard.h"
 
 
-void Clipboard::copy(std::map<int, bool>& mark, std::vector<Folder>& folders) {
+void Clipboard::copy(std::unordered_map<int, bool>& mark, std::vector<Folder>& folders) {
 	this->folders.clear();
 	for (int index = 0; index < folders.size(); ++index) {
 		if (mark[index])

@@ -140,6 +140,7 @@ void App::handleKeyboardShortcuts(sf::Event event)
 		released[event.key.scancode] = false;
 		pressed[event.key.scancode] = true;
 	}
+
 	if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::A]) {
 		shortcutOn = true;
 		leftPanel.updateShortcutSelectedFolder(1, 0);
@@ -152,6 +153,8 @@ void App::handleKeyboardShortcuts(sf::Event event)
 			if (pressed[sf::Keyboard::Scan::Up]) move = -move;
 			leftPanel.updateShortcutSelectedFolder(2, move);
 			rightPanel.updateShortcutSelectedFolder(2, move);
+			leftPanel.updateByScrollbar(move);
+			rightPanel.updateByScrollbar(move);
 		}
 	}
 	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::C]) {
@@ -174,7 +177,7 @@ void App::handleKeyboardShortcuts(sf::Event event)
 			if (el.first != sf::Keyboard::Scan::Semicolon && el.second == true) {
 				code = el.first;
 			}
-		}
+		}////
 		if (keysPressed == 2 && code >= 0 && code <= 25) {
 			std::string path;
 			path += (code + 'A');
@@ -185,11 +188,24 @@ void App::handleKeyboardShortcuts(sf::Event event)
 
 		}
 	}
-	else if(shortcutOn == true && !pressed[sf::Keyboard::Scan::LControl] && keyPressed == true && !pressed[sf::Keyboard::Scan::LShift]) {
-		std::cout << "LALALALA\n";
+	else if(shortcutOn == true && !pressed[sf::Keyboard::Scan::LControl] && keyPressed == true && !pressed[sf::Keyboard::Scan::LShift] && event.key.scancode != sf::Keyboard::Scan::Space) {
 		leftPanel.updateShortcutSelectedFolder(3, -1);
 		rightPanel.updateShortcutSelectedFolder(3, -1);
 		shortcutOn = false;
+	}
+
+	if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::F]) {
+		leftPanel.activateSearch();
+		rightPanel.activateSearch();
+	}
+	else if (keyPressed) {
+		leftPanel.registerCharacter(event.key.scancode, pressed[sf::Keyboard::Scan::LShift]);
+		rightPanel.registerCharacter(event.key.scancode, pressed[sf::Keyboard::Scan::LShift]);
+	}
+
+	if (pressed[sf::Keyboard::Scan::Space]) {
+		leftPanel.deactivateSearch();
+		rightPanel.deactivateSearch();
 	}
 	
 }
@@ -201,8 +217,8 @@ void App::handleMousePressingEvents(sf::Event& event)
 		sf::Vector2f mouse{ (float)event.mouseButton.x , (float)event.mouseButton.y };
 		if (pressed[sf::Keyboard::Scan::LControl]) {
 				float height = PANEL_HEIGHT;
-				leftPanel.updateShortcutSelectedFolder(4, (mouse.y - 108.261) / (height / LINE_SPACING));
-				rightPanel.updateShortcutSelectedFolder(4, (mouse.y - 108.261) / (height / LINE_SPACING));
+				leftPanel.updateShortcutSelectedFolder(4, (int)((mouse.y - 108.261) / (height / LINE_SPACING)));
+				rightPanel.updateShortcutSelectedFolder(4, (int)((mouse.y - 108.261) / (height / LINE_SPACING)));
 				shortcutOn = true;
 				}
 		if (!shortcutOn) {
@@ -237,15 +253,15 @@ void App::handleMouseMovedEvents() {
 	int mouseX = position.x, mouseY = position.y;
 	leftPanel.activateLabel(mouseX, mouseY);
 	rightPanel.activateLabel(mouseX, mouseY);
-	if (isMouseOnScrollbar) {
-		leftPanel.updateByScrollbar(sf::Vector2f(mouseX, mouseY));
-		rightPanel.updateByScrollbar(sf::Vector2f(mouseX, mouseY));
+	if (isMouseOnScrollbar) {///
+		leftPanel.updateByScrollbar(sf::Vector2f((float)mouseX, (float)mouseY));
+		rightPanel.updateByScrollbar(sf::Vector2f((float)mouseX, (float)mouseY));
 	}
 }
 
 void App::handleMouseScrollingEvents(sf::Event& event)
-{
-	int delta = event.mouseWheelScroll.delta;
+{	
+	int delta = static_cast<int>(event.mouseWheelScroll.delta);
 	if (delta < 0) {
 		leftPanel.updateSelectedFolder(sf::Keyboard::Scan::S);
 		rightPanel.updateSelectedFolder(sf::Keyboard::Scan::S);
@@ -264,10 +280,10 @@ void App::initButtons() {
 	sf::Vector2f topLeft(PANEL_MARGIN_X * 2, WINDOW_HEIGHT - PANEL_BOTTOM_HEIGHT / 1.25);
 	int moveX = (WINDOW_WIDTH - PANEL_MARGIN_X * (buttonNames.size() + 2)) / buttonNames.size();
 
-	for (int index = 0; index < buttonNames.size(); ++index) {
+	for (unsigned int index = 0; index < buttonNames.size(); ++index) {
 		Button button(buttonNames[index], BUTTON_HEIGHT, moveX, index + 1, topLeft, secondaryColor, window, fonts);
 		buttons.push_back(button);
-		topLeft += sf::Vector2f(moveX + PANEL_MARGIN_X, 0);
+		topLeft += sf::Vector2f(moveX * 1.f + PANEL_MARGIN_X, 0);
 	}
 }
 
@@ -281,7 +297,7 @@ void App::drawScrollbarButtons()
 			button.setPosition(position);
 			button.setOutlineThickness(2);
 		};
-	auto initScrollBarButtonText = [&](sf::Text& buttonText, float characterSize, std::string text, sf::Vector2f position)
+	auto initScrollBarButtonText = [&](sf::Text& buttonText, unsigned int characterSize, std::string text, sf::Vector2f position)
 		{
 			buttonText.setFillColor(scrollbarTextButtonColor);
 			buttonText.setFont(fonts[CustomFonts::Font::ROBOTO]);
@@ -300,7 +316,7 @@ void App::drawScrollbarButtons()
 }
 
 void App::drawButtons() {
-	for (int index = 0; index < buttons.size(); ++index)
+	for (unsigned int index = 0; index < buttons.size(); ++index)
 		buttons[index].draw();
 	drawScrollbarButtons();
 }
@@ -312,6 +328,6 @@ void App::getCursor(sf::Cursor &cursor) {
 		cursor.loadFromSystem(sf::Cursor::Arrow);
 	if (mousePosition.y >= TOP_BUTTONS_HEIGHT + PANEL_HEIGHT - BOTTOM_BUTTONS_HEIGHT + 15 && mousePosition.y <= window.getSize().y)
 		cursor.loadFromSystem(sf::Cursor::Arrow);
-	if (leftPanel.checkMouseOnFolder(leftPanel.getSelectedFolderIndex(), mousePosition.x, mousePosition.y) || rightPanel.checkMouseOnFolder(rightPanel.getSelectedFolderIndex(), mousePosition.x, mousePosition.y))
+	if (leftPanel.checkMouseOnFolder(leftPanel.getSelectedFolderIndex(), (float)mousePosition.x, (float)mousePosition.y) || rightPanel.checkMouseOnFolder(rightPanel.getSelectedFolderIndex(), (float)mousePosition.x, (float)mousePosition.y))
 		cursor.loadFromSystem(sf::Cursor::Arrow);
 }

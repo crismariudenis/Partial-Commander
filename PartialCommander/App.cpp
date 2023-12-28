@@ -29,6 +29,10 @@ void App::run() {
 
 	while (window.isOpen()) {
 
+		timer++;
+		if (timer % 500 == 0)
+			mouseClicked.clear(), timer = 0;
+
 		/// Event handling
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -221,7 +225,7 @@ void App::handleMousePressingEvents(sf::Event& event)
 				leftPanel.updateShortcutSelectedFolder(4, (int)((mouse.y - 108.261) / (height / LINE_SPACING)));
 				rightPanel.updateShortcutSelectedFolder(4, (int)((mouse.y - 108.261) / (height / LINE_SPACING)));
 				shortcutOn = true;
-				}
+			}
 		if (!shortcutOn) {
 			leftPanel.checkTextLabels(mouse);
 			rightPanel.checkTextLabels(mouse);
@@ -246,6 +250,12 @@ void App::handleMousePressingEvents(sf::Event& event)
 			leftPanel.updateByScrollbar(-1), rightPanel.updateByScrollbar(-1);
 		else if (checkScrollbarButton(downButton))
 			leftPanel.updateByScrollbar(1), rightPanel.updateByScrollbar(1);
+		if (mouseClicked[{mouse.x, mouse.y}] == true) {
+			leftPanel.changePath();
+			rightPanel.changePath();
+		}
+		mouseClicked.clear();
+		mouseClicked[{mouse.x, mouse.y}] = true;
 	}
 }
 

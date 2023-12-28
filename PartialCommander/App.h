@@ -6,6 +6,7 @@
 class App
 {
 private:
+	int timer = 0;
 	sf::RectangleShape background, bottomBackground;
 	sf::RectangleShape upButton, downButton;
 	sf::RenderWindow window;
@@ -13,6 +14,7 @@ private:
 	Panel leftPanel{ window }, rightPanel{ window };
 	std::vector<sf::Font> fonts = fontsHandler.getFonts();
 	std::vector<Button> buttons;
+	std::map<std::pair<int, int>, bool> mouseClicked;
 
 	void initWindow(std::string name);
 	void initPanels();

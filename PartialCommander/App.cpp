@@ -39,8 +39,8 @@ void App::run() {
 				break;
 
 			case sf::Event::KeyPressed: case sf::Event::KeyReleased:
-				handleKeyboardShortcuts(event);
 				handleKeyboardEvents(event);
+				handleKeyboardShortcuts(event);
 				break;
 			case sf::Event::MouseWheelScrolled:
 				handleMouseScrollingEvents(event);
@@ -115,6 +115,7 @@ void App::handleKeyboardEvents(sf::Event& event) {
 		rightPanel.changePath();
 		break;
 	case sf::Keyboard::Scancode::F8:
+	case sf::Keyboard::Scancode::Backspace:
 		leftPanel.updateSelectedFolder(event.key.scancode);
 		rightPanel.updateSelectedFolder(event.key.scancode);
 		break;

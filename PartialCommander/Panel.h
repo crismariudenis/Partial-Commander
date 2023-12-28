@@ -2,6 +2,7 @@
 
 #include "Clipboard.h"
 #include "Scrollbar.h"
+#include "System.h"
 
 class Panel
 {
@@ -14,12 +15,17 @@ class Panel
     std::vector<sf::Font> fonts;
     std::unordered_map<int, bool> shortcutSelectedFolder, filteredFolders;
     Scrollbar scrollbar;
+    System* sys = System::getInstance();
 
     sf::Text folderName, sizeName, dateName;
     sf::Text searchText;
     sf::Text currentPathText;
 
     sf::RectangleShape panelRect, line1, line2, line3;
+
+    std::vector<std::tuple<float, float, float, float>> quadrants = { {pos.x, pos.y, pos.x + FOLDER_SPACE, pos.y + 20.f},
+                                                                      {pos.x + FOLDER_SPACE + 1, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 20.f},
+                                                                      {pos.x + FOLDER_SPACE + SIZE_SPACE + 1, pos.y, pos.x + width, pos.y + 20.f} };
 
     void update(std::filesystem::path path);
     void drawFolders();
@@ -31,7 +37,6 @@ class Panel
     void drawScrollbar();
     void drawSearchText();
 
-    void updateFoldersPosition(sf::Vector2f move);
     std::string getDate(std::filesystem::path p);
 
     bool checkBoxLabel(float topLeftX, float topLeftY, float botRightX, float botRightY, float mouseX, float mouseY);
@@ -59,7 +64,6 @@ public:
     void activateLabel(int mouseX, int mouseY);
     void resetFoldersPositions();
     int getSelectedFolderIndex();
-    void addFolder(Folder folder, int position);
     void updateShortcutSelectedFolder(int type, int move);
     void updateFoldersByFilter();
     void updateClipboard();
@@ -72,5 +76,7 @@ public:
 
     void activateSearch();
     void deactivateSearch();
+
+
 
    };

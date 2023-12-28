@@ -189,7 +189,7 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 		case sf::Keyboard::Scancode::S:
 		case sf::Keyboard::Scancode::Down:
 		{
-			if (selectedFolderIndex + 1 - folders.size() < 0) {
+			if (selectedFolderIndex + 1 < (int)folders.size()) {
 				updateFolderSelectedFolder(selectedFolderIndex + 1);
 			}
 			if (selectedFolderIndex == lastToDisplay) {
@@ -402,7 +402,7 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 		if (shiftSelectedFolder == -1)
 			shiftSelectedFolder = selectedFolderIndex;
 		if (shiftSelectedFolder - selectedFolderIndex > 0) {
-			if (move > 0 && shiftSelectedFolder + 1 - folders.size() < 0) shortcutSelectedFolder[++shiftSelectedFolder] = true;
+			if (move > 0 && shiftSelectedFolder + 1 < (int)folders.size()) shortcutSelectedFolder[++shiftSelectedFolder] = true;
 			else if(move < 0) shortcutSelectedFolder[shiftSelectedFolder--] = false;
 		}
 		else if (shiftSelectedFolder - selectedFolderIndex < 0 ) {
@@ -431,7 +431,7 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 	}
 	else if (type == 4) { // Control LMouse
 		move += firstToDisplay;
-		if (move - folders.size() < 0) {
+		if (move < (int)folders.size()) {
 			if (shortcutSelectedFolder[move] == true)
 				shortcutSelectedFolder[move] = false;
 			else

@@ -136,6 +136,7 @@
     <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="CustomFonts.cpp" />
+    <ClCompile Include="Editor.cpp" />
     <ClCompile Include="Folder.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Panel.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="CustomFonts.h" />
+    <ClInclude Include="Editor.h" />
     <ClInclude Include="Folder.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="Panel.h" />

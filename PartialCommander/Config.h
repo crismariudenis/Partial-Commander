@@ -9,7 +9,7 @@
 #include <windows.h>
 #include <map>
 #include <unordered_map>
-
+#include "fstream"
 #pragma once
 
 /// Window Constraints
@@ -25,6 +25,7 @@
 #define PANEL_HEIGHT WINDOW_HEIGHT - BOTTOM_BUTTONS_HEIGHT - TOP_BUTTONS_HEIGHT
 #define PANEL_OFFSET 30
 #define LINE_SPACING 23
+#define TEXT_LINE_SPACING 30
 
 
 #define MAX_FOLDERS_NUMBER 300
@@ -36,7 +37,7 @@
 #define PANEL_WIDTH (WINDOW_WIDTH - 3 * PANEL_MARGIN_X - 2*PANEL_LINE_WIDTH)/2
 #define BUTTON_HEIGHT 20
 
-#define FOLDER_SPACE 540
+#define FOLDER_SPACE 530
 #define SIZE_SPACE 80 
 #define TIME_SPACE (PANEL_WIDTH - SIZE_SPACE - FOLDER_SPACE)
 

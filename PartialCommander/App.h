@@ -2,6 +2,7 @@
 
 #include "Panel.h"
 #include "Button.h"
+#include "Editor.h"
 
 class App
 {
@@ -12,6 +13,7 @@ private:
 	sf::RenderWindow window;
 	std::string name;
 	Panel leftPanel{ window }, rightPanel{ window };
+	Editor* editor;
 	std::vector<sf::Font> fonts = fontsHandler.getFonts();
 	std::vector<Button> buttons;
 	std::map<std::pair<int, int>, bool> mouseClicked;
@@ -21,7 +23,7 @@ private:
 	void initButtons();
 	void handleKeyboardEvents(sf::Event& event);
 	void handleMouseScrollingEvents(sf::Event& event);
-	void handleMousePressingEvents(sf::Event & event);
+	void handleMousePressingEvents(sf::Event& event);
 	void handleMouseMovedEvents();
 	void handleKeyboardShortcuts(sf::Event event);
 
@@ -29,7 +31,7 @@ private:
 	void drawScrollbarButtons();
 	void initBackgrounds();
 
-	void getCursor(sf::Cursor & cursor);
+	void getCursor(sf::Cursor& cursor);
 
 public:
 

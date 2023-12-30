@@ -3,7 +3,7 @@
 CustomFonts fontsHandler;
 
 std::filesystem::path leftPanelDirectoryPath("D:\\");
-std::filesystem::path rightPanelDirectoryPath("C:\\");
+std::filesystem::path rightPanelDirectoryPath("C:\\Users\\Denis\\Downloads");
 
 std::unordered_map<sf::Keyboard::Scancode, bool> pressed, released;
 

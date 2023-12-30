@@ -176,7 +176,7 @@ std::string Panel::getDate(std::filesystem::path path) {
 	std::tm* localTime = std::localtime(&tt);
 	std::stringstream buff;
 
-	buff << std::put_time(localTime, "%d  %b  %H:%M");
+	buff << std::put_time(localTime, "%d %b %H:%M");
 	std::string formattedDate = buff.str();
 	return formattedDate;
 }

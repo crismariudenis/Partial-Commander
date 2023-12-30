@@ -8,9 +8,7 @@ class Panel
 {
     int width, height, sortType;
     sf::Vector2f pos;
-    std::vector<Folder> folders, foldersCopy;
     sf::RenderWindow& window;
-    int firstToDisplay, lastToDisplay, selectedFolderIndex, shiftSelectedFolder = -1;
     std::filesystem::path currentPath;
     std::vector<sf::Font> fonts;
     std::unordered_map<int, bool> shortcutSelectedFolder, filteredFolders;
@@ -40,13 +38,15 @@ class Panel
     std::string getDate(std::filesystem::path p);
 
     bool checkBoxLabel(float topLeftX, float topLeftY, float botRightX, float botRightY, float mouseX, float mouseY);
-    bool isSelected = false, isSearchActive = false, isDirectoryLabelActive = true;
     void resetTextPositions(std::vector<sf::Vector2f> initialPositions);
     void updateFolderSelectedFolder(int newSelectedFolder);
 
     bool isValidByFilter(std::string folderText);
 
 public:
+    bool isSelected = false, isSearchActive = false, isDirectoryLabelActive = true;
+    std::vector<Folder> folders, foldersCopy;
+    int firstToDisplay, lastToDisplay, selectedFolderIndex, shiftSelectedFolder = -1;
 
     Panel(sf::RenderWindow& window) :window(window) {};
     void init(sf::Vector2f pos, int width, int height, std::filesystem::path currentPath, std::vector<sf::Font>& fonts);

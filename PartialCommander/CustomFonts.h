@@ -22,7 +22,7 @@ public:
 	};
 	CustomFonts();
 
-	const std::vector<sf::Font> getFonts();
+	std::vector<sf::Font> getFonts();
 
 	sf::Font getTimesNewRoman();
 	sf::Font getArial();

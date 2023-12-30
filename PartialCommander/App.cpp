@@ -72,10 +72,8 @@ void App::run() {
 		window.draw(background);
 		window.draw(bottomBackground);
 
-		if (editor) {
-			editor->draw();
-		}
-		else {
+
+		if (!editor) {
 			handleMouseMovedEvents();
 			/// Panels
 			leftPanel.draw();
@@ -83,6 +81,8 @@ void App::run() {
 			/// Buttons
 			drawButtons();
 		}
+		else
+			editor->draw();
 
 
 		window.display();
@@ -115,7 +115,7 @@ void App::handleKeyboardEvents(sf::Event& event) {
 		}
 		return;
 	}
-
+	Panel& panel = rightPanel.isSelected ? rightPanel : leftPanel;
 	switch (event.key.scancode)
 	{
 	case sf::Keyboard::Scan::S: case sf::Keyboard::Scan::W: case sf::Keyboard::Scan::Down: case sf::Keyboard::Scan::Up:
@@ -146,9 +146,15 @@ void App::handleKeyboardEvents(sf::Event& event) {
 		break;
 	case sf::Keyboard::Scancode::F3:
 		editor = new Editor(window, Editor::Mode::VIEW);
+
+		editor->init(panel.folders[panel.selectedFolderIndex].path);
+		editor->update(event);
 		break;
 	case sf::Keyboard::Scancode::F4:
 		editor = new Editor(window, Editor::Mode::EDIT);
+
+		editor->init(panel.folders[panel.selectedFolderIndex].path);
+		editor->update(event);
 		break;
 	}
 }
@@ -292,6 +298,11 @@ void App::handleMouseMovedEvents() {
 
 void App::handleMouseScrollingEvents(sf::Event& event)
 {
+	if (editor) {
+		editor->update(event);
+		return;
+	}
+
 	int delta = static_cast<int>(event.mouseWheelScroll.delta);
 	if (delta < 0) {
 		leftPanel.updateSelectedFolder(sf::Keyboard::Scan::S);
@@ -328,19 +339,27 @@ void App::drawScrollbarButtons()
 			button.setPosition(position);
 			button.setOutlineThickness(2);
 		};
-	auto initScrollBarButtonText = [&](sf::Text& buttonText, unsigned int characterSize, std::string text, sf::Vector2f position)
+	auto initScrollBarButtonText = [&](sf::Text& buttonText, unsigned int characterSize, std::string text, sf::Vector2f position, float angle)
 		{
+
+
+
 			buttonText.setFillColor(scrollbarTextButtonColor);
 			buttonText.setFont(fonts[CustomFonts::Font::ROBOTO]);
 			buttonText.setString(text);
-			buttonText.setPosition(position);
 			buttonText.setCharacterSize(characterSize);
+
+			sf::FloatRect rc = buttonText.getLocalBounds();
+			buttonText.setOrigin(rc.width / 2, rc.height / 2);
+			buttonText.setPosition(position);
+			buttonText.setRotation(angle);
 		};
 
 	initScrollBarButton(upButton, sf::Vector2f(SCROLLBAR_X, SCROLLBAR_Y + 2));
 	initScrollBarButton(downButton, sf::Vector2f(PANEL_WIDTH + PANEL_MARGIN_X + 2, PANEL_HEIGHT + TOP_BUTTONS_HEIGHT));
-	initScrollBarButtonText(buttonText, 24, "^", sf::Vector2f(SCROLLBAR_X, SCROLLBAR_Y));
-	initScrollBarButtonText(buttonText2, 18, "v", sf::Vector2f(downButton.getPosition().x, downButton.getPosition().y));
+
+	initScrollBarButtonText(buttonText, 13, "V", sf::Vector2f(SCROLLBAR_X + SCROLLBAR_WIDTH / 2, SCROLLBAR_Y + SCROLLBAR_BUTTON_HEIGHT / 2), 0);
+	initScrollBarButtonText(buttonText2, 13, "V", sf::Vector2f(downButton.getPosition().x + SCROLLBAR_WIDTH / 2, downButton.getPosition().y + SCROLLBAR_BUTTON_HEIGHT / 2), 180.f);
 
 	window.draw(upButton), window.draw(downButton);
 	window.draw(buttonText), window.draw(buttonText2);

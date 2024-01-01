@@ -78,11 +78,13 @@ void App::run() {
 			/// Panels
 			leftPanel.draw();
 			rightPanel.draw();
-			/// Buttons
-			drawButtons();
+			drawScrollbarButtons();
 		}
 		else
 			editor->draw();
+
+		/// Buttons
+		drawButtons();
 
 
 		window.display();
@@ -103,16 +105,17 @@ void App::handleKeyboardEvents(sf::Event& event) {
 	if (event.type == sf::Event::KeyReleased)
 		return;
 
-	if (editor) {
-		switch (event.key.scancode)
+	if (editor and !shortcutOn) {
+		if (event.key.scancode == sf::Keyboard::Scancode::F10)
 		{
-		case sf::Keyboard::Scancode::F10:
 			delete editor;
 			editor = NULL;
-			break;
-		default:
+		}
+		else
+		{
 			editor->update(event);
 		}
+
 		return;
 	}
 	Panel& panel = rightPanel.isSelected ? rightPanel : leftPanel;
@@ -161,6 +164,10 @@ void App::handleKeyboardEvents(sf::Event& event) {
 
 void App::handleKeyboardShortcuts(sf::Event event)
 {
+	if (editor) {
+		return;
+	}
+
 	bool keyPressed = false;
 	if (event.type == sf::Event::KeyReleased) {
 		released[event.key.scancode] = true;
@@ -341,11 +348,8 @@ void App::drawScrollbarButtons()
 		};
 	auto initScrollBarButtonText = [&](sf::Text& buttonText, unsigned int characterSize, std::string text, sf::Vector2f position, float angle)
 		{
-
-
-
 			buttonText.setFillColor(scrollbarTextButtonColor);
-			buttonText.setFont(fonts[CustomFonts::Font::ROBOTO]);
+			buttonText.setFont(fonts[CustomFonts::Font::UBUNTU]);
 			buttonText.setString(text);
 			buttonText.setCharacterSize(characterSize);
 
@@ -368,7 +372,6 @@ void App::drawScrollbarButtons()
 void App::drawButtons() {
 	for (unsigned int index = 0; index < buttons.size(); ++index)
 		buttons[index].draw();
-	drawScrollbarButtons();
 }
 
 void App::getCursor(sf::Cursor& cursor) {

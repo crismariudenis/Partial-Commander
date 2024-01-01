@@ -2,7 +2,7 @@
 
 void Folder::initText(std::vector<sf::Font>& fonts) {
 
-	folderText.setFont(fonts[CustomFonts::Font::ROBOTO]);
+	folderText.setFont(fonts[CustomFonts::Font::UBUNTU]);
 	folderText.setPosition(position);
 	folderText.setCharacterSize(CHARACTER_SIZE);
 
@@ -12,6 +12,8 @@ void Folder::initText(std::vector<sf::Font>& fonts) {
 	sizeText = folderText;
 
 	std::string canonicPath = this->normalizePath(path.string());
+	if (canonicPath.size() > 50)
+		canonicPath = "..." + canonicPath.substr(canonicPath.size() - 50, canonicPath.size());
 	folderText.setString(canonicPath);
 
 	if (canonicPath != "/..")

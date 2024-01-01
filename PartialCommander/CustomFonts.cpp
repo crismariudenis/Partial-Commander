@@ -20,6 +20,9 @@ sf::Font CustomFonts::getCourierNew() {
 sf::Font CustomFonts::getRoboto() {
 	return Roboto;
 }
+sf::Font CustomFonts::getUbuntu() {
+	return Ubuntu;
+}
 
 CustomFonts::CustomFonts() {
 	TimesNewRoman.loadFromFile("Fonts/times new roman.ttf");
@@ -27,9 +30,10 @@ CustomFonts::CustomFonts() {
 	Helvetica.loadFromFile("Fonts/Helvetica.ttf");
 	CourierNew.loadFromFile("Fonts/cour.ttf");
 	Roboto.loadFromFile("Fonts/RobotoMono-Bold.ttf");
+	Ubuntu.loadFromFile("Fonts/UbuntuMono-Bold.ttf");
 }
 
 std::vector<sf::Font> CustomFonts::getFonts() {
-	const std::vector<sf::Font> fonts = { TimesNewRoman, Arial, Helvetica, CourierNew, Roboto };
+	const std::vector<sf::Font> fonts = { TimesNewRoman, Arial, Helvetica, CourierNew, Roboto ,Ubuntu};
 	return fonts;
 }

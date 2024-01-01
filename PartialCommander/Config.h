@@ -9,6 +9,7 @@
 #include <windows.h>
 #include <map>
 #include <unordered_map>
+#include <cmath>
 #include "fstream"
 #pragma once
 
@@ -47,6 +48,8 @@
 #define SCROLLBAR_BUTTON_WIDTH SCROLLBAR_WIDTH
 #define SCROLLBAR_BUTTON_HEIGHT 20
 
+#define EDITOR_PADDING 10
+#define EDITOR_MAX_LINES 32
 extern std::filesystem::path leftPanelDirectoryPath;
 extern std::filesystem::path rightPanelDirectoryPath;
 
@@ -67,7 +70,8 @@ const sf::Color scrollbarTextButtonColor(81, 96, 138, 255);
 const sf::Color scrollbarColor(198, 215, 251, 255);
 const sf::Color sortLabelColor(3, 75, 166);
 
-const std::vector<std::string> buttonNames = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "PullDn", "Quit" };
+const std::vector<std::string> buttonNames = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "Save", "Quit" };
+//const std::vector<std::string> editorButtonNames = {}
 
 /// Fonts
 extern CustomFonts fontsHandler;

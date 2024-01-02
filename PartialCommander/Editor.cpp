@@ -6,6 +6,8 @@ void Editor::init(std::filesystem::path path) {
 	while (std::getline(file, s)) {
 		text.push_back(s);
 	}
+	if (text.size() == 0)
+		text.push_back("");
 }
 void Editor::save() {
 	std::ofstream file(path.string());
@@ -13,20 +15,23 @@ void Editor::save() {
 		file << s << '\n';
 }
 void Editor::draw() {
-	frames = (frames + 1) % 120;
+
+	// Possible alternative is to draw all the lines in a single sf::Text component 
+
+	frames = (frames + 1) % 180;
 	size_t height = PANEL_HEIGHT;
 	auto fonts = fontsHandler.getFonts();
+	size_t end = std::min(text.size(), (size_t)firstLine + EDITOR_MAX_LINES);
 
 	sf::Text line;
 	line.setFillColor(sf::Color(255, 255, 255));
 	line.setFont(fonts[CustomFonts::Font::UBUNTU]);
 	line.setCharacterSize(CHARACTER_SIZE - 1);
 
-	//std::cout << text[0] << " " << text[0].size()<<'\n';
-	for (size_t index = firstLine; index < std::min(text.size(), (size_t)firstLine + EDITOR_MAX_LINES); ++index)
+	sf::Vector2f pos{ EDITOR_PADDING,0 };
+	for (size_t index = firstLine; index < end; ++index)
 	{
-		sf::Vector2f pos{ EDITOR_PADDING,0 };
-		pos.y += 1.f * (index - firstLine + 1) * (1.f * height / TEXT_LINE_SPACING);
+		pos.y = 1.f * (index - firstLine + 1) * (1.f * height / TEXT_LINE_SPACING);
 
 		line.setString(text[index]);
 		line.setPosition(pos);
@@ -50,6 +55,7 @@ void Editor::draw() {
 
 		}
 	}
+
 }
 
 void Editor::update(sf::Event event) {

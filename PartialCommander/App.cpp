@@ -44,7 +44,7 @@ void App::run() {
 			case sf::Event::Closed:
 				window.close();
 				break;
-			case sf::Event::KeyPressed: case sf::Event::KeyReleased: 
+			case sf::Event::KeyPressed: case sf::Event::KeyReleased: case sf::Event::TextEntered:
 				handleKeyboardShortcuts(event, panel);
 				handleKeyboardEvents(event);	
 				break;
@@ -179,12 +179,8 @@ void App::handleRenameShortcut(sf::Event event, Panel &panel) {
 
 void App::handleKeyboardShortcuts(sf::Event event, Panel & panel)
 {
-	if (renameShortcut && event.type != sf::Event::KeyReleased)
+	if (editor || renameShortcut && event.type != sf::Event::KeyReleased || event.type == sf::Event::TextEntered)
 		return;
-	if (editor) {
-		return;
-	}
-
 	bool keyPressed = false;
 	if (event.type == sf::Event::KeyReleased) {
 		released[event.key.scancode] = true;

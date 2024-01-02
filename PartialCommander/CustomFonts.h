@@ -10,6 +10,7 @@ private:
 	sf::Font Helvetica;
 	sf::Font CourierNew;
 	sf::Font Roboto;
+	sf::Font Ubuntu;
 
 
 public:
@@ -18,7 +19,8 @@ public:
 		ARIAL,
 		HELVETICA,
 		COURIER_NEW,
-		ROBOTO
+		ROBOTO,
+		UBUNTU
 	};
 	CustomFonts();
 
@@ -29,5 +31,6 @@ public:
 	sf::Font getHelvetica();
 	sf::Font getCourierNew();
 	sf::Font getRoboto();
+	sf::Font getUbuntu();
 
 };

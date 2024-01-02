@@ -2,12 +2,19 @@
 
 #include "Config.h"
 #include "System.h"
+#include "Button.h"
 
 class Editor {
 	sf::RenderWindow& window;
 	std::filesystem::path path;
 	std::vector<std::string>text;
 	int firstLine = 0, lastLine = 0;
+	sf::Vector2i cursorPos{ 0,0 };
+	std::vector<Button>buttons;
+	int frames = 0; // mod 120
+	void edit(sf::Event event);
+	void repairScrolling();
+	void save();
 public:
 	static enum Mode {
 		EDIT,

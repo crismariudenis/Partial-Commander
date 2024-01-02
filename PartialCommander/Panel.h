@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Clipboard.h"
 #include "Scrollbar.h"
-#include "System.h"
+#include "Folder.h"
 
 class Panel
 {
@@ -11,9 +10,8 @@ class Panel
     sf::RenderWindow& window;
     std::filesystem::path currentPath;
     std::vector<sf::Font> fonts;
-    std::unordered_map<int, bool> shortcutSelectedFolder, filteredFolders;
+    std::unordered_map<int, bool> filteredFolders;
     Scrollbar scrollbar;
-    System* sys = System::getInstance();
 
     sf::Text folderName, sizeName, dateName;
     sf::Text searchText;
@@ -22,26 +20,18 @@ class Panel
     sf::RectangleShape panelRect, line1, line2, line3;
 
     std::vector<std::tuple<float, float, float, float>> quadrants;
-
-    void update(std::filesystem::path path);
     void drawFolders();
-    void drawBorders();
-    void drawColumnTitles();
     void drawSelectedFolderBackground();
-    void drawCurrentPath();
     void drawFreeSpace();
-    void drawScrollbar();
     void drawSearchText();
 
     std::string getDate(std::filesystem::path p);
 
-    bool checkBoxLabel(float topLeftX, float topLeftY, float botRightX, float botRightY, float mouseX, float mouseY);
     void resetTextPositions(std::vector<sf::Vector2f> initialPositions);
-    void updateFolderSelectedFolder(int newSelectedFolder);
-
     bool isValidByFilter(std::string folderText);
 
 public:
+    void updateFolderSelectedFolder(int newSelectedFolder);
     bool isSelected = false, isSearchActive = false, isDirectoryLabelActive = true;
     std::vector<Folder> folders, foldersCopy;
     int firstToDisplay, lastToDisplay, selectedFolderIndex, shiftSelectedFolder = -1;
@@ -64,7 +54,6 @@ public:
     int getSelectedFolderIndex();
     void updateShortcutSelectedFolder(int type, int move);
     void updateFoldersByFilter();
-    void updateClipboard();
     void pasteFromClipboard(std::vector<Folder> folders);
     bool checkMouseOnFolder(int index, float mouseX, float mouseY);
     bool checkScrollbarLabel(sf::Vector2f mouse);
@@ -74,8 +63,7 @@ public:
     Folder getSelectedFolder();
     void setSelectedFolder(std::string text);
     void activateSearch();
-    void deactivateSearch();
-    void rename(std::string oldName);
-
-
-   };
+    std::vector<Folder> &getFolders();
+    void update(std::filesystem::path path);
+    std::filesystem::path getCurrentPath();
+  };

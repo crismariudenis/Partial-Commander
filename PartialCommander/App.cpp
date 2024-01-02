@@ -45,6 +45,8 @@ void App::run() {
 				window.close();
 				break;
 			case sf::Event::KeyPressed: case sf::Event::KeyReleased: case sf::Event::TextEntered:
+				if (event.type == sf::Event::KeyPressed)
+					sys->refresh(event.key.scancode, panel);
 				handleKeyboardShortcuts(event, panel);
 				handleKeyboardEvents(event);	
 				break;
@@ -154,6 +156,7 @@ void App::handleKeyboardEvents(sf::Event& event) {
 		editor->init(panel.folders[panel.selectedFolderIndex].path);
 		editor->update(event);
 		break;
+
 	}
 }
 
@@ -166,7 +169,7 @@ void App::handleRenameShortcut(sf::Event event, Panel &panel) {
 		panel.updateShortcutSelectedFolder(3, -1);
 		renameShortcut = false;
 		if (event.key.scancode == sf::Keyboard::Scan::Enter)
-			panel.rename(renameString);
+			sys->rename(renameString, panel);
 		else panel.setSelectedFolder(renameString);
 	}
 	else {
@@ -192,10 +195,8 @@ void App::handleKeyboardShortcuts(sf::Event event, Panel & panel)
 		pressed[event.key.scancode] = true;
 	}
 
-	if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::A]) {
-		shortcutOn = true;
-		panel.updateShortcutSelectedFolder(1, 0);
-	}
+	if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::A])
+		shortcutOn = true, panel.updateShortcutSelectedFolder(1, 0);
 	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::LShift]) {
 		shortcutOn = true;
 		if (pressed[sf::Keyboard::Scan::Up] || pressed[sf::Keyboard::Scan::Down]) {
@@ -205,17 +206,13 @@ void App::handleKeyboardShortcuts(sf::Event event, Panel & panel)
 			panel.updateByScrollbar(move);
 		}
 	}
-	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::C]) {
-		shortcutOn = true;
-		panel.updateClipboard();
-	}
-	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::V]) {
-		shortcutOn = true;
-		Clipboard* clipboard = Clipboard::getInstance();
-		panel.pasteFromClipboard(clipboard->getFolders());
-	}
-	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::R]) {
+	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::C])
+		shortcutOn = true, clipboard->update(panel);
+	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::V]) 
+		shortcutOn = true,  clipboard->paste(panel);\
+	else if ((pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::R]) || pressed[sf::Keyboard::Scan::F2] || pressed[sf::Keyboard::Scan::F7]) {
 		panel.registerCharacter(255, 0, 2);
+		panel.updateShortcutSelectedFolder(3, -1);
 		renameShortcut = true;
 		renameString = panel.getSelectedFolder().folderText.getString();
 	}

@@ -1,12 +1,15 @@
 #pragma once
 
-#include "Panel.h"
+
 #include "Button.h"
 #include "Editor.h"
+#include "Clipboard.h"
 
 class App
 {
 private:
+	System* sys = System::getInstance();
+	Clipboard* clipboard = Clipboard::getInstance();
 	int timer = 0;
 	sf::RectangleShape background, bottomBackground;
 	sf::RectangleShape upButton, downButton;

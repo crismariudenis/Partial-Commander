@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config.h"
+#include "Panel.h"
 
 class System
 {
@@ -9,10 +10,10 @@ private:
 	System();
 
 public:
-	void copy(std::filesystem::path startPath, std::filesystem::path endPath);
-	void del(std::filesystem::path path);
-	void rename();
-	void create();
+	void copy(std::filesystem::path startPath, std::filesystem::path endPath, Panel & panel);
+	void del(std::filesystem::path path, Panel & panel);
+	void rename(std::string oldPath, Panel &panel);
+	void create(std::filesystem::path path, Panel & panel);
 	static System* getInstance();
-
+	void refresh(int code, Panel &panel);
 };

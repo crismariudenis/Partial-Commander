@@ -11,7 +11,10 @@
 #include <unordered_map>
 #include <cmath>
 #include "fstream"
+
 #pragma once
+
+class Folder;
 
 /// Window Constraints
 #define WINDOW_HEIGHT 800
@@ -71,6 +74,7 @@ const sf::Color scrollbarButtonColor(198, 215, 251, 255);
 const sf::Color scrollbarTextButtonColor(81, 96, 138, 255);
 const sf::Color scrollbarColor(198, 215, 251, 255);
 const sf::Color sortLabelColor(3, 75, 166);
+const sf::Color outlineColor(255, 255, 153);
 
 const std::vector<std::string> buttonNames = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "Save", "Quit" };
 //const std::vector<std::string> editorButtonNames = {}
@@ -86,3 +90,9 @@ inline void initBackground(sf::RectangleShape& background, sf::Color color, sf::
 
 extern std::unordered_map<sf::Keyboard::Scancode, bool> pressed, released;
 extern std::vector<std::pair<int, char>> specialCharacters;
+extern std::unordered_map<int, bool> shortcutSelectedFolder;
+
+extern bool checkBoxLabel(float topLeftX, float topLeftY, float botRightX, float botRightY, float mouseX, float mouseY);
+extern bool nameCompare(const Folder& a, const Folder& b);
+extern bool sizeCompare(const Folder& a, const Folder& b);
+extern bool timeCompare(const Folder& a, const Folder& b);

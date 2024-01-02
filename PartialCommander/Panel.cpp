@@ -221,28 +221,6 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 			}
 			break;
 		}
-
-		case sf::Keyboard::Scancode::F8:
-		case sf::Keyboard::Scancode::Backspace:
-		{
-			for (unsigned int index = 0; index < folders.size(); ++index) {
-				if (index == selectedFolderIndex || shortcutSelectedFolder[index]) {
-					sys->del(folders[index].path);
-				}
-			}
-			update(currentPath);
-			updateShortcutSelectedFolder(3, -1);
-			break;
-		}
-		case sf::Keyboard::Scancode::F5: {
-			for (unsigned int index = 0; index < folders.size(); ++index) {
-				if (index == selectedFolderIndex || shortcutSelectedFolder[index])
-					sys->copy(folders[index].path, folders[index].path.parent_path());
-			}
-			update(currentPath);
-			updateShortcutSelectedFolder(3, -1);
-			break;
-		}
 		}
 	}
 }

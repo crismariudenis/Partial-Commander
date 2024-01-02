@@ -50,6 +50,8 @@
 
 #define EDITOR_PADDING 10
 #define EDITOR_MAX_LINES 32
+#define CLICK_ERROR 500
+
 extern std::filesystem::path leftPanelDirectoryPath;
 extern std::filesystem::path rightPanelDirectoryPath;
 

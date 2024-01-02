@@ -38,8 +38,7 @@ void Panel::initBorders() {
 	line2.setOutlineThickness(PANEL_LINE_WIDTH / 2);
 	line2.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE, 0));
 	line2.setSize(sf::Vector2f(0, 1.f * height - PANEL_BOTTOM_HEIGHT));
-	line2.setOutlineColor(sf::Color::White
-	);
+	line2.setOutlineColor(sf::Color::White);
 
 	line3.setOutlineThickness(PANEL_LINE_WIDTH / 2);
 	line3.setPosition(pos + sf::Vector2f(0, PANEL_HEIGHT - PANEL_BOTTOM_HEIGHT));
@@ -126,7 +125,7 @@ void Panel::update(std::filesystem::path path) {
 	std::vector <Folder> undefinedFolders;
 	folders.clear();
 	folders.push_back(Folder("/..", textPosition, fonts, " "));
-	
+
 	quadrants = { {pos.x, pos.y, pos.x + FOLDER_SPACE, pos.y + 38.f},
 				  {pos.x + FOLDER_SPACE + 1, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 38.f},
 				  {pos.x + FOLDER_SPACE + SIZE_SPACE + 1, pos.y, pos.x + width, pos.y + 38.f} };
@@ -222,6 +221,28 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 			}
 			break;
 		}
+
+		case sf::Keyboard::Scancode::F8:
+		case sf::Keyboard::Scancode::Backspace:
+		{
+			for (unsigned int index = 0; index < folders.size(); ++index) {
+				if (index == selectedFolderIndex || shortcutSelectedFolder[index]) {
+					sys->del(folders[index].path);
+				}
+			}
+			update(currentPath);
+			updateShortcutSelectedFolder(3, -1);
+			break;
+		}
+		case sf::Keyboard::Scancode::F5: {
+			for (unsigned int index = 0; index < folders.size(); ++index) {
+				if (index == selectedFolderIndex || shortcutSelectedFolder[index])
+					sys->copy(folders[index].path, folders[index].path.parent_path());
+			}
+			update(currentPath);
+			updateShortcutSelectedFolder(3, -1);
+			break;
+		}
 		}
 	}
 }
@@ -277,7 +298,11 @@ void Panel::changeDirectory(std::filesystem::path p) {
 }
 
 void Panel::initCurrentPath() {
-	currentPathText.setString(currentPath.string());
+	std::string s = currentPath.string();
+	if (s.size() > 40)
+		s = "..." + s.substr(s.size() - 40, s.size());
+
+	currentPathText.setString(s);
 	currentPathText.setFillColor(textColor);
 	currentPathText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
 	currentPathText.setCharacterSize(CHARACTER_SIZE + 5);

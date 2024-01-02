@@ -58,7 +58,7 @@ void App::run() {
 				isMouseOnScrollbar = false;
 				break;
 			}
-			if(prevRename)
+			if (prevRename && renameShortcut && event.type == sf::Event::KeyPressed) 
 				handleRenameShortcut(event, panel);
 		}
 
@@ -105,7 +105,6 @@ void App::initPanels() {
 void App::handleKeyboardEvents(sf::Event& event) {
 	if (event.type == sf::Event::KeyReleased || renameShortcut)
 		return;
-
 	System* system = System::getInstance();
 
 	if (editor) {
@@ -124,26 +123,20 @@ void App::handleKeyboardEvents(sf::Event& event) {
 	switch (event.key.scancode)
 	{
 	 case sf::Keyboard::Scan::Down: case sf::Keyboard::Scan::Up:
-		 if (!shortcutOn) {
-			 leftPanel.updateSelectedFolder(event.key.scancode);
-			 rightPanel.updateSelectedFolder(event.key.scancode);
-		 }
-			break;
+		if (!shortcutOn)  panel.updateSelectedFolder(event.key.scancode);
+		break;
 	case sf::Keyboard::Scan::Tab:
 		leftPanel.toggleIsSelected();
 		rightPanel.toggleIsSelected();
 		break;
 	case sf::Keyboard::Scan::Enter:
-		leftPanel.changePath();
-		rightPanel.changePath();
+		panel.changePath();
 		break;
 	case sf::Keyboard::Scancode::F8:
-		leftPanel.updateSelectedFolder(event.key.scancode);
-		rightPanel.updateSelectedFolder(event.key.scancode);
+		panel.updateSelectedFolder(event.key.scancode);
 		break;
 	case sf::Keyboard::Scancode::F5:
-		leftPanel.updateSelectedFolder(event.key.scancode);
-		rightPanel.updateSelectedFolder(event.key.scancode);
+		panel.updateSelectedFolder(event.key.scancode);
 		break;
 	case sf::Keyboard::Scancode::F10:
 		window.close();
@@ -176,7 +169,6 @@ void App::handleRenameShortcut(sf::Event event, Panel &panel) {
 	else {
 		if (event.type != sf::Event::KeyPressed && event.type != sf::Event::KeyReleased && event.type != sf::Event::TextEntered) {
 			panel.updateShortcutSelectedFolder(3, -1);
-
 			renameShortcut = false;
 		}
 	}
@@ -184,6 +176,8 @@ void App::handleRenameShortcut(sf::Event event, Panel &panel) {
 
 void App::handleKeyboardShortcuts(sf::Event event, Panel & panel)
 {
+	if (renameShortcut && event.type != sf::Event::KeyReleased)
+		return;
 	bool keyPressed = false;
 	if (event.type == sf::Event::KeyReleased) {
 		released[event.key.scancode] = true;

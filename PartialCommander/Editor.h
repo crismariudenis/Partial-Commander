@@ -5,9 +5,14 @@
 #include "Button.h"
 
 class Editor {
+	struct TextLine {
+		std::string string;
+		sf::Text text;
+	};
 	sf::RenderWindow& window;
 	std::filesystem::path path;
-	std::vector<std::string>text;
+	std::vector<TextLine>lines;
+	std::vector<sf::Font>fonts;
 	int firstLine = 0, lastLine = 0;
 	sf::Vector2i cursorPos{ 0,0 };
 	std::vector<Button>buttons;

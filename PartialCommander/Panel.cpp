@@ -45,8 +45,7 @@ void Panel::initBorders() {
 	line2.setOutlineThickness(PANEL_LINE_WIDTH / 2);
 	line2.setPosition(pos + sf::Vector2f(FOLDER_SPACE + SIZE_SPACE, 0));
 	line2.setSize(sf::Vector2f(0, 1.f * height - PANEL_BOTTOM_HEIGHT));
-	line2.setOutlineColor(sf::Color::White
-	);
+	line2.setOutlineColor(sf::Color::White);
 
 	line3.setOutlineThickness(PANEL_LINE_WIDTH / 2);
 	line3.setPosition(pos + sf::Vector2f(0, PANEL_HEIGHT - PANEL_BOTTOM_HEIGHT));
@@ -128,7 +127,7 @@ void Panel::update(std::filesystem::path path) {
 
 	folders.clear();
 	folders.push_back(Folder("/..", textPosition, fonts, " "));
-	
+
 	quadrants = { {pos.x, pos.y, pos.x + FOLDER_SPACE, pos.y + 38.f},
 				  {pos.x + FOLDER_SPACE + 1, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 38.f},
 				  {pos.x + FOLDER_SPACE + SIZE_SPACE + 1, pos.y, pos.x + width, pos.y + 38.f} };
@@ -220,7 +219,6 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 			for (unsigned int index = 0; index < folders.size(); ++index) {
 				if (index == selectedFolderIndex || shortcutSelectedFolder[index]) {
 					sys->del(folders[index].path);
-					std::cout << "LMAO\n";
 				}
 			}
 			update(currentPath);
@@ -293,7 +291,11 @@ void Panel::changeDirectory(std::filesystem::path p) {
 }
 
 void Panel::initCurrentPath() {
-	currentPathText.setString(currentPath.string());
+	std::string s = currentPath.string();
+	if (s.size() > 40)
+		s = "..." + s.substr(s.size() - 40, s.size());
+
+	currentPathText.setString(s);
 	currentPathText.setFillColor(textColor);
 	currentPathText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
 	currentPathText.setCharacterSize(CHARACTER_SIZE + 5);
@@ -484,7 +486,7 @@ void Panel::pasteFromClipboard(std::vector<Folder> folders) {
 		selectedFolderIndex = copyIndex;
 		this->folders[copyIndex].toggleIsSelected();
 		this->folders[copyIndex].updateText();
-		
+
 	}
 }
 
@@ -691,7 +693,7 @@ void Panel::setSelectedFolder(std::string text) {
 
 void Panel::rename(std::string oldName) {
 	std::filesystem::path oldPath = currentPath / oldName,
-	                      newPath = currentPath / folders[selectedFolderIndex].folderText.getString().toAnsiString();
+		newPath = currentPath / folders[selectedFolderIndex].folderText.getString().toAnsiString();
 	std::filesystem::rename(oldPath, newPath);
 	folders[selectedFolderIndex].path = newPath;
 }

@@ -21,9 +21,7 @@ class Panel
 
     sf::RectangleShape panelRect, line1, line2, line3;
 
-    std::vector<std::tuple<float, float, float, float>> quadrants = { {pos.x, pos.y, pos.x + FOLDER_SPACE, pos.y + 20.f},
-                                                                      {pos.x + FOLDER_SPACE + 1, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 20.f},
-                                                                      {pos.x + FOLDER_SPACE + SIZE_SPACE + 1, pos.y, pos.x + width, pos.y + 20.f} };
+    std::vector<std::tuple<float, float, float, float>> quadrants;
 
     void update(std::filesystem::path path);
     void drawFolders();
@@ -72,11 +70,12 @@ public:
     bool checkScrollbarLabel(sf::Vector2f mouse);
     void updateByScrollbar(sf::Vector2f mouse);
     void updateByScrollbar(int steps);
-    void registerCharacter(int scancode, bool isUpperCase);
-
+    void registerCharacter(int scancode, bool isUpperCase, int type);
+    Folder getSelectedFolder();
+    void setSelectedFolder(std::string text);
     void activateSearch();
     void deactivateSearch();
-
+    void rename(std::string oldName);
 
 
    };

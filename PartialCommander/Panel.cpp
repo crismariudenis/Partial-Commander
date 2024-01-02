@@ -10,7 +10,6 @@ void Panel::init(sf::Vector2f pos, int width, int height, std::filesystem::path 
 	update(currentPath);
 	initColumnTitles();
 	initBorders();
-	initCurrentPath();
 }
 
 void Panel::drawFolders() {
@@ -130,9 +129,9 @@ void Panel::update(std::filesystem::path path) {
 	folders.clear();
 	folders.push_back(Folder("/..", textPosition, fonts, " "));
 	
-	quadrants = { {pos.x, pos.y, pos.x + FOLDER_SPACE, pos.y + 20.f},
-				  {pos.x + FOLDER_SPACE + 1, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 20.f},
-				  {pos.x + FOLDER_SPACE + SIZE_SPACE + 1, pos.y, pos.x + width, pos.y + 20.f} };
+	quadrants = { {pos.x, pos.y, pos.x + FOLDER_SPACE, pos.y + 38.f},
+				  {pos.x + FOLDER_SPACE + 1, pos.y, pos.x + FOLDER_SPACE + SIZE_SPACE, pos.y + 38.f},
+				  {pos.x + FOLDER_SPACE + SIZE_SPACE + 1, pos.y, pos.x + width, pos.y + 38.f} };
 
 	for (auto const& entry : std::filesystem::directory_iterator(path)) {
 		if(!std::filesystem::exists(entry))
@@ -157,6 +156,7 @@ void Panel::update(std::filesystem::path path) {
 	float scrollPerUnit = 1.f * (height - 2.f * SCROLLBAR_BUTTON_HEIGHT) / folders.size();
 	scrollbar.init(SCROLLBAR_WIDTH, scrollPerUnit * (lastToDisplay - firstToDisplay + 1) + 4.5f, scrollPerUnit);
 	foldersCopy = folders;
+	initCurrentPath();
 }
 std::string Panel::getDate(std::filesystem::path path) {
 	// Convert from fs::file_time_type to std::time_t
@@ -218,8 +218,10 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 		case sf::Keyboard::Scancode::Backspace:
 		{
 			for (unsigned int index = 0; index < folders.size(); ++index) {
-				if (index == selectedFolderIndex || shortcutSelectedFolder[index])
+				if (index == selectedFolderIndex || shortcutSelectedFolder[index]) {
 					sys->del(folders[index].path);
+					std::cout << "LMAO\n";
+				}
 			}
 			update(currentPath);
 			updateShortcutSelectedFolder(3, -1);
@@ -342,6 +344,7 @@ void Panel::checkTextLabels(sf::Vector2f mouse) {
 				else std::sort(folders.begin() + 1, folders.end(), timeCompare);
 				sortType = index + 1;
 			}
+			folders[selectedFolderIndex].toggleIsSelected(), folders[selectedFolderIndex].updateText();
 		}
 	}
 }
@@ -402,6 +405,7 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 		if (shiftSelectedFolder == -1)
 			shiftSelectedFolder = selectedFolderIndex;
 		if (shiftSelectedFolder - selectedFolderIndex > 0) {
+			std::cout << move << '\n';
 			if (move > 0 && shiftSelectedFolder + 1 < (int)folders.size()) shortcutSelectedFolder[++shiftSelectedFolder] = true;
 			else if(move < 0) shortcutSelectedFolder[shiftSelectedFolder--] = false;
 		}
@@ -428,6 +432,7 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 			updateFolderSelectedFolder(lastToDisplay);
 
 		shiftSelectedFolder = -1;
+		folders[selectedFolderIndex].folderText.setOutlineThickness(0);
 	}
 	else if (type == 4) { // Control LMouse
 		move += firstToDisplay;
@@ -470,11 +475,11 @@ void Panel::pasteFromClipboard(std::vector<Folder> folders) {
 		int copyIndex = selectedFolderIndex;
 		for (size_t index = 0; index < folders.size(); ++index) 
 			sys->copy(folders[index].path, currentPath);
-		
 		update(currentPath);
 		selectedFolderIndex = copyIndex;
 		this->folders[copyIndex].toggleIsSelected();
 		this->folders[copyIndex].updateText();
+		
 	}
 }
 
@@ -503,7 +508,7 @@ void Panel::drawFreeSpace()
 
 	spaceText.setString(spaceString);
 	spaceText.setFillColor(textColor);
-	spaceText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X + PANEL_WIDTH - 200, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
+	spaceText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X + PANEL_WIDTH - 220, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
 	spaceText.setCharacterSize(CHARACTER_SIZE + 5);
 	spaceText.setFont(fonts[CustomFonts::Font::ROBOTO]);
 	window.draw(spaceText);
@@ -558,31 +563,39 @@ void Panel::updateByScrollbar(int steps)
 }
 
 
-void Panel::registerCharacter(int scancode, bool isUpperCase) {
-	if (!isSelected || !isSearchActive || isDirectoryLabelActive)
+void Panel::registerCharacter(int scancode, bool isUpperCase, int type) {
+	if (!isSelected)
 		return;
+	std::vector<std::string> words = { searchText.getString(), folders[selectedFolderIndex].folderText.getString() };
 	if (scancode >= 0 && scancode <= 25) { /// Alphabet
 		scancode += 'a';
 		if (isUpperCase) scancode -= 'a' - 'A';
-		searchText.setString(searchText.getString() + (char)(scancode));
-		updateFoldersByFilter();
+		words[type - 1] += (char)(scancode);
 	}
 	else if (scancode == 38) {  /// Delete 
-		std::string searchString = searchText.getString().toAnsiString();
-		if (searchString.size() > 0)
-			searchString.pop_back();
-		searchText.setString(searchString);
-		updateFoldersByFilter();
+		if (words[type - 1].size() > 0)
+			words[type - 1].pop_back();
 	}
-	else {
+	else if (scancode >= sf::Keyboard::Scan::Num1 && scancode <= sf::Keyboard::Scan::Num0) { /// Digits
+		char digit = (scancode - sf::Keyboard::Scan::Num1 + 1) % 10 + '0';
+		words[type - 1] += digit;
+	}
+	else { /// Special characteres : '_', '-'
 		for (std::pair<int, char> ch : specialCharacters) {
 			if (ch.first == scancode) {
-				searchText.setString(searchText.getString() + ch.second);
-				updateFoldersByFilter();
+				words[type - 1] += ch.second;
 			}
 		}
 	}
-	
+	if (type == 1 && isSearchActive && !isDirectoryLabelActive) { /// CTRL F - Search Function
+		searchText.setString(words[0]);
+		updateFoldersByFilter();
+	}
+	else if (type == 2 && isDirectoryLabelActive) { /// CTRL R - Rename Function
+		folders[selectedFolderIndex].folderText.setString(words[1]);
+		folders[selectedFolderIndex].folderText.setOutlineColor(sf::Color(255, 255, 153));
+		folders[selectedFolderIndex].folderText.setOutlineThickness(5);
+	}
 }
 
 void Panel::drawSearchText() {
@@ -647,6 +660,11 @@ void Panel::updateFoldersByFilter() {
 }
 
 void Panel::activateSearch() {
+	if (isSearchActive) {
+		isSearchActive = false;
+		isDirectoryLabelActive = true;
+		return;
+	}
 	isSearchActive = true;
 	isDirectoryLabelActive = false;
 	updateFoldersByFilter();
@@ -655,4 +673,19 @@ void Panel::activateSearch() {
 void Panel::deactivateSearch() {
 	isSearchActive = false;
 	isDirectoryLabelActive = true;
+}
+
+Folder Panel::getSelectedFolder() {
+	return folders[selectedFolderIndex];
+}
+
+void Panel::setSelectedFolder(std::string text) {
+	folders[selectedFolderIndex].folderText.setString(text);
+}
+
+void Panel::rename(std::string oldName) {
+	std::filesystem::path oldPath = currentPath / oldName,
+	                      newPath = currentPath / folders[selectedFolderIndex].folderText.getString().toAnsiString();
+	std::filesystem::rename(oldPath, newPath);
+	folders[selectedFolderIndex].path = newPath;
 }

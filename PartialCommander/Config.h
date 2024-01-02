@@ -47,6 +47,8 @@
 #define SCROLLBAR_BUTTON_WIDTH SCROLLBAR_WIDTH
 #define SCROLLBAR_BUTTON_HEIGHT 20
 
+#define CLICK_ERROR 500
+
 extern std::filesystem::path leftPanelDirectoryPath;
 extern std::filesystem::path rightPanelDirectoryPath;
 

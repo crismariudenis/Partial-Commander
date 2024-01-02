@@ -17,6 +17,9 @@ private:
 	std::vector<sf::Font> fonts = fontsHandler.getFonts();
 	std::vector<Button> buttons;
 	std::map<std::pair<int, int>, bool> mouseClicked;
+	
+	bool renameShortcut = false;
+	std::string renameString;
 
 	void initWindow(std::string name);
 	void initPanels();
@@ -25,7 +28,8 @@ private:
 	void handleMouseScrollingEvents(sf::Event& event);
 	void handleMousePressingEvents(sf::Event& event);
 	void handleMouseMovedEvents();
-	void handleKeyboardShortcuts(sf::Event event);
+	void handleKeyboardShortcuts(sf::Event event, Panel &panel);
+	void handleRenameShortcut(sf::Event event, Panel& panel);
 
 	void drawButtons();
 	void drawScrollbarButtons();

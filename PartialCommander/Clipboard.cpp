@@ -5,7 +5,7 @@ void Clipboard::copy(std::unordered_map<int, bool>& mark, std::vector<Folder>& f
 	this->folders.clear();
 	for (int index = 0; index < folders.size(); ++index) {
 		if (mark[index])
-			this->folders.push_back(folders[index]), std::cout << "HERE\n";
+			this->folders.push_back(folders[index]);
 	}
 }
 
@@ -35,7 +35,6 @@ void Clipboard::paste(Panel & panel) {
 	folders[copyIndex].toggleIsSelected();
 	folders[copyIndex].updateText();
 	this->folders.clear();
-	
 }
 
 void Clipboard::update(Panel & panel)
@@ -43,6 +42,16 @@ void Clipboard::update(Panel & panel)
 	std::vector<Folder>& folders = panel.getFolders();
 	shortcutSelectedFolder[panel.selectedFolderIndex] = true;
 	copy(shortcutSelectedFolder, folders);
+	this->panel = &panel;
+}
+
+void Clipboard::move(Panel& panel)
+{
+	System* sys = System::getInstance();
+	std::vector<Folder> folders = panel.getFolders();
+	copy(shortcutSelectedFolder, folders);
+	for (size_t index = 0; index < folders.size(); ++index) 
+		sys->del(folders[index].path, panel);
 }
 
 Clipboard* Clipboard::clipboard = nullptr;

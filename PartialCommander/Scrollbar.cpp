@@ -17,8 +17,3 @@ void Scrollbar::move(int moveX, int moveY)
 float Scrollbar::getUnitPerFolder() {
 	return unitPerFolder;
 }
-
-void Scrollbar::update(int steps)
-{
-
-}

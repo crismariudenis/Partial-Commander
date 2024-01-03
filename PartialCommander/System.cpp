@@ -91,11 +91,12 @@ void System::refresh(int code, Panel &panel)
 
 void System::rename(std::string oldName, Panel & panel)
 {
-	if(oldName[0] == '\\')
-		oldName.erase(oldName.begin() + 0);
 	std::vector<Folder> &folders = panel.getFolders();
+	std::string newName = folders[panel.selectedFolderIndex].folderText.getString().toAnsiString();
+	if(oldName[0] == '\\') oldName.erase(oldName.begin() + 0);
+	if (newName[0] == '\\') newName.erase(newName.begin() + 0);
 	std::filesystem::path oldPath = panel.getCurrentPath() / oldName,
-		newPath = panel.getCurrentPath() / folders[panel.selectedFolderIndex].folderText.getString().toAnsiString();
+		newPath = panel.getCurrentPath() / newName;
 	std::filesystem::rename(oldPath, newPath);
 	folders[panel.selectedFolderIndex].path = newPath;
 }

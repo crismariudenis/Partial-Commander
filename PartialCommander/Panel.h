@@ -25,8 +25,6 @@ class Panel
     void drawFreeSpace();
     void drawSearchText();
 
-    std::string getDate(std::filesystem::path p);
-
     void resetTextPositions(std::vector<sf::Vector2f> initialPositions);
     bool isValidByFilter(std::string folderText);
 

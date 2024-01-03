@@ -144,8 +144,10 @@ void Panel::update(std::filesystem::path path) {
 		}
 		
 		std::string prefix = entry.path().stem().string().substr(0, 10);
-		if (prefix == "New Folder")
+		if (prefix == "New Folder") {
 			undefinedFolders.push_back(Folder(entry.path(), textPosition, fonts, getDate(entry.path())));
+			std::cout << entry.path() << '\n';
+		}
 		else {
 			textPosition.y += 1.f * height / LINE_SPACING;
 			folders.push_back(Folder(entry.path(), textPosition, fonts, getDate(entry.path())));
@@ -166,28 +168,6 @@ void Panel::update(std::filesystem::path path) {
 	foldersCopy = folders;
 	initCurrentPath();
 }
-std::string Panel::getDate(std::filesystem::path path) {
-	// Convert from fs::file_time_type to std::time_t
-	auto to_time_t = [](auto tp) {
-		namespace cs = std::chrono;
-		namespace fs = std::filesystem;
-		auto sctp = cs::time_point_cast<cs::system_clock::duration>(tp -
-			fs::file_time_type::clock::now() + cs::system_clock::now());
-		return cs::system_clock::to_time_t(sctp);
-		};
-
-
-	auto fileTime = std::filesystem::last_write_time(path);
-	std::time_t tt = to_time_t(fileTime);
-
-	// Convert the std::time_t value to a local time structure
-	std::tm* localTime = std::localtime(&tt);
-	std::stringstream buff;
-
-	buff << std::put_time(localTime, "%d %b %H:%M");
-	std::string formattedDate = buff.str();
-	return formattedDate;
-}
 
 void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 	if (isSelected && isDirectoryLabelActive)
@@ -197,9 +177,8 @@ void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
 		case sf::Keyboard::Scancode::S:
 		case sf::Keyboard::Scancode::Down:
 		{
-			if (selectedFolderIndex + 1 < (int)folders.size()) {
+			if (selectedFolderIndex + 1 < (int)folders.size()) 
 				updateFolderSelectedFolder(selectedFolderIndex + 1);
-			}
 			if (selectedFolderIndex == lastToDisplay) {
 				int step = std::min((size_t)10, folders.size() - lastToDisplay - 1);
 				firstToDisplay += step;
@@ -232,10 +211,7 @@ void Panel::toggleIsSelected() {
 }
 
 void Panel::changePath() {
-
 	auto& p = folders[selectedFolderIndex].path;
-
-
 	if (!std::filesystem::is_directory(p))
 	{
 		std::string realPath = p.string();
@@ -249,7 +225,6 @@ void Panel::changePath() {
 			}
 
 		std::string cmd = "start " + realPath;
-		std::cout << cmd.c_str() << '\n';
 		try {
 			system(cmd.c_str());
 		}
@@ -258,15 +233,11 @@ void Panel::changePath() {
 		}
 		return;
 	}
-	if (isSelected) {
-		std::filesystem::path folderPath;
-		if (selectedFolderIndex)
-			folderPath = p;
-		else
-			folderPath = currentPath.parent_path();
-		std::cout << folderPath.string() << '\n';
-		update(folderPath);
-	}
+	std::filesystem::path folderPath;
+	if (selectedFolderIndex)
+		folderPath = p;
+	else folderPath = currentPath.parent_path();
+	update(folderPath);
 }
 
 void Panel::changeDirectory(std::filesystem::path p) {
@@ -334,8 +305,6 @@ void Panel::resetTextPositions(std::vector<sf::Vector2f> initialPositions) {
 }
 
 bool Panel::checkMouseOnFolder(int index, float mouseX, float mouseY) {
-	if (!isSelected)
-		return false;
 	Folder folder = folders[index];
 	double extraHeight = 1.f * height / LINE_SPACING;
 	return checkBoxLabel(folder.folderText.getPosition().x, folder.folderText.getPosition().y,
@@ -343,8 +312,6 @@ bool Panel::checkMouseOnFolder(int index, float mouseX, float mouseY) {
 }
 
 bool Panel::checkScrollbarLabel(sf::Vector2f mouse) {
-	if (!isSelected)
-		return false;
 	return checkBoxLabel(scrollbar.getPosition().x, scrollbar.getPosition().y,
 		scrollbar.getPosition().x + scrollbar.getSize().x, scrollbar.getPosition().y + scrollbar.getSize().y, mouse.x, mouse.y);
 }
@@ -369,10 +336,6 @@ void Panel::resetFoldersPositions() {
 	}
 }
 
-int Panel::getSelectedFolderIndex() {
-	return selectedFolderIndex;
-}
-
 void Panel::updateShortcutSelectedFolder(int type, int move)
 {
 	if (!isSelected || !isDirectoryLabelActive)
@@ -386,7 +349,6 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 		if (shiftSelectedFolder == -1)
 			shiftSelectedFolder = selectedFolderIndex;
 		if (shiftSelectedFolder - selectedFolderIndex > 0) {
-			std::cout << move << '\n';
 			if (move > 0 && shiftSelectedFolder + 1 < (int)folders.size()) shortcutSelectedFolder[++shiftSelectedFolder] = true;
 			else if (move < 0) shortcutSelectedFolder[shiftSelectedFolder--] = false;
 		}
@@ -406,9 +368,8 @@ void Panel::updateShortcutSelectedFolder(int type, int move)
 			if (pos.second) size++;
 
 		shortcutSelectedFolder.clear();
-
 		if (shiftSelectedFolder != -1)
-			updateFolderSelectedFolder(shiftSelectedFolder);
+			updateFolderSelectedFolder(std::min(shiftSelectedFolder, lastToDisplay));
 		else if (size > 1)
 			updateFolderSelectedFolder(lastToDisplay);
 
@@ -481,8 +442,6 @@ void Panel::updateFolderSelectedFolder(int newSelectedFolder) {
 
 void Panel::updateByScrollbar(sf::Vector2f mouse)
 {
-	if (!isSelected)
-		return;
 	float x = scrollbar.getPosition().x, y = scrollbar.getPosition().y;
 	int steps = (int)std::min(folders.size() - 1.f * lastToDisplay - 1, (mouse.y - y) / scrollbar.getUnitPerFolder());
 	if (mouse.y - y < 0)
@@ -626,4 +585,8 @@ std::vector<Folder>& Panel::getFolders() {
 
 std::filesystem::path Panel::getCurrentPath() {
 	return currentPath;
+}
+
+int Panel::getSelectedFolderIndex() {
+	return selectedFolderIndex;
 }

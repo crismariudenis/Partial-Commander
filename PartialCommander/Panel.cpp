@@ -167,6 +167,7 @@ void Panel::update(std::filesystem::path path) {
 	scrollbar.init(SCROLLBAR_WIDTH, scrollPerUnit * (lastToDisplay - firstToDisplay + 1) + 4.5f, scrollPerUnit);
 	foldersCopy = folders;
 	initCurrentPath();
+	folders[selectedFolderIndex].updateText();
 }
 
 void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {
@@ -241,7 +242,6 @@ void Panel::changePath() {
 }
 
 void Panel::changeDirectory(std::filesystem::path p) {
-	std::cout << p.string() << '\n';
 	if (isSelected)
 		update(p);
 }

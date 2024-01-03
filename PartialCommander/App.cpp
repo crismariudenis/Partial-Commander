@@ -196,7 +196,7 @@ void App::handleKeyboardShortcuts(sf::Event event, Panel& panel)
 	}
 	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::C])
 		shortcutOn = true, clipboard->update(panel);
-	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::V])
+	else if ((pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::V]) || pressed[sf::Keyboard::Scan::F6])
 		shortcutOn = true, clipboard->paste(panel);
 	else if ((pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::R]) || pressed[sf::Keyboard::Scan::F2] || pressed[sf::Keyboard::Scan::F7]) {
 		panel.updateShortcutSelectedFolder(3, -1);
@@ -217,7 +217,7 @@ void App::handleKeyboardShortcuts(sf::Event event, Panel& panel)
 			panel.changeDirectory(std::filesystem::path(path));
 		}
 	}
-	else if (shortcutOn == true && !pressed[sf::Keyboard::Scan::LControl] && event.type == sf::Event::KeyReleased && !pressed[sf::Keyboard::Scan::LShift] && event.key.scancode != sf::Keyboard::Scan::Space) {
+	else if (shortcutOn == true && !pressed[sf::Keyboard::Scan::LControl] && event.type == sf::Event::KeyPressed && !pressed[sf::Keyboard::Scan::LShift] && event.key.scancode != sf::Keyboard::Scan::Space) {
 		if (event.key.scancode != sf::Keyboard::Scan::F5 && event.key.scancode != sf::Keyboard::Scan::F8) {
 			panel.updateShortcutSelectedFolder(3, -1);
 			shortcutOn = false;
@@ -227,7 +227,7 @@ void App::handleKeyboardShortcuts(sf::Event event, Panel& panel)
 		panel.activateSearch();
 		renameShortcut = false;
 	}
-	else if (event.type == sf::Event::KeyReleased)
+	else if (event.type == sf::Event::KeyPressed)
 		panel.registerCharacter(event.key.scancode, pressed[sf::Keyboard::Scan::LShift], 1);
 }
 

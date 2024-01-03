@@ -76,7 +76,7 @@ const sf::Color scrollbarColor(198, 215, 251, 255);
 const sf::Color sortLabelColor(3, 75, 166);
 const sf::Color outlineColor(255, 255, 153);
 
-const std::vector<std::string> buttonNames = { "Help", "Menu", "View", "Edit", "Copy", "RenMov", "Mkdir", "Delete", "Save", "Quit" };
+const std::vector<std::string> buttonNames = { "Help", "Rename", "View", "Edit", "Copy", "Paste", "Mkdir", "Delete", "Save", "Quit" };
 //const std::vector<std::string> editorButtonNames = {}
 
 /// Fonts

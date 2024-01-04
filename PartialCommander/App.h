@@ -44,8 +44,7 @@ private:
 
 public:
 
-	bool isMouseOnScrollbar = false;
-	bool shortcutOn = false;
+	bool isMouseOnScrollbar = false, shortcutOn = false, pathShortcut = false;
 
 	void init();
 	void run();

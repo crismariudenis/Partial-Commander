@@ -143,12 +143,9 @@ void Panel::update(std::filesystem::path path) {
 			std::cerr << "Exception caught: " << e.what() << std::endl;
 			continue;
 		}
-		
 		std::string prefix = entry.path().stem().string().substr(0, 10);
-		if (prefix == "New Folder") {
+		if (prefix == "New Folder") 
 			undefinedFolders.push_back(Folder(entry.path(), textPosition, fonts));
-			std::cout << entry.path() << '\n';
-		}
 		else {
 			textPosition.y += 1.f * height / LINE_SPACING;
 			folders.push_back(Folder(entry.path(), textPosition, fonts));

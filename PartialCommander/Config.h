@@ -91,12 +91,14 @@ inline void initBackground(sf::RectangleShape& background, sf::Color color, sf::
 	background.setSize(size);
 }
 
-extern std::unordered_map<int, bool> pressed;
+extern std::unordered_map<int, int> pressed;
 extern std::vector<std::pair<int, char>> specialCharacters;
 extern std::unordered_map<int, bool> shortcutSelectedFolder;
+extern std::vector<sf::Color> themes[10];
 
 extern bool checkBoxLabel(float topLeftX, float topLeftY, float botRightX, float botRightY, float mouseX, float mouseY);
 extern bool nameCompare(const Folder& a, const Folder& b);
 extern bool sizeCompare(const Folder& a, const Folder& b);
 extern bool timeCompare(const Folder& a, const Folder& b);
 extern void generateTheme();
+extern int currentTheme, pressedKeys;

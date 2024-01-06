@@ -11,7 +11,7 @@ class App
 private:
 	System* sys = System::getInstance();
 	Clipboard* clipboard = Clipboard::getInstance();
-	int timer = 0;
+	int timer = 0, count = 0;
 	sf::RectangleShape background, bottomBackground, upButton, downButton;
 	sf::RenderWindow window;
 	sf::Text buttonText, buttonText2;

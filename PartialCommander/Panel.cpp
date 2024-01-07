@@ -256,7 +256,7 @@ void Panel::initCurrentPath() {
 	currentPathText.setString(s);
 	if (currentPathText.getFont() == NULL) {
 		currentPathText.setFillColor(textColor);
-		currentPathText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
+		currentPathText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT - PANEL_BOTTOM_HEIGHT + PANEL_MARGIN_TOP + 12.5));
 		currentPathText.setCharacterSize(CHARACTER_SIZE + 5);
 		currentPathText.setFont(fonts[CustomFonts::Font::UBUNTU]);
 	}
@@ -433,7 +433,7 @@ void Panel::drawFreeSpace()
 
 	spaceText.setString(spaceString);
 	spaceText.setFillColor(textColor);
-	spaceText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X + PANEL_WIDTH - 220, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
+	spaceText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X + PANEL_WIDTH - 220, PANEL_HEIGHT - PANEL_BOTTOM_HEIGHT + PANEL_MARGIN_TOP + 12.5));
 	spaceText.setCharacterSize(CHARACTER_SIZE + 5);
 	spaceText.setFont(fonts[CustomFonts::Font::UBUNTU]);
 	window.draw(spaceText);

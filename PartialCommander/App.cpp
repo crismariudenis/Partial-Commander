@@ -31,11 +31,13 @@ void App::run() {
 			mouseClicked.clear(), timer = 0;
 
 		Panel& panel = rightPanel.isSelected ? rightPanel : leftPanel;
-
+	
 		/// Event handling
 		sf::Event event;
 		bool prevRename = renameShortcut;
 		while (window.pollEvent(event)) {
+			if(event.type == sf::Event::KeyPressed)
+				panel.registerCharacter(event.key.scancode, pressed[sf::Keyboard::Scan::LShift], 1);
 			switch (event.type)
 			{
 			case sf::Event::Closed:
@@ -131,6 +133,8 @@ void App::handleKeyboardEvents(sf::Event& event) {
 		pressed.clear();
 		break;
 	case sf::Keyboard::Scan::Enter:
+		if (panel.isSearchActive)
+			break;
 		if (pathShortcut)
 			panel.changePath(2), pathShortcut = shortcutOn = false;
 		else
@@ -198,9 +202,9 @@ void App::handleKeyboardShortcuts(sf::Event event, Panel& panel)
 	}
 	if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::A] && pressedKeys == 2 && pressed[sf::Keyboard::Scan::LControl] < pressed[sf::Keyboard::Scan::A])
 		shortcutOn = true, panel.updateShortcutSelectedFolder(1, 0);
-	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::LShift] && pressed[sf::Keyboard::Scan::LControl] < pressed[sf::Keyboard::Scan::LShift] && pressedKeys == 2) {
+	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::LShift] && pressed[sf::Keyboard::Scan::LControl] < pressed[sf::Keyboard::Scan::LShift] && pressedKeys == 3 && (pressed[sf::Keyboard::Scan::Up] || pressed[sf::Keyboard::Scan::Down])) {
 		shortcutOn = true;
-		if ((pressed[sf::Keyboard::Scan::Up] || pressed[sf::Keyboard::Scan::Down]) && pressedKeys == 3 && pressed[sf::Keyboard::Scan::LShift] < std::max(pressed[sf::Keyboard::Scan::Up], pressed[sf::Keyboard::Scan::Down])) {
+		if (pressed[sf::Keyboard::Scan::LShift] < std::max(pressed[sf::Keyboard::Scan::Up], pressed[sf::Keyboard::Scan::Down])) {
 			int move = 1;
 			if (pressed[sf::Keyboard::Scan::Up]) move = -move;
 			panel.updateShortcutSelectedFolder(2, move);
@@ -244,11 +248,17 @@ void App::handleKeyboardShortcuts(sf::Event event, Panel& panel)
 		}
 	}
 	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::S] && pressedKeys == 2 && pressed[sf::Keyboard::Scan::LControl] < pressed[sf::Keyboard::Scan::S]) {
-		currentTheme = (currentTheme + 1) % 10;
-		if (!currentTheme) currentTheme++;
-		themes[currentTheme].clear();
+		int loadTheme = -1;
+		for (int index = 1; index < 10 && loadTheme == -1; ++index) {
+			if (themes[index].size() == 0)
+				loadTheme = index;
+		}
+		if(loadTheme == -1) 
+			loadTheme = (currentTheme + 1) % 10;
+		if (!loadTheme) loadTheme++;
+		themes[loadTheme].clear();
 		for (int index = 0; index < colors.size(); ++index) 
-			themes[currentTheme].push_back(*colors[index]);
+			themes[loadTheme].push_back(*colors[index]);
 	}
 	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::X] && pressedKeys == 2 && pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::X])
 		shortcutOn = true, clipboard->move(panel);

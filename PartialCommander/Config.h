@@ -101,4 +101,4 @@ extern bool nameCompare(const Folder& a, const Folder& b);
 extern bool sizeCompare(const Folder& a, const Folder& b);
 extern bool timeCompare(const Folder& a, const Folder& b);
 extern void generateTheme();
-extern int currentTheme, pressedKeys;
+extern int pressedKeys;

@@ -580,6 +580,7 @@ void Panel::updateFoldersByFilter() {
 
 void Panel::activateSearch() {
 	if (isSearchActive) {
+		registerCharacter(38, 1, 1);
 		isSearchActive = false;
 		isDirectoryLabelActive = true;
 		return;

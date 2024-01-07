@@ -5,6 +5,7 @@
 #include "Editor.h"
 #include "Clipboard.h"
 #include "Scrollbar.h"
+#include "ThemeGenerator.h"
 
 class App
 {

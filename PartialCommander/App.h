@@ -6,12 +6,15 @@
 #include "Clipboard.h"
 #include "Scrollbar.h"
 #include "ThemeGenerator.h"
+#include "Menu.h"
 
 class App
 {
 private:
 	System* sys = System::getInstance();
 	Clipboard* clipboard = Clipboard::getInstance();
+	Editor* editor;
+	Menu* menu;
 	int timer = 0, count = 0;
 	sf::RectangleShape background, bottomBackground, upButton, downButton;
 	sf::RenderWindow window;
@@ -19,19 +22,18 @@ private:
 	std::string name;
 	Panel leftPanel{ window }, rightPanel{ window };
 	Scrollbar scrollbar;
-	Editor* editor;
 	std::vector<sf::Font> fonts = fontsHandler.getFonts();
 	std::vector<Button> buttons;
 	std::map<std::pair<int, int>, bool> mouseClicked;
-	
+
 	bool renameShortcut = false;
 	std::string renameString;
 
 	void handleKeyboardEvents(sf::Event& event);
-	void handleMouseScrollingEvents(sf::Event& event, Panel &panel);
-	void handleMousePressingEvents(sf::Event& event, Panel &panel);
-	void handleMouseMovedEvents(Panel & panel);
-	void handleKeyboardShortcuts(sf::Event event, Panel &panel);
+	void handleMouseScrollingEvents(sf::Event& event, Panel& panel);
+	void handleMousePressingEvents(sf::Event& event, Panel& panel);
+	void handleMouseMovedEvents(Panel& panel);
+	void handleKeyboardShortcuts(sf::Event event, Panel& panel);
 	void handleRenameShortcut(sf::Event event, Panel& panel);
 
 	void drawButtons();
@@ -41,7 +43,7 @@ private:
 	void initPanels();
 	void initButtons();
 
-	void getCursor(sf::Cursor& cursor, Panel & panel);
+	void getCursor(sf::Cursor& cursor, Panel& panel);
 
 public:
 

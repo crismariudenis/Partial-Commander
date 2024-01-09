@@ -24,11 +24,9 @@ class Folder;
 
 /// Panel Constrains
 #define BORDER_OFFSET 30
-#define PANEL_BOTTOM_WIDTH WINDOW_WIDTH / 2
-
-#define PANEL_HEIGHT WINDOW_HEIGHT - BOTTOM_BUTTONS_HEIGHT - TOP_BUTTONS_HEIGHT
+#define PANEL_BOTTOM_WIDTH (WINDOW_WIDTH / 2)
 #define PANEL_BOTTOM_HEIGHT 50
-
+#define PANEL_HEIGHT (WINDOW_HEIGHT - BOTTOM_BUTTONS_HEIGHT - TOP_BUTTONS_HEIGHT)
 #define PANEL_OFFSET 30
 #define LINE_SPACING 23
 #define TEXT_LINE_SPACING 30
@@ -48,14 +46,24 @@ class Folder;
 #define TIME_SPACE (PANEL_WIDTH - SIZE_SPACE - FOLDER_SPACE)
 
 #define SCROLLBAR_WIDTH 10
-#define SCROLLBAR_X PANEL_WIDTH + 12
-#define SCROLLBAR_Y TOP_BUTTONS_HEIGHT + 18
+#define SCROLLBAR_X (PANEL_WIDTH + 12)
+#define SCROLLBAR_Y (TOP_BUTTONS_HEIGHT + 18)
 #define SCROLLBAR_BUTTON_WIDTH SCROLLBAR_WIDTH
 #define SCROLLBAR_BUTTON_HEIGHT 20
 
 #define EDITOR_PADDING 10
 #define EDITOR_MAX_LINES 32
 #define CLICK_ERROR 500
+
+// Menu
+#define MENU_CHARACTER_SIZE 40
+#define MENU_NAME_CHARACTER_SIZE 30
+#define MENU_PADDING_X 300
+#define MENU_PADDING_Y 60
+#define MENU_INNER_PADDING_X 40
+#define MENU_INNER_PADDING_Y 30
+#define MENU_WIDTH (WINDOW_WIDTH - 2 * MENU_PADDING_X)
+#define MENU_HEIGHT (WINDOW_HEIGHT - BOTTOM_BUTTONS_HEIGHT - 2 * MENU_PADDING_Y)
 
 extern std::filesystem::path leftPanelDirectoryPath;
 extern std::filesystem::path rightPanelDirectoryPath;
@@ -81,7 +89,7 @@ extern sf::Color outlineColor;
 
 extern std::vector<sf::Color*> colors;
 
-const std::vector<std::string> buttonNames = { "Help", "Rename", "View", "Edit", "Copy", "Paste", "Mkdir", "Delete", "Save", "Quit" };
+const std::vector<std::string> buttonNames = { "Menu", "Rename", "View", "Edit", "Copy", "Paste", "Mkdir", "Delete", "Save", "Quit" };
 //const std::vector<std::string> editorButtonNames = {}
 
 /// Fonts

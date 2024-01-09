@@ -20,7 +20,7 @@ void Editor::init(std::filesystem::path path) {
 
 		lines.push_back(t);
 	}
-	if (lines.size() == 0)
+	if (lines.empty())
 	{
 		s.clear();
 		text.setString(s);

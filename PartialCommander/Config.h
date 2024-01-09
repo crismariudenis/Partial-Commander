@@ -19,7 +19,7 @@ class Folder;
 /// Window Constraints
 #define WINDOW_HEIGHT 800
 #define WINDOW_WIDTH 1500
-#define TOP_BUTTONS_HEIGHT 50
+#define TOP_BUTTONS_HEIGHT 0
 #define BOTTOM_BUTTONS_HEIGHT 100
 
 /// Panel Constrains
@@ -73,18 +73,21 @@ extern std::filesystem::path rightPanelDirectoryPath;
 #define CHARACTER_SIZE 15
 #define TOP_TEXT_BORDER 10
 
-const sf::Color columnColor(199, 192, 149); /// Color for the Columns
-const sf::Color backgroundColor(19, 103, 208); /// Background Color 
-const sf::Color textColor(255, 255, 255); /// Text Color
-const sf::Color titleColor = sf::Color(215, 171, 32);
-const sf::Color secondaryColor(42, 161, 179); /// Buttons and Selected Folder Color
-const sf::Color selectedTextColor(0, 0, 0); /// Selected Folder Text Color
-const sf::Color bottomBackgroundColor(0, 0, 0);
-const sf::Color scrollbarButtonColor(198, 215, 251, 255);
-const sf::Color scrollbarTextButtonColor(81, 96, 138, 255);
-const sf::Color scrollbarColor(198, 215, 251, 255);
-const sf::Color sortLabelColor(3, 75, 166);
-const sf::Color outlineColor(255, 255, 153);
+
+extern sf::Color columnColor; /// Color for the Columns
+extern sf::Color backgroundColor; /// Background Color 
+extern sf::Color textColor; /// Text Color
+extern sf::Color titleColor;
+extern sf::Color secondaryColor; /// Buttons and Selected Folder Color
+extern sf::Color selectedTextColor; /// Selected Folder Text Color
+extern sf::Color bottomBackgroundColor;
+extern sf::Color scrollbarButtonColor;
+extern sf::Color scrollbarTextButtonColor;
+extern sf::Color scrollbarColor;
+extern sf::Color sortLabelColor;
+extern sf::Color outlineColor;
+
+extern std::vector<sf::Color*> colors;
 
 const std::vector<std::string> buttonNames = { "Menu", "Rename", "View", "Edit", "Copy", "Paste", "Mkdir", "Delete", "Save", "Quit" };
 //const std::vector<std::string> editorButtonNames = {}
@@ -98,12 +101,14 @@ inline void initBackground(sf::RectangleShape& background, sf::Color color, sf::
 	background.setSize(size);
 }
 
-extern std::unordered_map<int, bool> pressed;
+extern std::unordered_map<int, int> pressed;
 extern std::vector<std::pair<int, char>> specialCharacters;
 extern std::unordered_map<int, bool> shortcutSelectedFolder;
+extern std::vector<sf::Color> themes[10];
 
 extern bool checkBoxLabel(float topLeftX, float topLeftY, float botRightX, float botRightY, float mouseX, float mouseY);
 extern bool nameCompare(const Folder& a, const Folder& b);
 extern bool sizeCompare(const Folder& a, const Folder& b);
 extern bool timeCompare(const Folder& a, const Folder& b);
-extern std::string getDate(std::filesystem::path path);
+extern void generateTheme();
+extern int pressedKeys;

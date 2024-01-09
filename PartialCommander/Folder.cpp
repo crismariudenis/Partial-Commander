@@ -71,10 +71,10 @@ std::string Folder::toString(std::uintmax_t size) {
 	return number;
 }
 
-Folder::Folder(std::filesystem::path path, sf::Vector2f position, std::vector<sf::Font>& fonts, std::string date) {
+Folder::Folder(std::filesystem::path path, sf::Vector2f position, std::vector<sf::Font>& fonts) {
 	this->path = path;
 	this->position = position;
-	this->date = date;
+	this->date = calculateDate(path);
 	size = std::filesystem::file_size(this->path);
 	initText(fonts);
 }
@@ -93,9 +93,9 @@ void Folder::updateText() {
 	}
 	else
 	{
-		folderText.setFillColor(sf::Color::White);
-		sizeText.setFillColor(sf::Color::White);
-		dateText.setFillColor(sf::Color::White);
+		folderText.setFillColor(textColor);
+		sizeText.setFillColor(textColor);
+		dateText.setFillColor(textColor);
 	}
 	sf::Vector2f sizePosition = position, datePosition = position;
 
@@ -117,3 +117,26 @@ unsigned int Folder::getSize() const {
 	return size;
 }
 
+
+std::string Folder::calculateDate(std::filesystem::path path) {
+	// Convert from fs::file_time_type to std::time_t
+	auto to_time_t = [](auto tp) {
+		namespace cs = std::chrono;
+		namespace fs = std::filesystem;
+		auto sctp = cs::time_point_cast<cs::system_clock::duration>(tp -
+			fs::file_time_type::clock::now() + cs::system_clock::now());
+		return cs::system_clock::to_time_t(sctp);
+		};
+
+
+	auto fileTime = std::filesystem::last_write_time(path);
+	std::time_t tt = to_time_t(fileTime);
+
+	// Convert the std::time_t value to a local time structure
+	std::tm* localTime = std::localtime(&tt);
+	std::stringstream buff;
+
+	buff << std::put_time(localTime, "%d %b %H:%M");
+	std::string formattedDate = buff.str();
+	return formattedDate;
+}

@@ -7,8 +7,10 @@ CustomFonts fontsHandler;
 std::filesystem::path leftPanelDirectoryPath("D:\\");
 std::filesystem::path rightPanelDirectoryPath("C:\\");
 
-std::unordered_map<int, bool> shortcutSelectedFolder, pressed;
-std::vector<std::pair<int, char>> specialCharacters = { {41, '-'}, {50, '.'}, {40, ' '} , {46, '('}, {47, ')'} };
+std::unordered_map<int, bool> shortcutSelectedFolder;
+std::unordered_map<int, int> pressed;
+std::vector<std::pair<int, char>> specialCharacters = { {41, '-'}, {50, '.'}, {40, ' '} , {45, '\\'} };
+
 
 bool checkBoxLabel(float topLeftX, float topLeftY, float botRightX, float botRightY, float mouseX, float mouseY)
 {
@@ -31,25 +33,20 @@ bool timeCompare(const Folder& a, const Folder& b) {
 	return ftime1 < ftime2;
 }
 
-std::string getDate(std::filesystem::path path) {
-	// Convert from fs::file_time_type to std::time_t
-	auto to_time_t = [](auto tp) {
-		namespace cs = std::chrono;
-		namespace fs = std::filesystem;
-		auto sctp = cs::time_point_cast<cs::system_clock::duration>(tp -
-			fs::file_time_type::clock::now() + cs::system_clock::now());
-		return cs::system_clock::to_time_t(sctp);
-		};
 
+sf::Color columnColor(199, 192, 149); /// Color for the Columns
+sf::Color backgroundColor(19, 103, 208); /// Background Color 
+sf::Color textColor(255, 255, 255); /// Text Color
+sf::Color titleColor = sf::Color(215, 171, 32);
+sf::Color secondaryColor(42, 161, 179); /// Buttons and Selected Folder Color
+sf::Color selectedTextColor(0, 0, 0); /// Selected Folder Text Color
+sf::Color bottomBackgroundColor(0, 0, 0);
+sf::Color scrollbarButtonColor(198, 215, 251, 255);
+sf::Color scrollbarTextButtonColor(81, 96, 138, 255);
+sf::Color scrollbarColor(198, 215, 251, 255);
+sf::Color sortLabelColor(3, 75, 166);
+sf::Color outlineColor(255, 255, 153);
 
-	auto fileTime = std::filesystem::last_write_time(path);
-	std::time_t tt = to_time_t(fileTime);
-
-	// Convert the std::time_t value to a local time structure
-	std::tm* localTime = std::localtime(&tt);
-	std::stringstream buff;
-
-	buff << std::put_time(localTime, "%d %b %H:%M");
-	std::string formattedDate = buff.str();
-	return formattedDate;
-}
+std::vector<sf::Color*> colors = { &backgroundColor, &bottomBackgroundColor, &secondaryColor, &sortLabelColor, &titleColor, &textColor ,&columnColor,& selectedTextColor,& scrollbarTextButtonColor,& scrollbarColor,& scrollbarButtonColor,& outlineColor };
+std::vector<sf::Color> themes[10];
+int pressedKeys = 0;

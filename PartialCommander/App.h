@@ -5,6 +5,7 @@
 #include "Editor.h"
 #include "Clipboard.h"
 #include "Scrollbar.h"
+#include "ThemeGenerator.h"
 #include "Menu.h"
 
 class App
@@ -14,7 +15,7 @@ private:
 	Clipboard* clipboard = Clipboard::getInstance();
 	Editor* editor;
 	Menu* menu;
-	int timer = 0;
+	int timer = 0, count = 0;
 	sf::RectangleShape background, bottomBackground, upButton, downButton;
 	sf::RenderWindow window;
 	sf::Text buttonText, buttonText2;
@@ -46,8 +47,7 @@ private:
 
 public:
 
-	bool isMouseOnScrollbar = false;
-	bool shortcutOn = false;
+	bool isMouseOnScrollbar = false, shortcutOn = false, pathShortcut = false;
 
 	void init();
 	void run();

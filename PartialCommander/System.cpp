@@ -8,7 +8,7 @@ System* System::getInstance() {
 	return system;
 }
 
-void System::copy(std::filesystem::path startPath, std::filesystem::path endPath, Panel & panel)
+std::string System::copy(std::filesystem::path startPath, std::filesystem::path endPath, Panel & panel)
 {
 	int copyIndex = panel.selectedFolderIndex;
 	auto path = startPath;
@@ -24,6 +24,7 @@ void System::copy(std::filesystem::path startPath, std::filesystem::path endPath
 	try {
 		std::filesystem::copy(path, destPath, std::filesystem::copy_options::recursive);
 		std::cout << destPath.filename() << " coppied to " << destPath.parent_path() << '\n';
+		return destPath.string();
 	}
 	catch (const std::filesystem::filesystem_error& e) {
 		std::cerr << "Error copying file: " << e.what() << std::endl;
@@ -56,7 +57,7 @@ void System::create(std::filesystem::path currentPath, Panel & panel) {
 
 void System::refresh(int code, Panel &panel)
 {
-	std::vector<Folder> folders = panel.getFolders();
+	std::vector<Folder>& folders = panel.getFolders();
 	std::filesystem::path currentPath = panel.getCurrentPath();
 	switch (code)
 	{
@@ -65,16 +66,18 @@ void System::refresh(int code, Panel &panel)
 		for (unsigned int index = 0; index < folders.size(); ++index) 
 			if (index == panel.selectedFolderIndex || shortcutSelectedFolder[index]) 
 				del(folders[index].path, panel);
-		panel.update(panel.getCurrentPath());
+		panel.update(currentPath);
 		panel.updateShortcutSelectedFolder(3, -1);
 		panel.updateFolderSelectedFolder(panel.lastToDisplay);
 		break;
 	}
 	case sf::Keyboard::Scancode::F5: {
-		for (unsigned int index = 0; index < folders.size(); ++index) 
-			if (index == panel.selectedFolderIndex || shortcutSelectedFolder[index])
+		std::vector<sf::Font> fonts = fontsHandler.getFonts();
+		for (unsigned int index = 0; index < folders.size(); ++index)
+			if (index == panel.selectedFolderIndex || shortcutSelectedFolder[index]) {
 				copy(folders[index].path, folders[index].path.parent_path(), panel);
-		panel.update(panel.getCurrentPath());
+			}
+		panel.update(currentPath);
 		panel.updateShortcutSelectedFolder(3, -1);
 		panel.updateFolderSelectedFolder(panel.lastToDisplay);
 		break;

@@ -10,7 +10,7 @@ private:
 	System();
 
 public:
-	void copy(std::filesystem::path startPath, std::filesystem::path endPath, Panel & panel);
+	std::string copy(std::filesystem::path startPath, std::filesystem::path endPath, Panel & panel);
 	void del(std::filesystem::path path, Panel & panel);
 	void rename(std::string oldPath, Panel &panel);
 	void create(std::filesystem::path path, Panel & panel);

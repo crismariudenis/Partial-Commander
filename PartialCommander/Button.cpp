@@ -34,7 +34,7 @@ void Button::drawTitle() {
 	title.setCharacterSize(CHARACTER_SIZE);
 	title.setFont(fonts[3]);
 	title.setPosition(sf::Vector2f(topLeft.x + indexString.size() * PANEL_MARGIN_X, topLeft.y));
-	title.setFillColor(sf::Color(0, 0, 0));
+	title.setFillColor(selectedTextColor);
 	window.draw(title);
 }
 
@@ -59,4 +59,8 @@ std::string Button::toString(int number) {
 	}
 	reverse(stringified.begin(), stringified.end());
 	return stringified;
+}
+
+void Button::setColor(sf::Color color) {
+	buttonColor = color;
 }

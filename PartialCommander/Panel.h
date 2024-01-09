@@ -24,9 +24,10 @@ class Panel
     void drawSelectedFolderBackground();
     void drawFreeSpace();
     void drawSearchText();
-
+    void drawCurrentPath();
     void resetTextPositions(std::vector<sf::Vector2f> initialPositions);
     bool isValidByFilter(std::string folderText);
+   
 
 public:
     void updateFolderSelectedFolder(int newSelectedFolder);
@@ -39,11 +40,11 @@ public:
     void initColumnTitles();
     void initBorders();
     void initCurrentPath();
-
+    void updateColors();
     void draw();
     void updateSelectedFolder(sf::Keyboard::Scancode);
     void toggleIsSelected();
-    void changePath();
+    void changePath(int type);
     void changeDirectory(std::filesystem::path directoryPath);
     void checkTextLabels(sf::Vector2f mouse);
     void checkFolderLabels(sf::Vector2f mouse);

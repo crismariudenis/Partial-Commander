@@ -46,7 +46,7 @@ void Editor::draw() {
 	size_t end = std::min(lines.size(), (size_t)firstLine + maxLines);
 
 	sf::Vector2f pos{ EDITOR_PADDING,0 };
-	for (size_t index = firstLine; index < end, pos.y < height; ++index)
+	for (size_t index = firstLine; index < end && pos.y < height; ++index)
 	{
 		pos.y = 1.f * (index - firstLine + 1) * (1.f * height / TEXT_LINE_SPACING);
 

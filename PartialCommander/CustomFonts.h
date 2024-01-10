@@ -10,6 +10,7 @@ private:
 	sf::Font Helvetica;
 	sf::Font CourierNew;
 	sf::Font Roboto;
+	sf::Font Ubuntu;
 
 
 public:
@@ -18,16 +19,18 @@ public:
 		ARIAL,
 		HELVETICA,
 		COURIER_NEW,
-		ROBOTO
+		ROBOTO,
+		UBUNTU
 	};
 	CustomFonts();
 
-	const std::vector<sf::Font> getFonts();
+	std::vector<sf::Font> getFonts();
 
 	sf::Font getTimesNewRoman();
 	sf::Font getArial();
 	sf::Font getHelvetica();
 	sf::Font getCourierNew();
 	sf::Font getRoboto();
+	sf::Font getUbuntu();
 
 };

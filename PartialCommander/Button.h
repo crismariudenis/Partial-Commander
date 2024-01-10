@@ -18,6 +18,7 @@ private:
 	std::string toString(int number);
 
 public:
-	Button(std::string text ,int height, int width, int index, sf::Vector2f topLeft, sf::Color buttonColor, sf::RenderWindow & window, std::vector<sf::Font> &fonts);
+	Button(std::string text, int height, int width, int index, sf::Vector2f topLeft, sf::Color buttonColor, sf::RenderWindow& window, std::vector<sf::Font>& fonts);
 	void draw();
+	void setColor(sf::Color color);
 };

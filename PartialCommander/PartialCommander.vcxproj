@@ -136,20 +136,30 @@
     <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="CustomFonts.cpp" />
+    <ClCompile Include="Editor.cpp" />
     <ClCompile Include="Folder.cpp" />
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scrollbar.cpp" />
+    <ClCompile Include="System.cpp" />
+    <ClCompile Include="ThemeGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="CustomFonts.h" />
+    <ClInclude Include="Editor.h" />
     <ClInclude Include="Folder.h" />
     <ClInclude Include="App.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Scrollbar.h" />
+    <ClInclude Include="System.h" />
+    <ClInclude Include="ThemeGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

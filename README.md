@@ -1,7 +1,7 @@
 # Partial Commander
 
 
-## Keyboard Shortcuts
+### Keyboard Shortcuts
   * CTRL C - Copy the selected Folders
   * CTRL V - Creates a Copy of the folders located in the Clipboard
   * CTRL R - New name for a folder / file
@@ -16,3 +16,16 @@
   * TAB - Switch panels
   * UP - move one file above
   * DOWN - move one file down
+  * ENTER - open a folder / file
+
+### Functions
+  *  F1 - Credits
+  *  F2 - New name for a folder / file
+  *  F3 - View File
+  *  F4 - Edit File
+  *  F5 - Copy file / folder
+  *  F6 - Create copy of file / folder (s) in the clipboard
+  *  F7 - Create Folder
+  *  F8 - Delete File / Folder
+  *  F9 - Save File / Folder
+  *  F10 - Quit

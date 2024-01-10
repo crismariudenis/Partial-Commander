@@ -22,6 +22,62 @@ void App::init() {
 	drawButtons();
 }
 
+void App::initPanels() {
+	sf::Vector2f left{ PANEL_MARGIN_X,PANEL_MARGIN_TOP + TOP_BUTTONS_HEIGHT };
+	sf::Vector2f right{ 2 * PANEL_MARGIN_X + PANEL_WIDTH - 3 * PANEL_LINE_WIDTH + left.x,left.y };
+
+	leftPanel.init(left, PANEL_WIDTH, PANEL_HEIGHT, leftPanelDirectoryPath, fonts);
+	rightPanel.init(right, PANEL_WIDTH, PANEL_HEIGHT, rightPanelDirectoryPath, fonts);
+
+	leftPanel.toggleIsSelected();
+}
+
+void App::initButtons() {
+
+	sf::Vector2f topLeft(PANEL_MARGIN_X * 2, WINDOW_HEIGHT - PANEL_BOTTOM_HEIGHT / 1.25);
+	int moveX = (WINDOW_WIDTH - PANEL_MARGIN_X * (buttonNames.size() + 2)) / buttonNames.size();
+
+	for (unsigned int index = 0; index < buttonNames.size(); ++index) {
+		Button button(buttonNames[index], BUTTON_HEIGHT, moveX, index + 1, topLeft, secondaryColor, window, fonts);
+		buttons.push_back(button);
+		topLeft += sf::Vector2f(moveX * 1.f + PANEL_MARGIN_X, 0);
+	}
+}
+
+void App::initScrollbarButtons()
+{
+	auto initScrollBarButton = [](sf::RectangleShape& button, sf::Vector2f position)
+		{
+			button.setFillColor(scrollbarButtonColor);
+			button.setSize(sf::Vector2f(SCROLLBAR_BUTTON_WIDTH, SCROLLBAR_BUTTON_HEIGHT));
+			button.setPosition(position);
+			button.setOutlineThickness(2);
+		};
+	auto initScrollBarButtonText = [&](sf::Text& buttonText, unsigned int characterSize, std::string text, sf::Vector2f position, float angle)
+		{
+			buttonText.setFillColor(scrollbarTextButtonColor);
+			buttonText.setFont(fonts[CustomFonts::Font::UBUNTU]);
+			buttonText.setString(text);
+			buttonText.setCharacterSize(characterSize);
+
+			sf::FloatRect rc = buttonText.getLocalBounds();
+			buttonText.setOrigin(rc.width / 2, rc.height / 2);
+			buttonText.setPosition(position);
+			buttonText.setRotation(angle);
+		};
+
+	initScrollBarButton(upButton, sf::Vector2f(SCROLLBAR_X, SCROLLBAR_Y + 2));
+	initScrollBarButton(downButton, sf::Vector2f(PANEL_WIDTH + PANEL_MARGIN_X + 2, PANEL_HEIGHT + TOP_BUTTONS_HEIGHT));
+
+	initScrollBarButtonText(buttonText, 13, "V", sf::Vector2f(SCROLLBAR_X + SCROLLBAR_WIDTH / 2, SCROLLBAR_Y + SCROLLBAR_BUTTON_HEIGHT / 1.25f), 180.f);
+	initScrollBarButtonText(buttonText2, 13, "V", sf::Vector2f(downButton.getPosition().x + SCROLLBAR_WIDTH / 2, downButton.getPosition().y + SCROLLBAR_BUTTON_HEIGHT / 3), 0);
+}
+
+void App::drawButtons() {
+	for (unsigned int index = 0; index < buttons.size(); ++index)
+		buttons[index].draw();
+}
+
 void App::run() {
 
 	while (window.isOpen()) {
@@ -100,16 +156,6 @@ void App::run() {
 	}
 }
 
-void App::initPanels() {
-	sf::Vector2f left{ PANEL_MARGIN_X,PANEL_MARGIN_TOP + TOP_BUTTONS_HEIGHT };
-	sf::Vector2f right{ 2 * PANEL_MARGIN_X + PANEL_WIDTH - 3 * PANEL_LINE_WIDTH + left.x,left.y };
-
-	leftPanel.init(left, PANEL_WIDTH, PANEL_HEIGHT, leftPanelDirectoryPath, fonts);
-	rightPanel.init(right, PANEL_WIDTH, PANEL_HEIGHT, rightPanelDirectoryPath, fonts);
-
-	leftPanel.toggleIsSelected();
-}
-
 void App::handleKeyboardEvents(sf::Event& event) {
 	if (event.type == sf::Event::KeyReleased || renameShortcut)
 		return;
@@ -144,6 +190,7 @@ void App::handleKeyboardEvents(sf::Event& event) {
 		leftPanel.toggleIsSelected();
 		rightPanel.toggleIsSelected();
 		pathShortcut = renameShortcut = shortcutOn = false;
+		pressedKeys = 0;
 		pressed.clear();
 		break;
 	case sf::Keyboard::Scan::Enter:
@@ -224,7 +271,7 @@ void App::handleKeyboardShortcuts(sf::Event event, Panel& panel)
 			int move = 1;
 			if (pressed[sf::Keyboard::Scan::Up]) move = -move;
 			panel.updateShortcutSelectedFolder(2, move);
-			panel.updateByScrollbar(move);
+			panel.updateByScrollbar(move, 1);
 		}
 	}
 	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::C] && pressedKeys == 2 && pressed[sf::Keyboard::LControl] < pressed[sf::Keyboard::Scan::C])
@@ -325,9 +372,9 @@ void App::handleMousePressingEvents(sf::Event& event, Panel& panel)
 				return mouse.x >= buttonPosition.x && mouse.x <= buttonPosition.x + buttonSize.x && mouse.y >= buttonPosition.y && mouse.y <= buttonPosition.y + buttonSize.y;
 			};
 		if (checkScrollbarButton(upButton))
-			panel.updateByScrollbar(-1);
+			panel.updateByScrollbar(-1, 2);
 		else if (checkScrollbarButton(downButton))
-			panel.updateByScrollbar(1);
+			panel.updateByScrollbar(1, 2);
 		if (mouseClicked[{mouse.x, mouse.y}] == true) 
 			if (mouse.y >= PANEL_MARGIN_TOP + TOP_BUTTONS_HEIGHT + 38.f && mouse.y <= TOP_BUTTONS_HEIGHT + PANEL_HEIGHT + PANEL_MARGIN_TOP - BOTTOM_BUTTONS_HEIGHT) {
 				panel.changePath(1);
@@ -360,52 +407,6 @@ void App::handleMouseScrollingEvents(sf::Event& event, Panel& panel)
 		panel.updateSelectedFolder(sf::Keyboard::Scan::W);
 	panel.updateShortcutSelectedFolder(3, -1);
 	shortcutOn = false;
-}
-
-void App::initButtons() {
-
-	sf::Vector2f topLeft(PANEL_MARGIN_X * 2, WINDOW_HEIGHT - PANEL_BOTTOM_HEIGHT / 1.25);
-	int moveX = (WINDOW_WIDTH - PANEL_MARGIN_X * (buttonNames.size() + 2)) / buttonNames.size();
-
-	for (unsigned int index = 0; index < buttonNames.size(); ++index) {
-		Button button(buttonNames[index], BUTTON_HEIGHT, moveX, index + 1, topLeft, secondaryColor, window, fonts);
-		buttons.push_back(button);
-		topLeft += sf::Vector2f(moveX * 1.f + PANEL_MARGIN_X, 0);
-	}
-}
-
-void App::initScrollbarButtons()
-{
-	auto initScrollBarButton = [](sf::RectangleShape& button, sf::Vector2f position)
-		{
-			button.setFillColor(scrollbarButtonColor);
-			button.setSize(sf::Vector2f(SCROLLBAR_BUTTON_WIDTH, SCROLLBAR_BUTTON_HEIGHT));
-			button.setPosition(position);
-			button.setOutlineThickness(2);
-		};
-	auto initScrollBarButtonText = [&](sf::Text& buttonText, unsigned int characterSize, std::string text, sf::Vector2f position, float angle)
-		{
-			buttonText.setFillColor(scrollbarTextButtonColor);
-			buttonText.setFont(fonts[CustomFonts::Font::UBUNTU]);
-			buttonText.setString(text);
-			buttonText.setCharacterSize(characterSize);
-
-			sf::FloatRect rc = buttonText.getLocalBounds();
-			buttonText.setOrigin(rc.width / 2, rc.height / 2);
-			buttonText.setPosition(position);
-			buttonText.setRotation(angle);
-		};
-
-	initScrollBarButton(upButton, sf::Vector2f(SCROLLBAR_X, SCROLLBAR_Y + 2));
-	initScrollBarButton(downButton, sf::Vector2f(PANEL_WIDTH + PANEL_MARGIN_X + 2, PANEL_HEIGHT + TOP_BUTTONS_HEIGHT));
-
-	initScrollBarButtonText(buttonText, 13, "V", sf::Vector2f(SCROLLBAR_X + SCROLLBAR_WIDTH / 2, SCROLLBAR_Y + SCROLLBAR_BUTTON_HEIGHT / 1.25f), 180.f);
-	initScrollBarButtonText(buttonText2, 13, "V", sf::Vector2f(downButton.getPosition().x + SCROLLBAR_WIDTH / 2, downButton.getPosition().y + SCROLLBAR_BUTTON_HEIGHT / 3), 0);
-}
-
-void App::drawButtons() {
-	for (unsigned int index = 0; index < buttons.size(); ++index)
-		buttons[index].draw();
 }
 
 void App::getCursor(sf::Cursor& cursor, Panel& panel) {

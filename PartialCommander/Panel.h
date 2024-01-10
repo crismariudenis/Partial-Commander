@@ -14,8 +14,7 @@ class Panel
     Scrollbar scrollbar;
 
     sf::Text folderName, sizeName, dateName;
-    sf::Text searchText;
-    sf::Text currentPathText;
+    sf::Text searchText, currentPathText, shortcutText;
 
     sf::RectangleShape panelRect, line1, line2, line3;
 
@@ -25,6 +24,7 @@ class Panel
     void drawFreeSpace();
     void drawSearchText();
     void drawCurrentPath();
+    void drawShortcutText();
     void resetTextPositions(std::vector<sf::Vector2f> initialPositions);
     bool isValidByFilter(std::string folderText);
    
@@ -57,7 +57,7 @@ public:
     bool checkMouseOnFolder(int index, float mouseX, float mouseY);
     bool checkScrollbarLabel(sf::Vector2f mouse);
     void updateByScrollbar(sf::Vector2f mouse);
-    void updateByScrollbar(int steps);
+    void updateByScrollbar(int steps, int type);
     void registerCharacter(int scancode, bool isUpperCase, int type);
     Folder getSelectedFolder();
     void setSelectedFolder(std::string text);
@@ -65,4 +65,5 @@ public:
     std::vector<Folder> &getFolders();
     void update(std::filesystem::path path);
     std::filesystem::path getCurrentPath();
+    
   };

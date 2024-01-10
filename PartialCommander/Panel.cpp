@@ -566,7 +566,6 @@ void Panel::registerCharacter(int scancode, bool isUpperCase, int type) {
 	if (!isSelected)
 		return;
 	std::vector<std::string> words = { searchText.getString(), folders[selectedFolderIndex].folderText.getString(), currentPathText.getString().toAnsiString()};
-	std::cout << scancode << ' ' << isUpperCase << ' ' << type << '\n';
 		if (scancode >= 0 && scancode <= 25) { /// Alphabet
 		scancode += 'a';
 		if (isUpperCase) scancode -= 'a' - 'A';

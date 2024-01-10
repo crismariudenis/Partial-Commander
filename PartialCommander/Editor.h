@@ -20,6 +20,7 @@ class Editor {
 	void edit(sf::Event event);
 	void repairScrolling();
 	void save();
+	int maxLines = 0;
 public:
 	static enum Mode {
 		EDIT,

@@ -128,6 +128,8 @@ void Panel::drawSelectedFolderBackground() {
 }
 
 void Panel::drawShortcutText() {
+	if (!pressedKeys || isSearchActive)
+		return;
 	std::string shortcutString;
 	std::vector < std::pair<int, std::string >> timeStamps;
 	for (auto it : pressed) {
@@ -151,8 +153,7 @@ void Panel::drawShortcutText() {
 				command += "DOWN ";
 			if (it.first == sf::Keyboard::Scan::Enter)
 				command += "ENTER ";
-			if (command.size() > 0)
-				timeStamps.push_back({ it.second, command });
+			if (command.size() > 0) timeStamps.push_back({ it.second, command });
 		}
 	}
 
@@ -205,7 +206,7 @@ void Panel::drawSearchText() {
 	searchString += '|';
 	searchText.setString(searchString);
 	searchText.setFillColor(textColor);
-	searchText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
+	searchText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT - PANEL_BOTTOM_HEIGHT + PANEL_MARGIN_TOP + 12.5));
 	searchText.setCharacterSize(CHARACTER_SIZE + 5);
 	searchText.setFont(fonts[CustomFonts::Font::UBUNTU]);
 	window.draw(searchText);
@@ -645,6 +646,7 @@ void Panel::activateSearch() {
 void Panel::changeDirectory(std::filesystem::path p) {
 	if (isSelected)
 		update(p);
+	initCurrentPath();
 }
 
 void Panel::toggleIsSelected() {

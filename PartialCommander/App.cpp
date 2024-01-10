@@ -326,9 +326,9 @@ void App::handleKeyboardShortcuts(sf::Event event, Panel& panel)
 	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::X] && pressedKeys == 2 && pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::X])
 		shortcutOn = true, clipboard->move(panel);
 	else if (pressed[sf::Keyboard::Scan::Semicolon]) {
-		int code;
+		int code = -1;
 		for (auto el : pressed) {
-			if (el.second == true && el.first != sf::Keyboard::Scan::Semicolon)
+			if (el.second && el.first != sf::Keyboard::Scan::Semicolon)
 				code = el.first;
 		}
 		if (pressedKeys == 2 && code >= 0 && code <= 25) {
@@ -416,6 +416,6 @@ void App::getCursor(sf::Cursor& cursor, Panel& panel) {
 		cursor.loadFromSystem(sf::Cursor::Arrow);
 	if (mousePosition.y >= TOP_BUTTONS_HEIGHT + PANEL_HEIGHT - BOTTOM_BUTTONS_HEIGHT + 15 && mousePosition.y <= window.getSize().y)
 		cursor.loadFromSystem(sf::Cursor::Arrow);
-	if (leftPanel.checkMouseOnFolder(panel.getSelectedFolderIndex(), (float)mousePosition.x, (float)mousePosition.y))
+	if (panel.checkMouseOnFolder(panel.getSelectedFolderIndex(), (float)mousePosition.x, (float)mousePosition.y))
 		cursor.loadFromSystem(sf::Cursor::Arrow);
 }

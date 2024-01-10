@@ -12,7 +12,7 @@
   * CTRL S - save current theme
   * CTRL SHIFT T LEFT / RIGHT - change to saved themes
   * CTRL SHIFT M - Change the path manually
-  * :LETTER - Opens a directory in the active Panel
+  * : LETTER - Opens a directory in the active Panel
   * TAB - Switch panels
   * UP - move one file above
   * DOWN - move one file down

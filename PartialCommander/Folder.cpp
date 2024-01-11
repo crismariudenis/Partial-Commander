@@ -61,8 +61,9 @@ std::string Folder::normalizePath(std::string path) {
 
 std::string Folder::toString(std::uintmax_t size) {
 	std::string number;
-	if (size == 0 or size == 4096)
-		return "<DIR>";
+	if (!std::filesystem::is_directory(path) && size == 0)
+		return "0";
+	if (size == 0) return "<DIR>";
 	while (size && number.size() <= 5) {
 		number += size % 10 + '0';
 		size /= 10;

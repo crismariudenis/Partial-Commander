@@ -29,7 +29,8 @@ void App::initPanels() {
 	leftPanel.init(left, PANEL_WIDTH, PANEL_HEIGHT, leftPanelDirectoryPath, fonts);
 	rightPanel.init(right, PANEL_WIDTH, PANEL_HEIGHT, rightPanelDirectoryPath, fonts);
 
-	leftPanel.toggleIsSelected();
+	leftPanel.isSelected = true;
+	rightPanel.getFolders()[0].toggleIsSelected();
 }
 
 void App::initButtons() {
@@ -356,7 +357,7 @@ void App::handleMousePressingEvents(sf::Event& event, Panel& panel)
 		sf::Vector2f mouse{ (float)event.mouseButton.x , (float)event.mouseButton.y };
 		if (pressed[sf::Keyboard::Scan::LControl]) {
 			float height = PANEL_HEIGHT;
-			panel.updateShortcutSelectedFolder(4, (int)((mouse.y - 108.261) / (height / LINE_SPACING)));
+			panel.updateShortcutSelectedFolder(4, (int)((mouse.y - 58.261) / (height / LINE_SPACING)));
 			shortcutOn = true;
 		}
 		if (!shortcutOn) {

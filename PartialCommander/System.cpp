@@ -51,8 +51,17 @@ void System::create(std::filesystem::path currentPath, Panel & panel) {
 		newPath = currentPath / (suffix + " (" + std::to_string(digit) + ")");
 	std::filesystem::create_directory(newPath);
 	panel.update(currentPath);
+	std::vector<Folder> &folders = panel.getFolders();
+	for (int index = 0; index < folders.size(); ++index) {
+		if (folders[index].path == newPath) {
+			panel.updateFolderSelectedFolder(index);
+			panel.firstToDisplay = std::max(index - 3, 0);
+			panel.lastToDisplay = std::min((int)folders.size() - 1, index + 14);
+			if (panel.firstToDisplay - panel.lastToDisplay != 18) panel.firstToDisplay = 0;
+			break;
+		}
+	}
 	panel.updateShortcutSelectedFolder(3, -1);
-	panel.updateFolderSelectedFolder(panel.lastToDisplay);
 }
 
 void System::refresh(int code, Panel &panel)

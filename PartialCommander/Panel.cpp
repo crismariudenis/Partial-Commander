@@ -218,6 +218,7 @@ void Panel::drawCurrentPath() {
 	std::string s = currentPathText.getString();
 	if (s.size() > 40)
 		currentPathText.setString("..." + s.substr(s.size() - 40, 40));
+	currentPathText.setFillColor(textColor);
 	window.draw(currentPathText);
 	currentPathText.setString(s);
 }
@@ -274,7 +275,7 @@ void Panel::update(std::filesystem::path path) {
 	float scrollPerUnit = 1.f * (height - 2.f * SCROLLBAR_BUTTON_HEIGHT) / folders.size();
 	scrollbar.init(SCROLLBAR_WIDTH, scrollPerUnit * (lastToDisplay - firstToDisplay + 1) + 4.5f, scrollPerUnit);
 	foldersCopy = folders;
-	folders[selectedFolderIndex].updateText();
+	folders[selectedFolderIndex].toggleIsSelected();
 }
 
 void Panel::updateSelectedFolder(sf::Keyboard::Scancode code) {

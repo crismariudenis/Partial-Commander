@@ -70,19 +70,20 @@ void Menu::draw() {
 	window.draw(name2);
 
 	window.draw(text);
-	gravity();
+	fps++;
+	if (fps % 30 == 0)
+		gravity();
 }
 void Menu::gravity() {
 
-	if (boxY1 + g.y < pos.y + 10)
-		g.y = -g.y;
-	else if (boxY2 + g.y > pos.y + MENU_HEIGHT)
-		g.y = -1;
+	name1.setPosition(name1.getPosition() + v);
+	name2.setPosition(name2.getPosition() + v);
+	s1.setPosition(s1.getPosition() + v);
+	s2.setPosition(s2.getPosition() + v);
 
-	name1.setPosition(name1.getPosition() + g);
-	name2.setPosition(name2.getPosition() + g);
-	s1.setPosition(s1.getPosition() + g);
-	s2.setPosition(s2.getPosition() + g);
-	boxY1 += g.y, boxY2 += g.y;
-	g.y *= 0.998;
+	boxY1 += v.y, boxY2 += v.y;
+
+	v += g;
+	if (boxY2 + v.y + 5 > pos.y + MENU_HEIGHT)
+			v.y = -v.y * 0.7;
 }

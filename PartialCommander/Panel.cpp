@@ -128,6 +128,8 @@ void Panel::drawSelectedFolderBackground() {
 }
 
 void Panel::drawShortcutText() {
+	if (!pressedKeys || isSearchActive)
+		return;
 	std::string shortcutString;
 	std::vector < std::pair<int, std::string >> timeStamps;
 	for (auto it : pressed) {
@@ -151,8 +153,7 @@ void Panel::drawShortcutText() {
 				command += "DOWN ";
 			if (it.first == sf::Keyboard::Scan::Enter)
 				command += "ENTER ";
-			if (command.size() > 0)
-				timeStamps.push_back({ it.second, command });
+			if (command.size() > 0) timeStamps.push_back({ it.second, command });
 		}
 	}
 
@@ -162,8 +163,8 @@ void Panel::drawShortcutText() {
 
 	shortcutText.setString(shortcutString);
 	sf::FloatRect bounds = shortcutText.getLocalBounds();
-	shortcutText.setPosition(sf::Vector2f(pos.x + (width - bounds.width) / 2, PANEL_HEIGHT - PANEL_MARGIN_TOP + 10.0));
-	shortcutText.setCharacterSize(15);
+	shortcutText.setPosition(sf::Vector2f((WINDOW_WIDTH - bounds.width) / 2, WINDOW_HEIGHT - BOTTOM_BUTTONS_HEIGHT / 1.5));
+	shortcutText.setCharacterSize(17);
 	shortcutText.setFont(fonts[CustomFonts::Font::UBUNTU]);
 	shortcutText.setFillColor(textColor);
 	window.draw(shortcutText);
@@ -205,7 +206,7 @@ void Panel::drawSearchText() {
 	searchString += '|';
 	searchText.setString(searchString);
 	searchText.setFillColor(textColor);
-	searchText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT + BOTTOM_BUTTONS_HEIGHT / 3));
+	searchText.setPosition(sf::Vector2f(pos.x + PANEL_MARGIN_X, PANEL_HEIGHT - PANEL_BOTTOM_HEIGHT + PANEL_MARGIN_TOP + 12.5));
 	searchText.setCharacterSize(CHARACTER_SIZE + 5);
 	searchText.setFont(fonts[CustomFonts::Font::UBUNTU]);
 	window.draw(searchText);
@@ -454,6 +455,12 @@ void Panel::updateColors() {
 }
 
 void Panel::changePath(int type) {
+	if (type == 2) {
+		std::filesystem::path path = currentPathText.getString().toAnsiString();
+		update(path);
+		currentPathText.setString(currentPath.string());
+		return;
+	}
 	auto& p = folders[selectedFolderIndex].path;
 	if (!std::filesystem::is_directory(p))
 	{
@@ -477,13 +484,9 @@ void Panel::changePath(int type) {
 		return;
 	}
 	std::filesystem::path folderPath;
-	if (type == 2) 
-		folderPath = currentPathText.getString().toAnsiString();
-	else {
-		if (selectedFolderIndex)
+	if (selectedFolderIndex)
 			folderPath = p;
 		else folderPath = currentPath.parent_path();
-	}
 	update(folderPath);
 	currentPathText.setString(currentPath.string());
 }
@@ -563,7 +566,7 @@ void Panel::registerCharacter(int scancode, bool isUpperCase, int type) {
 	if (!isSelected)
 		return;
 	std::vector<std::string> words = { searchText.getString(), folders[selectedFolderIndex].folderText.getString(), currentPathText.getString().toAnsiString()};
-	if (scancode >= 0 && scancode <= 25) { /// Alphabet
+		if (scancode >= 0 && scancode <= 25) { /// Alphabet
 		scancode += 'a';
 		if (isUpperCase) scancode -= 'a' - 'A';
 		words[type - 1] += (char)(scancode);
@@ -574,7 +577,7 @@ void Panel::registerCharacter(int scancode, bool isUpperCase, int type) {
 	}
 	else if (scancode >= sf::Keyboard::Scan::Num1 && scancode <= sf::Keyboard::Scan::Num0) { /// Digits
 		char digit = (scancode - sf::Keyboard::Scan::Num1 + 1) % 10 + '0';
-		if (digit == '0' || digit == '9' && isUpperCase) 
+;		if ((digit == '0' || digit == '9') && isUpperCase) 
 			digit = (digit == '0' ? ')' : '(');
 		words[type - 1] += digit;
 	}
@@ -645,6 +648,7 @@ void Panel::activateSearch() {
 void Panel::changeDirectory(std::filesystem::path p) {
 	if (isSelected)
 		update(p);
+	initCurrentPath();
 }
 
 void Panel::toggleIsSelected() {

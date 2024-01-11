@@ -89,7 +89,7 @@ extern sf::Color outlineColor;
 
 extern std::vector<sf::Color*> colors;
 
-const std::vector<std::string> buttonNames = { "Menu", "Rename", "View", "Edit", "Copy", "Paste", "Mkdir", "Delete", "Save", "Quit" };
+const std::vector<std::string> buttonNames = { "Credits", "Rename", "View", "Edit", "Copy", "Paste", "Mkdir", "Delete", "Save", "Quit" };
 //const std::vector<std::string> editorButtonNames = {}
 
 /// Fonts

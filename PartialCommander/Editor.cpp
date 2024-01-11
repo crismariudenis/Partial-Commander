@@ -10,6 +10,8 @@ void Editor::init(std::filesystem::path path) {
 	text.setFillColor(sf::Color(255, 255, 255));
 	text.setFont(fonts[CustomFonts::Font::UBUNTU]);
 	text.setCharacterSize(CHARACTER_SIZE - 1);
+	text.setString("A");
+	maxLines = PANEL_HEIGHT/(TEXT_LINE_SPACING + 2);
 
 	TextLine t;
 	while (std::getline(file, s)) {
@@ -41,10 +43,10 @@ void Editor::draw() {
 
 	frames = (frames + 1) % 180;
 	size_t height = PANEL_HEIGHT;
-	size_t end = std::min(lines.size(), (size_t)firstLine + EDITOR_MAX_LINES);
+	size_t end = std::min(lines.size(), (size_t)firstLine + maxLines);
 
 	sf::Vector2f pos{ EDITOR_PADDING,0 };
-	for (size_t index = firstLine; index < end; ++index)
+	for (size_t index = firstLine; index < end && pos.y < height; ++index)
 	{
 		pos.y = 1.f * (index - firstLine + 1) * (1.f * height / TEXT_LINE_SPACING);
 
@@ -121,7 +123,7 @@ void Editor::update(sf::Event event) {
 	{
 	case sf::Event::MouseWheelScrolled:
 		int delta = static_cast<int>(event.mouseWheelScroll.delta);
-		firstLine = std::max(0, std::min(firstLine - delta, (int)lines.size() - EDITOR_MAX_LINES));
+		firstLine = std::max(0, std::min(firstLine - delta, (int)lines.size() - maxLines));
 		break;
 	}
 	draw();
@@ -129,7 +131,7 @@ void Editor::update(sf::Event event) {
 }
 void Editor::repairScrolling() {
 	if (cursorPos.y < firstLine)firstLine--;
-	if (cursorPos.y >= std::min(lines.size(), (size_t)firstLine + EDITOR_MAX_LINES))firstLine++;
+	if (cursorPos.y >= std::min(lines.size(), (size_t)firstLine + maxLines))firstLine++;
 }
 void Editor::edit(sf::Event event) {
 

@@ -119,7 +119,6 @@ void App::run() {
 				handleRenameShortcut(event, panel);
 		}
 
-
 		window.setActive();
 
 		sf::Cursor cursor;
@@ -147,7 +146,6 @@ void App::run() {
 			window.draw(upButton), window.draw(downButton);
 			window.draw(buttonText), window.draw(buttonText2);
 		}
-
 
 		/// Buttons
 		drawButtons();
@@ -248,12 +246,6 @@ void App::handleRenameShortcut(sf::Event event, Panel& panel) {
 
 void App::handleKeyboardShortcuts(sf::Event event, Panel& panel)
 {
-	if (pathShortcut && event.type == sf::Event::KeyPressed) {
-		panel.registerCharacter(event.key.scancode, pressed[sf::Keyboard::LShift], 3);
-		return;
-	}
-	if (editor || renameShortcut && event.type != sf::Event::KeyReleased || event.type == sf::Event::TextEntered)
-		return;
 	if (event.type == sf::Event::KeyReleased) {
 		if (pressed[event.key.scancode]) pressedKeys--;
 		pressed[event.key.scancode] = false;
@@ -263,6 +255,13 @@ void App::handleKeyboardShortcuts(sf::Event event, Panel& panel)
 		count++;
 		pressed[event.key.scancode] = count;
 	}
+	if (pathShortcut && event.type == sf::Event::KeyPressed) {
+		panel.registerCharacter(event.key.scancode, pressed[sf::Keyboard::Scan::LShift], 3);
+		return;
+	}
+	if (editor || renameShortcut && event.type != sf::Event::KeyReleased || event.type == sf::Event::TextEntered)
+		return;
+	
 	if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::A] && pressedKeys == 2 && pressed[sf::Keyboard::Scan::LControl] < pressed[sf::Keyboard::Scan::A])
 		shortcutOn = true, panel.updateShortcutSelectedFolder(1, 0);
 	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::LShift] && pressed[sf::Keyboard::Scan::LControl] < pressed[sf::Keyboard::Scan::LShift] && pressedKeys == 3 && (pressed[sf::Keyboard::Scan::Up] || pressed[sf::Keyboard::Scan::Down])) {
@@ -326,9 +325,9 @@ void App::handleKeyboardShortcuts(sf::Event event, Panel& panel)
 	else if (pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::X] && pressedKeys == 2 && pressed[sf::Keyboard::Scan::LControl] && pressed[sf::Keyboard::Scan::X])
 		shortcutOn = true, clipboard->move(panel);
 	else if (pressed[sf::Keyboard::Scan::Semicolon]) {
-		int code;
+		int code = -1;
 		for (auto el : pressed) {
-			if (el.second == true && el.first != sf::Keyboard::Scan::Semicolon)
+			if (el.second && el.first != sf::Keyboard::Scan::Semicolon)
 				code = el.first;
 		}
 		if (pressedKeys == 2 && code >= 0 && code <= 25) {
@@ -416,6 +415,6 @@ void App::getCursor(sf::Cursor& cursor, Panel& panel) {
 		cursor.loadFromSystem(sf::Cursor::Arrow);
 	if (mousePosition.y >= TOP_BUTTONS_HEIGHT + PANEL_HEIGHT - BOTTOM_BUTTONS_HEIGHT + 15 && mousePosition.y <= window.getSize().y)
 		cursor.loadFromSystem(sf::Cursor::Arrow);
-	if (leftPanel.checkMouseOnFolder(panel.getSelectedFolderIndex(), (float)mousePosition.x, (float)mousePosition.y))
+	if (panel.checkMouseOnFolder(panel.getSelectedFolderIndex(), (float)mousePosition.x, (float)mousePosition.y))
 		cursor.loadFromSystem(sf::Cursor::Arrow);
 }

@@ -31,3 +31,7 @@
   *  F8 - Delete File / Folder
   *  F9 - Save File / Folder
   *  F10 - Quit
+
+### Resources
+Graphics : https://www.sfml-dev.org/
+Fileystem library used for system manipulation : https://en.cppreference.com/w/cpp/filesystem

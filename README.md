@@ -33,5 +33,6 @@
   *  F10 - Quit
 
 ### Resources
-Graphics : https://www.sfml-dev.org/
-Fileystem library used for system manipulation : https://en.cppreference.com/w/cpp/filesystem
+Graphics : https://www.sfml-dev.org/ 
+<br>
+Filesystem library used for system manipulation : https://en.cppreference.com/w/cpp/filesystem

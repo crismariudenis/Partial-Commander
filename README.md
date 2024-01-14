@@ -1,7 +1,7 @@
 # Partial Commander
 
 ## Description 
- A simple Midnight / Total Commander copy designed for our first project of the Universitary curriculum.
+ A simple Midnight / Total Commander copy designed for our first project of the University curriculum.
 
 ### Keyboard Shortcuts
   * CTRL C - Copy the selected Folders

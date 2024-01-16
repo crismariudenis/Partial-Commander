@@ -11,7 +11,7 @@ void Editor::init(std::filesystem::path path) {
 	text.setFont(fonts[CustomFonts::Font::UBUNTU]);
 	text.setCharacterSize(CHARACTER_SIZE - 1);
 	text.setString("A");
-	maxLines = PANEL_HEIGHT/(TEXT_LINE_SPACING + 2);
+	maxLines = EDITOR_MAX_LINES;
 
 	TextLine t;
 	while (std::getline(file, s)) {

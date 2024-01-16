@@ -52,7 +52,7 @@ class Folder;
 #define SCROLLBAR_BUTTON_HEIGHT 20
 
 #define EDITOR_PADDING 10
-#define EDITOR_MAX_LINES 32
+#define EDITOR_MAX_LINES 29
 #define CLICK_ERROR 500
 
 // Menu
